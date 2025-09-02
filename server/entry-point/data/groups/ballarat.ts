@@ -22,7 +22,7 @@ export const bendigo = new LineGroupBuilder()
   .add(stations.CLUNES)
   .add(stations.TALBOT)
   .add(stations.MARYBOROUGH)
-  .terminate(lines.MARYBOROUGH)
+  .terminate(lines.MARYBOROUGH) // TODO: Ok - so branch IDs and lines are two different concepts, which _usually_ overlap, but not always :/
 
   // Ararat line
   .add(stations.WENDOUREE)
