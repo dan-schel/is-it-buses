@@ -10,6 +10,14 @@ const data = [
     id: station.AIRCRAFT,
     name: "Aircraft",
     ptvIds: [1220],
+
+    // Replace with call to mapLocationOf(station.AIRCRAFT) util function
+    // defined in this /entry-point folder which takes in the line groups, and
+    // map configuration, and uses those to locate the station automatically
+    // (e.g. we'll already have a mapping between the line group and a map
+    // segment, so use it to find the location of the station). For certain
+    // stations, e.g. the city loop and altona loop we'll need to have
+    // exceptions, as they don't appear on any line group.
     mapLocation: corridor.lavertonToWerribee.pointAt(1, 4),
   }),
   new Station({
