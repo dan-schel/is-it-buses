@@ -28,10 +28,19 @@ export class MappingDataBuilder {
     // frontend has, right?)
 
     if (edges.length === 1) {
-      // TODO: Add a mapping entry for the edge, containing each map segment.
+      // TODO: convertChainToSegments to convert [1, 2, 3] to
+      // [Segment(1, 2), Segment(2, 3)].
+      const segments = convertChainToSegments(mapNodeIds);
+      this._data.push({ edge: edges[0], segments });
     } else if (mapNodeIds.length === 2) {
-      // TODO: Create the map segment, and then split it percentage-wise across
-      // each edge using MapSegment#part(x, y).
+      const segment = MapSegment.full(mapNodeIds[0], mapNodeIds[1]);
+      for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        this._data.push({
+          edge,
+          segments: [segment.part(i + 1, edges.length)],
+        });
+      }
     } else {
       throw new Error(
         "Cannot spread multiple map segments over multiple line group edges.",
