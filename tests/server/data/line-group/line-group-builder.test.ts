@@ -1,7 +1,3 @@
-// TODO: Test that the split(), terminate(), add(), build(), etc. functions work
-// as expected (i.e. that you can't break it and terminate more times than you
-// split, that build() enforces that all branches are terminated, etc.).
-
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 import { describe, expect, it } from "vitest";
 

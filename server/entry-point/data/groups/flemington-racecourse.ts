@@ -1,12 +1,12 @@
-import * as stations from "@/shared/station-ids";
-import * as lines from "@/shared/line-ids";
+import * as station from "@/shared/station-ids";
+import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
 export const group = new LineGroupBuilder()
-  .add(stations.FLINDERS_STREET)
-  .add(stations.SOUTHERN_CROSS)
-  .add(stations.NORTH_MELBOURNE)
-  .add(stations.SHOWGROUNDS)
-  .add(stations.FLEMINGTON_RACECOURSE)
-  .terminate(lines.FLEMINGTON_RACECOURSE)
+  .add(station.FLINDERS_STREET)
+  .add(station.SOUTHERN_CROSS)
+  .add(station.NORTH_MELBOURNE)
+  .add(station.SHOWGROUNDS)
+  .add(station.FLEMINGTON_RACECOURSE)
+  .terminate(line.FLEMINGTON_RACECOURSE)
   .build();

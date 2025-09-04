@@ -1,33 +1,33 @@
-import * as stations from "@/shared/station-ids";
-import * as lines from "@/shared/line-ids";
+import * as station from "@/shared/station-ids";
+import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
 export const group = new LineGroupBuilder()
-  .add(stations.SOUTHERN_CROSS)
-  .add(stations.FOOTSCRAY)
-  .add(stations.SUNSHINE)
-  .add(stations.ARDEER)
-  .add(stations.DEER_PARK)
-  .add(stations.CAROLINE_SPRINGS)
-  .add(stations.ROCKBANK)
-  .add(stations.COBBLEBANK)
-  .add(stations.MELTON)
-  .add(stations.BACCHUS_MARSH)
-  .add(stations.BALLAN)
-  .add(stations.BALLARAT)
+  .add(station.SOUTHERN_CROSS)
+  .add(station.FOOTSCRAY)
+  .add(station.SUNSHINE)
+  .add(station.ARDEER)
+  .add(station.DEER_PARK)
+  .add(station.CAROLINE_SPRINGS)
+  .add(station.ROCKBANK)
+  .add(station.COBBLEBANK)
+  .add(station.MELTON)
+  .add(station.BACCHUS_MARSH)
+  .add(station.BALLAN)
+  .add(station.BALLARAT)
 
   // Maryborough branch
   .split()
-  .add(stations.CRESWICK)
-  .add(stations.CLUNES)
-  .add(stations.TALBOT)
-  .add(stations.MARYBOROUGH)
-  .terminate(lines.BALLARAT)
+  .add(station.CRESWICK)
+  .add(station.CLUNES)
+  .add(station.TALBOT)
+  .add(station.MARYBOROUGH)
+  .terminate(line.BALLARAT)
 
   // Ararat branch
-  .add(stations.WENDOUREE)
-  .add(stations.BEAUFORT)
-  .add(stations.ARARAT)
-  .terminate(lines.BALLARAT)
+  .add(station.WENDOUREE)
+  .add(station.BEAUFORT)
+  .add(station.ARARAT)
+  .terminate(line.BALLARAT)
 
   .build();
