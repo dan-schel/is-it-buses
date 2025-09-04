@@ -2,43 +2,45 @@ import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 
-// string = there are a string of map points between two adjacent nodes
-// spread = there are two map points between which sit multiple nodes, which should be evenly distributed
-
 const mappingData = new MappingDataBuilder(group.BALLARAT)
-  .string(station.SOUTHERN_CROSS, station.FOOTSCRAY, [
+  // In this case, Southern Cross and Footscray are adjacent nodes, but the have
+  // multiple map segments between them.
+  .add(station.SOUTHERN_CROSS, station.FOOTSCRAY, [
     map.REGIONAL_WESTERN.SOUTHERN_CROSS,
     map.REGIONAL_WESTERN.NORTH_MELBOURNE_JUNCTION,
     map.REGIONAL_WESTERN.NORTH_MELBOURNE_RRL,
     map.REGIONAL_WESTERN.FOOTSCRAY,
   ])
-  .string(station.FOOTSCRAY, station.SUNSHINE, [
+  .add(station.FOOTSCRAY, station.SUNSHINE, [
     map.REGIONAL_WESTERN.FOOTSCRAY,
     map.REGIONAL_WESTERN.SUNSHINE_JUNCTION,
     map.REGIONAL_WESTERN.SUNSHINE_DEER_PARK,
   ])
-  .spread(
-    station.SUNSHINE,
-    station.DEER_PARK,
+
+  // These cases are different though, now we have a single map segment in each
+  // case, but multiple nodes. The builder should be smart enough to evenly
+  // distribute the corridor between the stations.
+  .add(station.SUNSHINE, station.DEER_PARK, [
     map.REGIONAL_WESTERN.SUNSHINE_DEER_PARK,
     map.REGIONAL_WESTERN.DEER_PARK,
-  )
-  .spread(
-    station.DEER_PARK,
-    station.BALLARAT,
+  ])
+  .add(station.DEER_PARK, station.BALLARAT, [
     map.REGIONAL_WESTERN.DEER_PARK,
     map.REGIONAL_WESTERN.BALLARAT,
-  )
-  .spread(
-    station.BALLARAT,
-    station.MARYBOROUGH,
+  ])
+  .add(station.BALLARAT, station.MARYBOROUGH, [
     map.REGIONAL_WESTERN.BALLARAT,
     map.REGIONAL_WESTERN.MARYBOROUGH,
-  )
-  .spread(
-    station.BALLARAT,
-    station.ARARAT,
+  ])
+  .add(station.BALLARAT, station.ARARAT, [
     map.REGIONAL_WESTERN.BALLARAT,
     map.REGIONAL_WESTERN.ARARAT,
-  )
+  ])
   .build();
+
+// There cannot be a situation where we give one map node ID.
+// There also cannot be a situation where we give more than 2 map node IDs and
+// the nodes AREN'T adjacent. In that case we wouldn't know where to place any
+// intermediate nodes. (You'd think we could try to evenly distribute amongst
+// the multiple segments, but we don't know their lengths because they're
+// variable!)
