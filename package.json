@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@dan-schel/db": "0.1.4",
-    "@dan-schel/js-utils": "4.4.0",
+    "@dan-schel/js-utils": "4.4.1",
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "5.0.0",
     "axios": "1.11.0",

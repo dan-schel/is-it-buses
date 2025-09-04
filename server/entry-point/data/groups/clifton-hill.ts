@@ -1,0 +1,56 @@
+import * as stations from "@/shared/station-ids";
+import * as lines from "@/shared/line-ids";
+import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
+
+export const group = new LineGroupBuilder()
+  .add("the-city")
+  .add(stations.JOLIMONT)
+  .add(stations.WEST_RICHMOND)
+  .add(stations.NORTH_RICHMOND)
+  .add(stations.COLLINGWOOD)
+  .add(stations.VICTORIA_PARK)
+  .add(stations.CLIFTON_HILL)
+
+  // Hurstbridge line
+  .split()
+  .add(stations.WESTGARTH)
+  .add(stations.DENNIS)
+  .add(stations.FAIRFIELD)
+  .add(stations.ALPHINGTON)
+  .add(stations.DAREBIN)
+  .add(stations.IVANHOE)
+  .add(stations.EAGLEMONT)
+  .add(stations.HEIDELBERG)
+  .add(stations.ROSANNA)
+  .add(stations.MACLEOD)
+  .add(stations.WATSONIA)
+  .add(stations.GREENSBOROUGH)
+  .add(stations.MONTMORENCY)
+  .add(stations.ELTHAM)
+  .add(stations.DIAMOND_CREEK)
+  .add(stations.WATTLE_GLEN)
+  .add(stations.HURSTBRIDGE)
+  .terminate(lines.HURSTBRIDGE)
+
+  // Mernda line
+  .add(stations.RUSHALL)
+  .add(stations.MERRI)
+  .add(stations.NORTHCOTE)
+  .add(stations.CROXTON)
+  .add(stations.THORNBURY)
+  .add(stations.BELL)
+  .add(stations.PRESTON)
+  .add(stations.REGENT)
+  .add(stations.RESERVOIR)
+  .add(stations.RUTHVEN)
+  .add(stations.KEON_PARK)
+  .add(stations.THOMASTOWN)
+  .add(stations.LALOR)
+  .add(stations.EPPING)
+  .add(stations.SOUTH_MORANG)
+  .add(stations.MIDDLE_GORGE)
+  .add(stations.HAWKSTOWE)
+  .add(stations.MERNDA)
+  .terminate(lines.MERNDA)
+
+  .build();

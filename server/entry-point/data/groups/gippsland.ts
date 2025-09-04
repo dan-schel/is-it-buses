@@ -1,0 +1,30 @@
+import * as stations from "@/shared/station-ids";
+import * as lines from "@/shared/line-ids";
+import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
+
+export const group = new LineGroupBuilder()
+  .add(stations.SOUTHERN_CROSS)
+  .add(stations.FLINDERS_STREET)
+  .add(stations.RICHMOND)
+  .add(stations.CAULFIELD)
+  .add(stations.CLAYTON)
+  .add(stations.DANDENONG)
+  .add(stations.PAKENHAM)
+  .add(stations.NAR_NAR_GOON)
+  .add(stations.TYNONG)
+  .add(stations.GARFIELD)
+  .add(stations.BUNYIP)
+  .add(stations.LONGWARRY)
+  .add(stations.DROUIN)
+  .add(stations.WARRAGUL)
+  .add(stations.YARRAGON)
+  .add(stations.TRAFALGAR)
+  .add(stations.MOE)
+  .add(stations.MORWELL)
+  .add(stations.TRARALGON)
+  .add(stations.ROSEDALE)
+  .add(stations.SALE)
+  .add(stations.STRATFORD)
+  .add(stations.BAIRNSDALE)
+  .terminate(lines.GIPPSLAND)
+  .build();
