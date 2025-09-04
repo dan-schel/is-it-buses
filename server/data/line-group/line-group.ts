@@ -1,5 +1,5 @@
 import { LineShapeNode } from "@/server/data/line/line-routes/line-shape";
-import { nonNull } from "@dan-schel/js-utils";
+import { nonNull, unique } from "@dan-schel/js-utils";
 
 // We need to map the MapSections onto this concept somehow, so we can remove
 // LineRoutes. I actually think it might belong better in a different object
@@ -14,13 +14,24 @@ import { nonNull } from "@dan-schel/js-utils";
 
 export class LineGroup {
   constructor(
-    private readonly _nodes: readonly (readonly LineShapeNode[])[],
+    private readonly _branches: readonly (readonly LineShapeNode[])[],
     private readonly _lineIds: readonly number[],
   ) {
-    LineGroup._ensureTreeStructure(_nodes);
-    if (_lineIds.length !== this._nodes.length) {
+    LineGroup._ensureTreeStructure(_branches);
+    if (_lineIds.length !== _branches.length) {
       throw new Error("Mismatched number of line IDs and branches");
     }
+  }
+
+  get lines() {
+    return unique(this._lineIds);
+  }
+
+  get branches() {
+    return this._branches.map((b, i) => ({
+      lineId: this._lineIds[i],
+      nodes: b,
+    }));
   }
 
   // TODO: Used when constructing the data the frontend will need to provide an

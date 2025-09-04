@@ -2,7 +2,7 @@ import * as stations from "@/shared/station-ids";
 import * as lines from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
-export const dandenong = new LineGroupBuilder()
+export const group = new LineGroupBuilder()
   .add("the-city")
   .add(stations.RICHMOND)
   .add(stations.SOUTH_YARRA)

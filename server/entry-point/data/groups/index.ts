@@ -1,0 +1,14 @@
+export { group as BALLARAT } from "@/server/entry-point/data/groups/ballarat";
+export { group as BENDIGO } from "@/server/entry-point/data/groups/bendigo";
+export { group as BURNLEY } from "@/server/entry-point/data/groups/burnley";
+export { group as CLIFTON_HILL } from "@/server/entry-point/data/groups/clifton-hill";
+export { group as DANDENONG } from "@/server/entry-point/data/groups/dandenong";
+export { group as FLEMINGTON_RACECOURSE } from "@/server/entry-point/data/groups/flemington-racecourse";
+export { group as FRANKSTON } from "@/server/entry-point/data/groups/frankston";
+export { group as GEELONG } from "@/server/entry-point/data/groups/geelong";
+export { group as GIPPSLAND } from "@/server/entry-point/data/groups/gippsland";
+export { group as NEWPORT } from "@/server/entry-point/data/groups/newport";
+export { group as NORTHERN } from "@/server/entry-point/data/groups/northern";
+export { group as SANDRINGHAM } from "@/server/entry-point/data/groups/sandringham";
+export { group as SEYMOUR } from "@/server/entry-point/data/groups/seymour";
+export { group as STONY_POINT } from "@/server/entry-point/data/groups/stony-point";

@@ -2,7 +2,7 @@ import * as stations from "@/shared/station-ids";
 import * as lines from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
-export const geelong = new LineGroupBuilder()
+export const group = new LineGroupBuilder()
   .add(stations.SOUTHERN_CROSS)
   .add(stations.FOOTSCRAY)
   .add(stations.SUNSHINE)
