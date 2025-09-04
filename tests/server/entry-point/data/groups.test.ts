@@ -1,10 +1,6 @@
-// TODO: Test that every LineGroup object's constructor ran successfully. Test
-// that every station appears at least once in a line group (except for known
-// exceptions: the city loop stations & altona loop stations). Write a snapshot
-// test for easy validation?
-
-import { describe, expect, it } from "vitest";
+import { assert, describe, expect, it } from "vitest";
 import * as groups from "@/server/entry-point/data/groups";
+import * as stationIds from "@/shared/station-ids";
 import { LineShapeNode } from "@/server/data/line/line-routes/line-shape";
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { stations } from "@/server/entry-point/data/stations";
@@ -16,6 +12,35 @@ describe("Melbourne line groups", () => {
     const formattedGroups = Object.values(groups).map(formatGroup);
     const output = `\n\n${formattedGroups.join("\n\n")}\n\n`;
     expect(output).toMatchSnapshot();
+  });
+
+  it("includes every station", () => {
+    const exceptions = [
+      // City loop stations are condensed into a single "the-city" node.
+      stationIds.FLAGSTAFF,
+      stationIds.MELBOURNE_CENTRAL,
+      stationIds.PARLIAMENT,
+
+      // The split in the map on the Werribee line is condensed into a single
+      // logical edge.
+      stationIds.SEAHOLME,
+      stationIds.ALTONA,
+      stationIds.WESTONA,
+    ];
+
+    const nodes = Object.values(groups)
+      .flatMap((g) => g.branches.map((b) => b.nodes))
+      .flat();
+
+    const missing = stations
+      .filter((s) => !nodes.includes(s.id))
+      .filter((s) => !exceptions.includes(s.id))
+      .map((s) => s.name);
+
+    assert(
+      missing.length === 0,
+      `Stations not on any line group: ${missing.join(", ")}`,
+    );
   });
 });
 
