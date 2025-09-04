@@ -1,39 +1,39 @@
-import * as stations from "@/shared/station-ids";
-import * as lines from "@/shared/line-ids";
+import * as station from "@/shared/station-ids";
+import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
 export const group = new LineGroupBuilder()
-  .add(stations.SOUTHERN_CROSS)
-  .add(stations.NORTH_MELBOURNE)
-  .add(stations.BROADMEADOWS)
-  .add(stations.CRAIGIEBURN)
-  .add(stations.DONNYBROOK)
-  .add(stations.WALLAN)
-  .add(stations.HEATHCOTE_JUNCTION)
-  .add(stations.WANDONG)
-  .add(stations.KILMORE_EAST)
-  .add(stations.BROADFORD)
-  .add(stations.TALLAROOK)
-  .add(stations.SEYMOUR)
+  .add(station.SOUTHERN_CROSS)
+  .add(station.NORTH_MELBOURNE)
+  .add(station.BROADMEADOWS)
+  .add(station.CRAIGIEBURN)
+  .add(station.DONNYBROOK)
+  .add(station.WALLAN)
+  .add(station.HEATHCOTE_JUNCTION)
+  .add(station.WANDONG)
+  .add(station.KILMORE_EAST)
+  .add(station.BROADFORD)
+  .add(station.TALLAROOK)
+  .add(station.SEYMOUR)
 
   // Albury branch
   .split()
-  .add(stations.AVENEL)
-  .add(stations.EUROA)
-  .add(stations.VIOLET_TOWN)
-  .add(stations.BENALLA)
-  .add(stations.WANGARATTA)
-  .add(stations.SPRINGHURST)
-  .add(stations.CHILTERN)
-  .add(stations.WODONGA)
-  .add(stations.ALBURY)
-  .terminate(lines.SEYMOUR)
+  .add(station.AVENEL)
+  .add(station.EUROA)
+  .add(station.VIOLET_TOWN)
+  .add(station.BENALLA)
+  .add(station.WANGARATTA)
+  .add(station.SPRINGHURST)
+  .add(station.CHILTERN)
+  .add(station.WODONGA)
+  .add(station.ALBURY)
+  .terminate(line.SEYMOUR)
 
   // Shepparton branch
-  .add(stations.NAGAMBIE)
-  .add(stations.MURCHISON_EAST)
-  .add(stations.MOOROOPNA)
-  .add(stations.SHEPPARTON)
-  .terminate(lines.SEYMOUR)
+  .add(station.NAGAMBIE)
+  .add(station.MURCHISON_EAST)
+  .add(station.MOOROOPNA)
+  .add(station.SHEPPARTON)
+  .terminate(line.SEYMOUR)
 
   .build();

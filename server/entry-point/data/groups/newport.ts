@@ -1,31 +1,31 @@
-import * as stations from "@/shared/station-ids";
-import * as lines from "@/shared/line-ids";
+import * as station from "@/shared/station-ids";
+import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
 export const group = new LineGroupBuilder()
-  .add(stations.FLINDERS_STREET)
-  .add(stations.SOUTHERN_CROSS)
-  .add(stations.NORTH_MELBOURNE)
-  .add(stations.SOUTH_KENSINGTON)
-  .add(stations.FOOTSCRAY)
-  .add(stations.SEDDON)
-  .add(stations.YARRAVILLE)
-  .add(stations.SPOTSWOOD)
-  .add(stations.NEWPORT)
+  .add(station.FLINDERS_STREET)
+  .add(station.SOUTHERN_CROSS)
+  .add(station.NORTH_MELBOURNE)
+  .add(station.SOUTH_KENSINGTON)
+  .add(station.FOOTSCRAY)
+  .add(station.SEDDON)
+  .add(station.YARRAVILLE)
+  .add(station.SPOTSWOOD)
+  .add(station.NEWPORT)
 
   // Williamstown line
   .split()
-  .add(stations.NORTH_WILLIAMSTOWN)
-  .add(stations.WILLIAMSTOWN_BEACH)
-  .add(stations.WILLIAMSTOWN)
-  .terminate(lines.WILLIAMSTOWN)
+  .add(station.NORTH_WILLIAMSTOWN)
+  .add(station.WILLIAMSTOWN_BEACH)
+  .add(station.WILLIAMSTOWN)
+  .terminate(line.WILLIAMSTOWN)
 
   // Werribee line
-  .add(stations.LAVERTON)
-  .add(stations.AIRCRAFT)
-  .add(stations.WILLIAMS_LANDING)
-  .add(stations.HOPPERS_CROSSING)
-  .add(stations.WERRIBEE)
-  .terminate(lines.WERRIBEE)
+  .add(station.LAVERTON)
+  .add(station.AIRCRAFT)
+  .add(station.WILLIAMS_LANDING)
+  .add(station.HOPPERS_CROSSING)
+  .add(station.WERRIBEE)
+  .terminate(line.WERRIBEE)
 
   .build();
