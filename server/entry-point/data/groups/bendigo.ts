@@ -18,7 +18,7 @@ export const bendigo = new LineGroupBuilder()
   .add(stations.KANGAROO_FLAT)
   .add(stations.BENDIGO)
 
-  // Echuca line
+  // Echuca branch
   .split()
   .add(stations.EPSOM)
   .add(stations.HUNTLY)
@@ -26,15 +26,15 @@ export const bendigo = new LineGroupBuilder()
   .add(stations.ELMORE)
   .add(stations.ROCHESTER)
   .add(stations.ECHUCA)
-  .terminate(lines.ECHUCA)
+  .terminate(lines.BENDIGO)
 
-  // Swan Hill line
+  // Swan Hill branch
   .add(stations.EAGLEHAWK)
   .add(stations.RAYWOOD)
   .add(stations.DINGEE)
   .add(stations.PYRAMID)
   .add(stations.KERANG)
   .add(stations.SWAN_HILL)
-  .terminate(lines.SWAN_HILL)
+  .terminate(lines.BENDIGO)
 
   .build();

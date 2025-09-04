@@ -16,7 +16,7 @@ export const seymour = new LineGroupBuilder()
   .add(stations.TALLAROOK)
   .add(stations.SEYMOUR)
 
-  // Albury line
+  // Albury branch
   .split()
   .add(stations.AVENEL)
   .add(stations.EUROA)
@@ -27,13 +27,13 @@ export const seymour = new LineGroupBuilder()
   .add(stations.CHILTERN)
   .add(stations.WODONGA)
   .add(stations.ALBURY)
-  .terminate(lines.ALBURY)
+  .terminate(lines.SEYMOUR)
 
-  // Shepparton line
+  // Shepparton branch
   .add(stations.NAGAMBIE)
   .add(stations.MURCHISON_EAST)
   .add(stations.MOOROOPNA)
   .add(stations.SHEPPARTON)
-  .terminate(lines.SHEPPARTON)
+  .terminate(lines.SEYMOUR)
 
   .build();

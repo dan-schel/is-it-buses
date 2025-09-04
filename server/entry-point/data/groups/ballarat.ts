@@ -2,7 +2,7 @@ import * as stations from "@/shared/station-ids";
 import * as lines from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 
-export const bendigo = new LineGroupBuilder()
+export const ballarat = new LineGroupBuilder()
   .add(stations.SOUTHERN_CROSS)
   .add(stations.FOOTSCRAY)
   .add(stations.SUNSHINE)
@@ -16,18 +16,18 @@ export const bendigo = new LineGroupBuilder()
   .add(stations.BALLAN)
   .add(stations.BALLARAT)
 
-  // Maryborough line
+  // Maryborough branch
   .split()
   .add(stations.CRESWICK)
   .add(stations.CLUNES)
   .add(stations.TALBOT)
   .add(stations.MARYBOROUGH)
-  .terminate(lines.MARYBOROUGH) // TODO: Ok - so branch IDs and lines are two different concepts, which _usually_ overlap, but not always :/
+  .terminate(lines.BALLARAT)
 
-  // Ararat line
+  // Ararat branch
   .add(stations.WENDOUREE)
   .add(stations.BEAUFORT)
   .add(stations.ARARAT)
-  .terminate(lines.ARARAT)
+  .terminate(lines.BALLARAT)
 
   .build();
