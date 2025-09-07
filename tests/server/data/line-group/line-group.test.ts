@@ -1,4 +1,5 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
+import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { describe, expect, it } from "vitest";
 
 describe("LineGroup", () => {
@@ -54,5 +55,37 @@ describe("LineGroup", () => {
       ] as const;
       expect(() => new LineGroup(branches3, lineIds)).toThrow();
     });
+  });
+
+  describe("#getEdgesBetween", () => {
+    const branchA = [1, 2, 3, 4] as const;
+    const branchB = [1, 2, 5, 6] as const;
+    const group = new LineGroup([branchA, branchB], [1, 2]);
+
+    it("works", () => {
+      expectEdges(group.getEdgesBetween(1, 3), [
+        [1, 2],
+        [2, 3],
+      ]);
+    });
+
+    it("reverses the order of edges when needed", () => {
+      expectEdges(group.getEdgesBetween(3, 1), [
+        [3, 2],
+        [2, 1],
+      ]);
+    });
+
+    it("returns an empty array when nodes are the same", () => {
+      expectEdges(group.getEdgesBetween(2, 2), []);
+    });
+
+    it("returns an empty array when nodes are on different branches", () => {
+      expectEdges(group.getEdgesBetween(3, 6), []);
+    });
+
+    function expectEdges(real: LineGroupEdge[], expected: [number, number][]) {
+      expect(real.map((e) => [e.a, e.b])).toEqual(expected);
+    }
   });
 });

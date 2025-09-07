@@ -1,11 +1,11 @@
 import { assert, describe, expect, it } from "vitest";
 import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
-import { LineShapeNode } from "@/server/data/line/line-routes/line-shape";
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { stations } from "@/server/entry-point/data/stations";
 import { lines } from "@/server/entry-point/data/lines";
 import { listifyAnd } from "@dan-schel/js-utils";
+import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 
 const groups = Object.values(group);
 
@@ -54,7 +54,7 @@ function formatGroup(group: LineGroup) {
   return `${name}\n${branches.map((x) => `  ${x}`).join("\n")}`;
 }
 
-function formatNode(boundary: LineShapeNode) {
+function formatNode(boundary: LineGroupNode) {
   if (boundary === "the-city") {
     return '"The city"';
   } else {
