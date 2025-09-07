@@ -44,7 +44,7 @@ export class LineGroup {
     if (i === j) return [];
 
     const nodes = i < j ? br.slice(i, j + 1) : br.slice(j, i + 1).reverse();
-    return LineGroupEdge.toEdges(nodes);
+    return LineGroupEdge.chain(nodes);
   }
 
   private static _ensureTreeStructure(nodes: Branches) {

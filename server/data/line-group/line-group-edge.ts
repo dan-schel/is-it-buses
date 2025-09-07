@@ -10,7 +10,7 @@ export class LineGroupEdge {
     }
   }
 
-  static toEdges(nodes: readonly LineGroupNode[]) {
+  static chain(nodes: readonly LineGroupNode[]) {
     if (nodes.length < 2) {
       throw new Error("At least two nodes are required to form edges.");
     }

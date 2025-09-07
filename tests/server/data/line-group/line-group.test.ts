@@ -80,8 +80,8 @@ describe("LineGroup", () => {
       expectEdges(group.getEdgesBetween(2, 2), []);
     });
 
-    it("returns an empty array when nodes are on different branches", () => {
-      expectEdges(group.getEdgesBetween(3, 6), []);
+    it("throw an error when nodes are on different branches", () => {
+      expect(() => group.getEdgesBetween(3, 6)).toThrow();
     });
 
     function expectEdges(real: LineGroupEdge[], expected: [number, number][]) {

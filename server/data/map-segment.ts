@@ -75,6 +75,18 @@ export class MapSegment {
     );
   }
 
+  static chain(nodes: number[]) {
+    if (nodes.length < 2) {
+      throw new Error("At least two nodes are required to form segments.");
+    }
+
+    const edges: MapSegment[] = [];
+    for (let i = 0; i < nodes.length - 1; i++) {
+      edges.push(MapSegment.full(nodes[i], nodes[i + 1]));
+    }
+    return edges;
+  }
+
   static condense(segments: MapSegment[]): MapSegment[] {
     function key(s: MapSegment): string {
       return `${s.mapNodeA}-${s.mapNodeB}`;

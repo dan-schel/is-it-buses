@@ -1,4 +1,15 @@
-// TODO: A data structure that, for each EDGE in the line group, contains one
-// or more map segments that it corresponds to. (i.e. it's a mapping between
-// line group edges and an array of map segments).
-export class MappingData {}
+import { LineGroup } from "@/server/data/line-group/line-group";
+import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
+import { MapSegment } from "@/server/data/map-segment";
+
+export class MappingData {
+  constructor(
+    // TODO: Or should it be some sort of group ID?
+    readonly lineGroup: LineGroup,
+
+    readonly _data: readonly {
+      edge: LineGroupEdge;
+      segments: readonly MapSegment[];
+    }[],
+  ) {}
+}

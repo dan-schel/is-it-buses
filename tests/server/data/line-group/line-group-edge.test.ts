@@ -16,16 +16,16 @@ describe("LineGroupEdge", () => {
     });
   });
 
-  describe(".toEdges", () => {
+  describe(".chain", () => {
     it("throws when fewer than two nodes are provided", () => {
-      expect(() => LineGroupEdge.toEdges([1])).toThrow(
+      expect(() => LineGroupEdge.chain([1])).toThrow(
         "At least two nodes are required to form edges.",
       );
     });
 
     it("creates sequential edges between consecutive nodes", () => {
       const nodes = [1, 2, 3, 4] as const;
-      const edges = LineGroupEdge.toEdges(nodes);
+      const edges = LineGroupEdge.chain(nodes);
 
       expect(edges).toHaveLength(nodes.length - 1);
       expect(edges[0].a).toBe(1);

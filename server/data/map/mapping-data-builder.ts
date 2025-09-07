@@ -5,12 +5,6 @@ import { MapSegment } from "@/server/data/map-segment";
 import { MappingData } from "@/server/data/map/mapping-data";
 
 export class MappingDataBuilder {
-  // TODO: LineShapeEdge literally meaning a pair of line shape nodes, not the
-  // current LineShapeEdge class (which this work aims to deprecate).
-  // Come to think of it, this is the exact same data the MappingData class
-  // itself will have, do we even need this builder class? Will the constructor
-  // of MappingData do some validation to ensure all edges of the line group are
-  // covered or something?
   private readonly _data: { edge: LineGroupEdge; segments: MapSegment[] }[] =
     [];
 
@@ -24,7 +18,7 @@ export class MappingDataBuilder {
     if (edges.length === 1) {
       // TODO: convertChainToSegments to convert [1, 2, 3] to
       // [Segment(1, 2), Segment(2, 3)].
-      const segments = convertChainToSegments(mapNodeIds);
+      const segments = MapSegment.chain(mapNodeIds);
       this._data.push({ edge: edges[0], segments });
     } else if (mapNodeIds.length === 2) {
       const segment = MapSegment.full(mapNodeIds[0], mapNodeIds[1]);
@@ -43,7 +37,6 @@ export class MappingDataBuilder {
   }
 
   build() {
-    // TODO: Create it.
-    return new MappingData();
+    return new MappingData(this.lineGroup, this._data);
   }
 }
