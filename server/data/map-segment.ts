@@ -82,7 +82,7 @@ export class MapSegment {
 
     const edges: MapSegment[] = [];
     for (let i = 0; i < nodes.length - 1; i++) {
-      edges.push(MapSegment.full(nodes[i], nodes[i + 1]));
+      edges.push(MapSegment.full(nodes[i], nodes[i + 1]).normalize());
     }
     return edges;
   }
