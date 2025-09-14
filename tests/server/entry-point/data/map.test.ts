@@ -11,6 +11,7 @@ import * as mapData from "@/server/entry-point/data/map";
 //   map.CLIFTON_HILL.JOLIMONT used with station.JOLIMONT). There'll be
 //   exceptions but maybe it's a good sanity check?
 // Test that each group only uses map segments from its own group?
+// Check against the JSON that every map segment mentioned actually exists?
 
 describe("Melbourne mapping data", () => {
   it("", () => {

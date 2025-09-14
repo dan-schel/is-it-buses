@@ -75,6 +75,14 @@ export class MapSegment {
     );
   }
 
+  split(at: number): [MapSegment, MapSegment] {
+    const [firstRange, secondRange] = this.percentage.split(at);
+    return [
+      new MapSegment(this.mapNodeA, this.mapNodeB, firstRange),
+      new MapSegment(this.mapNodeA, this.mapNodeB, secondRange),
+    ];
+  }
+
   static chain(nodes: number[]) {
     if (nodes.length < 2) {
       throw new Error("At least two nodes are required to form segments.");
