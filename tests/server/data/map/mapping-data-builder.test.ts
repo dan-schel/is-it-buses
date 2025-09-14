@@ -7,7 +7,7 @@ describe("MappingDataBuilder", () => {
   const lineGroup = new LineGroup([[1, 2, 3]], [100]);
 
   describe("#add", () => {
-    it("can assign multiple map segments to a single line shape edge", () => {
+    it("can assign multiple map segments to a single line group edge", () => {
       const builder = new MappingDataBuilder(lineGroup);
       const mappingData = builder.add(1, 2, [10, 20, 30]).build();
 
@@ -20,7 +20,7 @@ describe("MappingDataBuilder", () => {
       expect(entry.segments[1].equals(MapSegment.full(20, 30))).toBe(true);
     });
 
-    it("divides a single map segment among multiple line shape edges", () => {
+    it("divides a single map segment among multiple line group edges", () => {
       const mapSegment = MapSegment.full(10, 20);
       const builder = new MappingDataBuilder(lineGroup);
       const mappingData = builder
@@ -42,12 +42,31 @@ describe("MappingDataBuilder", () => {
       expect(second.segments[0].equals(mapSegment.part(2, 2))).toBe(true);
     });
 
-    it("ensures either a single line shape edge OR single map section", () => {
+    it("ensures either a single line group edge OR single map section", () => {
       const builder = new MappingDataBuilder(lineGroup);
 
       expect(() => builder.add(1, 1, [10, 20])).toThrow();
       expect(() => builder.add(1, 2, [10])).toThrow();
       expect(() => builder.add(1, 3, [10, 20, 30])).toThrow();
+    });
+
+    it("combines adds for the same line group edge together", () => {
+      const builder = new MappingDataBuilder(lineGroup);
+      const mappingData = builder
+        .add(1, 2, [10, 20])
+        .add(1, 2, [20, 30, 40])
+        .add(2, 1, [50, 60])
+        .build();
+
+      expect(mappingData.data).toHaveLength(1);
+      const entry = mappingData.data[0];
+      expect(entry.edge.a).toBe(1);
+      expect(entry.edge.b).toBe(2);
+      expect(entry.segments).toHaveLength(3);
+      expect(entry.segments[0].equals(MapSegment.full(10, 20))).toBe(true);
+      expect(entry.segments[1].equals(MapSegment.full(20, 30))).toBe(true);
+      expect(entry.segments[2].equals(MapSegment.full(30, 40))).toBe(true);
+      expect(entry.segments[3].equals(MapSegment.full(50, 60))).toBe(true);
     });
   });
 
