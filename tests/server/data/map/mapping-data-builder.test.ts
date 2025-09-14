@@ -7,7 +7,7 @@ describe("MappingDataBuilder", () => {
   const lineGroup = new LineGroup([[1, 2, 3]], [100]);
 
   describe("#add", () => {
-    it("adds chain segments when there's a single edge", () => {
+    it("can assign multiple map segments to a single line shape edge", () => {
       const builder = new MappingDataBuilder(lineGroup);
       const mappingData = builder.add(1, 2, [10, 20, 30]).build();
 
@@ -20,7 +20,7 @@ describe("MappingDataBuilder", () => {
       expect(entry.segments[1].equals(MapSegment.full(20, 30))).toBe(true);
     });
 
-    it("splits a full segment across multiple edges when there are many edges", () => {
+    it("divides a single map segment among multiple line shape edges", () => {
       const mapSegment = MapSegment.full(10, 20);
       const builder = new MappingDataBuilder(lineGroup);
       const mappingData = builder
@@ -42,12 +42,12 @@ describe("MappingDataBuilder", () => {
       expect(second.segments[0].equals(mapSegment.part(2, 2))).toBe(true);
     });
 
-    it("throws for invalid arguments", () => {
+    it("ensures either a single line shape edge OR single map section", () => {
       const builder = new MappingDataBuilder(lineGroup);
 
-      expect(() => builder.add(1, 1, [10, 20])).toThrowError();
-      expect(() => builder.add(1, 2, [10])).toThrowError();
-      expect(() => builder.add(1, 3, [10, 20, 30])).toThrowError();
+      expect(() => builder.add(1, 1, [10, 20])).toThrow();
+      expect(() => builder.add(1, 2, [10])).toThrow();
+      expect(() => builder.add(1, 3, [10, 20, 30])).toThrow();
     });
   });
 
