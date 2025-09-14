@@ -16,8 +16,6 @@ export class MappingDataBuilder {
     const edges = this.lineGroup.getEdgesBetween(a, b);
 
     if (edges.length === 1) {
-      // TODO: convertChainToSegments to convert [1, 2, 3] to
-      // [Segment(1, 2), Segment(2, 3)].
       const segments = MapSegment.chain(mapNodeIds);
       this._data.push({ edge: edges[0], segments });
     } else if (mapNodeIds.length === 2) {

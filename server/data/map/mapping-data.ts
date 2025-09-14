@@ -7,7 +7,7 @@ export class MappingData {
     // TODO: Or should it be some sort of group ID?
     readonly lineGroup: LineGroup,
 
-    readonly _data: readonly {
+    readonly data: readonly {
       edge: LineGroupEdge;
       segments: readonly MapSegment[];
     }[],

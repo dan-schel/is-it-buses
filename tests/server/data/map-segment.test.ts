@@ -31,6 +31,22 @@ describe("MapSegment", () => {
     });
   });
 
+  describe("#part", () => {
+    it("adjusts the range appropriately", () => {
+      const segment = new MapSegment(1, 2, new Range(0, 1));
+      expect(segment.part(1, 5).percentage.min).toBe(0);
+      expect(segment.part(1, 5).percentage.max).toBe(0.2);
+      expect(segment.part(2, 5).percentage.min).toBe(0.2);
+      expect(segment.part(2, 5).percentage.max).toBe(0.4);
+      expect(segment.part(3, 5).percentage.min).toBe(0.4);
+      expect(segment.part(3, 5).percentage.max).toBe(0.6);
+      expect(segment.part(4, 5).percentage.min).toBe(0.6);
+      expect(segment.part(4, 5).percentage.max).toBe(0.8);
+      expect(segment.part(5, 5).percentage.min).toBe(0.8);
+      expect(segment.part(5, 5).percentage.max).toBe(1);
+    });
+  });
+
   describe(".chain", () => {
     it("creates full segments between successive nodes", () => {
       const segments = MapSegment.chain([1, 2, 3]);
