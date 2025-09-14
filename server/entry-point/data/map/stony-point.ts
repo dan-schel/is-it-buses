@@ -3,9 +3,10 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.STONY_POINT)
-  .add(station.FRANKSTON, station.STONY_POINT, [
-    map.STONY_POINT.FRANKSTON,
-    map.STONY_POINT.STONY_POINT,
-  ])
+export const mappingData = new MappingDataBuilder(
+  group.STONY_POINT,
+  station,
+  map.STONY_POINT,
+)
+  .auto("FRANKSTON", "STONY_POINT")
   .build();

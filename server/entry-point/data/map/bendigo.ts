@@ -3,7 +3,11 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.BENDIGO)
+export const mappingData = new MappingDataBuilder(
+  group.BENDIGO,
+  station,
+  map.REGIONAL_WESTERN,
+)
   .add(station.SOUTHERN_CROSS, station.FOOTSCRAY, [
     map.REGIONAL_WESTERN.SOUTHERN_CROSS,
     map.REGIONAL_WESTERN.NORTH_MELBOURNE_JUNCTION,
@@ -16,20 +20,8 @@ export const mappingData = new MappingDataBuilder(group.BENDIGO)
     map.REGIONAL_WESTERN.SUNSHINE_BENDIGO,
     map.REGIONAL_WESTERN.WATERGARDENS,
   ])
-  .add(station.WATERGARDENS, station.SUNBURY, [
-    map.REGIONAL_WESTERN.WATERGARDENS,
-    map.REGIONAL_WESTERN.SUNBURY,
-  ])
-  .add(station.SUNBURY, station.BENDIGO, [
-    map.REGIONAL_WESTERN.SUNBURY,
-    map.REGIONAL_WESTERN.BENDIGO,
-  ])
-  .add(station.BENDIGO, station.ECHUCA, [
-    map.REGIONAL_WESTERN.BENDIGO,
-    map.REGIONAL_WESTERN.ECHUCA,
-  ])
-  .add(station.BENDIGO, station.SWAN_HILL, [
-    map.REGIONAL_WESTERN.BENDIGO,
-    map.REGIONAL_WESTERN.SWAN_HILL,
-  ])
+  .auto("WATERGARDENS", "SUNBURY")
+  .auto("SUNBURY", "BENDIGO")
+  .auto("BENDIGO", "ECHUCA")
+  .auto("BENDIGO", "SWAN_HILL")
   .build();

@@ -3,7 +3,11 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.BALLARAT)
+export const mappingData = new MappingDataBuilder(
+  group.BALLARAT,
+  station,
+  map.REGIONAL_WESTERN,
+)
   .add(station.SOUTHERN_CROSS, station.FOOTSCRAY, [
     map.REGIONAL_WESTERN.SOUTHERN_CROSS,
     map.REGIONAL_WESTERN.NORTH_MELBOURNE_JUNCTION,
@@ -19,16 +23,7 @@ export const mappingData = new MappingDataBuilder(group.BALLARAT)
     map.REGIONAL_WESTERN.SUNSHINE_DEER_PARK,
     map.REGIONAL_WESTERN.DEER_PARK,
   ])
-  .add(station.DEER_PARK, station.BALLARAT, [
-    map.REGIONAL_WESTERN.DEER_PARK,
-    map.REGIONAL_WESTERN.BALLARAT,
-  ])
-  .add(station.BALLARAT, station.MARYBOROUGH, [
-    map.REGIONAL_WESTERN.BALLARAT,
-    map.REGIONAL_WESTERN.MARYBOROUGH,
-  ])
-  .add(station.BALLARAT, station.ARARAT, [
-    map.REGIONAL_WESTERN.BALLARAT,
-    map.REGIONAL_WESTERN.ARARAT,
-  ])
+  .auto("DEER_PARK", "BALLARAT")
+  .auto("BALLARAT", "MARYBOROUGH")
+  .auto("BALLARAT", "ARARAT")
   .build();

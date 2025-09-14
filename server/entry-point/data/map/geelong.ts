@@ -3,7 +3,11 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.GEELONG)
+export const mappingData = new MappingDataBuilder(
+  group.GEELONG,
+  station,
+  map.REGIONAL_WESTERN,
+)
   .add(station.SOUTHERN_CROSS, station.FOOTSCRAY, [
     map.REGIONAL_WESTERN.SOUTHERN_CROSS,
     map.REGIONAL_WESTERN.NORTH_MELBOURNE_JUNCTION,
@@ -19,8 +23,5 @@ export const mappingData = new MappingDataBuilder(group.GEELONG)
     map.REGIONAL_WESTERN.SUNSHINE_DEER_PARK,
     map.REGIONAL_WESTERN.DEER_PARK,
   ])
-  .add(station.DEER_PARK, station.WARRNAMBOOL, [
-    map.REGIONAL_WESTERN.DEER_PARK,
-    map.REGIONAL_WESTERN.WARRNAMBOOL,
-  ])
+  .auto("DEER_PARK", "WARRNAMBOOL")
   .build();

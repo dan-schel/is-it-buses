@@ -3,17 +3,12 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.SANDRINGHAM)
-  .add(station.FLINDERS_STREET, station.RICHMOND, [
-    map.SANDRINGHAM.FLINDERS_STREET,
-    map.SANDRINGHAM.RICHMOND,
-  ])
-  .add(station.RICHMOND, station.SOUTH_YARRA, [
-    map.SANDRINGHAM.RICHMOND,
-    map.SANDRINGHAM.SOUTH_YARRA,
-  ])
-  .add(station.SOUTH_YARRA, station.SANDRINGHAM, [
-    map.SANDRINGHAM.SOUTH_YARRA,
-    map.SANDRINGHAM.SANDRINGHAM,
-  ])
+export const mappingData = new MappingDataBuilder(
+  group.SANDRINGHAM,
+  station,
+  map.SANDRINGHAM,
+)
+  .auto("FLINDERS_STREET", "RICHMOND")
+  .auto("RICHMOND", "SOUTH_YARRA")
+  .auto("SOUTH_YARRA", "SANDRINGHAM")
   .build();

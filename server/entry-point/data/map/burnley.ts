@@ -3,7 +3,11 @@ import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
 
-export const mappingData = new MappingDataBuilder(group.BURNLEY)
+export const mappingData = new MappingDataBuilder(
+  group.BURNLEY,
+  station,
+  map.BURNLEY,
+)
   .add("the-city", station.RICHMOND, [
     map.BURNLEY.FLINDERS_STREET_LOOP,
     map.BURNLEY.SOUTHERN_CROSS,
@@ -16,32 +20,11 @@ export const mappingData = new MappingDataBuilder(group.BURNLEY)
     map.BURNLEY.FLINDERS_STREET_DIRECT,
     map.BURNLEY.RICHMOND,
   ])
-  .add(station.RICHMOND, station.BURNLEY, [
-    map.BURNLEY.RICHMOND,
-    map.BURNLEY.BURNLEY,
-  ])
-  .add(station.BURNLEY, station.GLEN_WAVERLEY, [
-    map.BURNLEY.BURNLEY,
-    map.BURNLEY.GLEN_WAVERLEY,
-  ])
-  .add(station.BURNLEY, station.CAMBERWELL, [
-    map.BURNLEY.BURNLEY,
-    map.BURNLEY.CAMBERWELL,
-  ])
-  .add(station.CAMBERWELL, station.ALAMEIN, [
-    map.BURNLEY.CAMBERWELL,
-    map.BURNLEY.ALAMEIN,
-  ])
-  .add(station.CAMBERWELL, station.RINGWOOD, [
-    map.BURNLEY.CAMBERWELL,
-    map.BURNLEY.RINGWOOD,
-  ])
-  .add(station.RINGWOOD, station.LILYDALE, [
-    map.BURNLEY.RINGWOOD,
-    map.BURNLEY.LILYDALE,
-  ])
-  .add(station.RINGWOOD, station.BELGRAVE, [
-    map.BURNLEY.RINGWOOD,
-    map.BURNLEY.BELGRAVE,
-  ])
+  .auto("RICHMOND", "BURNLEY")
+  .auto("BURNLEY", "GLEN_WAVERLEY")
+  .auto("BURNLEY", "CAMBERWELL")
+  .auto("CAMBERWELL", "ALAMEIN")
+  .auto("CAMBERWELL", "RINGWOOD")
+  .auto("RINGWOOD", "LILYDALE")
+  .auto("RINGWOOD", "BELGRAVE")
   .build();

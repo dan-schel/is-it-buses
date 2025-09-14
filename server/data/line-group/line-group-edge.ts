@@ -10,6 +10,13 @@ export class LineGroupEdge {
     }
   }
 
+  sameEdge(other: LineGroupEdge) {
+    return (
+      (this.a === other.a && this.b === other.b) ||
+      (this.a === other.b && this.b === other.a)
+    );
+  }
+
   static chain(nodes: readonly LineGroupNode[]) {
     if (nodes.length < 2) {
       throw new Error("At least two nodes are required to form edges.");
