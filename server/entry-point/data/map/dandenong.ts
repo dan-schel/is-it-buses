@@ -2,13 +2,14 @@ import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
+import { MapSegment } from "@/server/data/map-segment";
 
 export const mappingData = new MappingDataBuilder(
   group.DANDENONG,
   station,
   map.DANDENONG,
 )
-  .add("the-city", station.RICHMOND, [
+  .chain("the-city", station.RICHMOND, [
     map.DANDENONG.FLINDERS_STREET_LOOP,
     map.DANDENONG.SOUTHERN_CROSS,
     map.DANDENONG.FLAGSTAFF,
@@ -16,10 +17,14 @@ export const mappingData = new MappingDataBuilder(
     map.DANDENONG.PARLIAMENT,
     map.DANDENONG.RICHMOND,
   ])
-  .add("the-city", station.RICHMOND, [
-    map.DANDENONG.FLINDERS_STREET_DIRECT,
-    map.DANDENONG.RICHMOND,
-  ])
+  .manual(
+    "the-city",
+    station.RICHMOND,
+    MapSegment.full(
+      map.DANDENONG.FLINDERS_STREET_DIRECT,
+      map.DANDENONG.RICHMOND,
+    ),
+  )
   .auto("RICHMOND", "SOUTH_YARRA")
   .auto("SOUTH_YARRA", "CAULFIELD")
   .auto("CAULFIELD", "CLAYTON")

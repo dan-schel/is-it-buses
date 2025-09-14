@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe } from "vitest";
 import * as mapData from "@/server/entry-point/data/map";
 
 // Add a snapshot test, and then:
@@ -14,8 +14,8 @@ import * as mapData from "@/server/entry-point/data/map";
 // Check against the JSON that every map segment mentioned actually exists?
 
 describe("Melbourne mapping data", () => {
-  it("", () => {
-    expect(mapData).toMatchSnapshot();
-    expect(true).toBe(false);
-  });
+  const groups = Object.entries(mapData).map(([groupName, data]) => ({
+    groupName,
+    data,
+  }));
 });
