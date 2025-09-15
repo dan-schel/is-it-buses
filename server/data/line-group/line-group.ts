@@ -8,10 +8,31 @@ export class LineGroup {
   constructor(
     private readonly _branches: Branches,
     private readonly _lineIds: readonly number[],
+    private readonly _stationMappingOverrides: Map<LineGroupNode, number[]>,
   ) {
     LineGroup._ensureTreeStructure(_branches);
     if (_lineIds.length !== _branches.length) {
       throw new Error("Mismatched number of line IDs and branches");
+    }
+  }
+
+  private static _ensureTreeStructure(nodes: Branches) {
+    if (nodes.length === 0) throw new Error("No branches.");
+    if (nodes.some((x) => x.length === 0)) throw new Error("Empty branch.");
+
+    const root = nodes[0][0];
+    if (nodes.some((x) => x[0] !== root)) throw new Error("Multiple roots.");
+
+    const longestArrayLength = Math.max(...nodes.map((x) => x.length));
+    const seenNodes = new Set<LineGroupNode>();
+
+    for (let i = 0; i < longestArrayLength; i++) {
+      const nodesAtIndex = nodes.map((x) => x[i]).filter(nonNull);
+
+      const alreadySeen = nodesAtIndex.some((x) => seenNodes.has(x));
+      if (alreadySeen) throw new Error("Node seen before at different index.");
+
+      nodesAtIndex.forEach((x) => seenNodes.add(x));
     }
   }
 
@@ -47,23 +68,26 @@ export class LineGroup {
     return LineGroupEdge.chain(nodes);
   }
 
-  private static _ensureTreeStructure(nodes: Branches) {
-    if (nodes.length === 0) throw new Error("No branches.");
-    if (nodes.some((x) => x.length === 0)) throw new Error("Empty branch.");
+  getNodesOnLine(lineId: number): LineGroupNode[] {
+    const branches = this.branches.filter((b) => b.lineId === lineId);
+    if (branches.length === 0) throw new Error("Line not part of this group.");
 
-    const root = nodes[0][0];
-    if (nodes.some((x) => x[0] !== root)) throw new Error("Multiple roots.");
+    return unique(branches.flatMap((b) => b.nodes));
+  }
 
-    const longestArrayLength = Math.max(...nodes.map((x) => x.length));
-    const seenNodes = new Set<LineGroupNode>();
+  getStationsOnLine(lineId: number): number[] {
+    const nodes = this.getNodesOnLine(lineId);
+    return nodes.flatMap((n) => this.getStationsForNode(n));
+  }
 
-    for (let i = 0; i < longestArrayLength; i++) {
-      const nodesAtIndex = nodes.map((x) => x[i]).filter(nonNull);
+  getStationsForNode(node: LineGroupNode): number[] {
+    const overrides = this._stationMappingOverrides.get(node);
+    if (overrides) return overrides;
 
-      const alreadySeen = nodesAtIndex.some((x) => seenNodes.has(x));
-      if (alreadySeen) throw new Error("Node seen before at different index.");
-
-      nodesAtIndex.forEach((x) => seenNodes.add(x));
+    if (typeof node === "number") {
+      return [node];
     }
+
+    throw new Error(`No station mapping for node '${node}'`);
   }
 }

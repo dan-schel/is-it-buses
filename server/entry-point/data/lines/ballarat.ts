@@ -1,6 +1,7 @@
 import * as id from "@/shared/line-ids";
 import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
+import * as group from "@/server/entry-point/data/groups";
 import { Line } from "@/server/data/line/line";
 import { StationPair } from "@/server/data/line/line-routes/station-pair";
 import {
@@ -154,5 +155,6 @@ export const line = new Line({
   name: "Ballarat",
   ptvIds: [1728, 1837, 4871],
   route,
-  lineGroup: "regional",
+  lineType: "regional",
+  group: group.BALLARAT,
 });

@@ -26,9 +26,7 @@ export class LineCollection extends Collection<number, Line> {
   }
 
   whichStopAt(stationId: number): Line[] {
-    return this.filter((line) =>
-      line.route.getAllServedStations().includes(stationId),
-    );
+    return this.filter((line) => line.getStations().includes(stationId));
   }
 
   protected _getID(item: Line): number {

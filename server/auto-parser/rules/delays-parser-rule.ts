@@ -47,9 +47,7 @@ export class DelaysParserRule extends AutoParserRuleBase {
     const possibleStations = this._app.stations.filter(
       (x) =>
         data.title.includes(x.name) &&
-        affectedLines.every((line) =>
-          line.route.getAllServedStations().includes(x.id),
-        ),
+        affectedLines.every((line) => line.getStations().includes(x.id)),
     );
 
     // Some lines have stations where their name is a substring of other stations
@@ -65,7 +63,7 @@ export class DelaysParserRule extends AutoParserRuleBase {
 
     // Get sections comprising of adjacent stations
     const sections = affectedLines.flatMap((line) => {
-      const nodes = line.route.getAllLineShapeNodes();
+      const nodes = line.getNodes();
       const adjacentStations = unique(
         line.route
           .getAllRouteGraphPairs()
@@ -101,7 +99,7 @@ export class DelaysParserRule extends AutoParserRuleBase {
         return [];
       }
 
-      return line.route.isValidSection(section) ? section : [];
+      return line.isValidSection(section) ? section : [];
     });
 
     return new AutoParsingOutput(

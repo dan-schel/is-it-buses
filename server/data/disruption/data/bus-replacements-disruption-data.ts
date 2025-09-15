@@ -56,7 +56,7 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
 
   validate(app: App): boolean {
     return this.sections.every((section) =>
-      app.lines.get(section.line)?.route.isValidSection(section),
+      app.lines.get(section.line)?.isValidSection(section),
     );
   }
 }
