@@ -8,9 +8,9 @@ export class Line {
   readonly id: number;
   readonly name: string;
   readonly ptvIds: readonly number[];
-  readonly route: LineRoute;
+  readonly route: LineRoute; // TODO: [DS] Current mission - Remove this.
   readonly lineType: LineType;
-  readonly group: LineGroup;
+  private readonly _group: LineGroup;
 
   constructor({
     id,
@@ -32,11 +32,11 @@ export class Line {
     this.ptvIds = ptvIds;
     this.route = route;
     this.lineType = lineType;
-    this.group = group;
+    this._group = group;
   }
 
   getNodes() {
-    return this.group.getNodesOnLine(this.id);
+    return this._group.getNodesOnLine(this.id);
   }
 
   isValidSection(section: LineSection) {
@@ -45,6 +45,6 @@ export class Line {
   }
 
   getStations() {
-    return this.group.getStationsOnLine(this.id);
+    return this._group.getStationsOnLine(this.id);
   }
 }
