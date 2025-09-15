@@ -4,6 +4,8 @@ import { z } from "zod";
 const fpff = 0.000001;
 
 export class Range {
+  static readonly full = new Range(0, 1);
+
   constructor(
     readonly min: number,
     readonly max: number,
@@ -32,6 +34,13 @@ export class Range {
       Math.abs(this.min - other.min) < fpff &&
       Math.abs(this.max - other.max) < fpff
     );
+  }
+
+  split(at: number): [Range, Range] {
+    const min = this.min + fpff;
+    const max = this.max - fpff;
+    if (at <= min || at >= max) throw new Error("Out of range.");
+    return [new Range(this.min, at), new Range(at, this.max)];
   }
 
   static condense(ranges: Range[]): Range[] {

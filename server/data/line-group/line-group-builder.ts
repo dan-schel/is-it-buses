@@ -1,15 +1,15 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
-import { LineShapeNode } from "@/server/data/line/line-routes/line-shape";
+import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 
 export class LineGroupBuilder {
-  private _branches: LineShapeNode[][] = [[]];
+  private _branches: LineGroupNode[][] = [[]];
   private _lineIds: number[] = [];
 
   private get _workingIndex() {
     return this._branches.length - this._lineIds.length - 1;
   }
 
-  add(node: LineShapeNode) {
+  add(node: LineGroupNode) {
     if (this._workingIndex < 0) {
       throw new Error("Cannot add nodes - all branches have terminated.");
     }

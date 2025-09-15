@@ -1,0 +1,14 @@
+export { mappingData as BALLARAT } from "@/server/entry-point/data/map/ballarat";
+export { mappingData as BENDIGO } from "@/server/entry-point/data/map/bendigo";
+export { mappingData as BURNLEY } from "@/server/entry-point/data/map/burnley";
+export { mappingData as CLIFTON_HILL } from "@/server/entry-point/data/map/clifton-hill";
+export { mappingData as DANDENONG } from "@/server/entry-point/data/map/dandenong";
+// export { mappingData as FLEMINGTON_RACECOURSE } from "@/server/entry-point/data/map/flemington-racecourse";
+export { mappingData as FRANKSTON } from "@/server/entry-point/data/map/frankston";
+export { mappingData as GEELONG } from "@/server/entry-point/data/map/geelong";
+export { mappingData as GIPPSLAND } from "@/server/entry-point/data/map/gippsland";
+export { mappingData as NEWPORT } from "@/server/entry-point/data/map/newport";
+export { mappingData as NORTHERN } from "@/server/entry-point/data/map/northern";
+export { mappingData as SANDRINGHAM } from "@/server/entry-point/data/map/sandringham";
+export { mappingData as SEYMOUR } from "@/server/entry-point/data/map/seymour";
+export { mappingData as STONY_POINT } from "@/server/entry-point/data/map/stony-point";
