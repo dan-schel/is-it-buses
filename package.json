@@ -60,7 +60,7 @@
     "tsx": "4.20.5",
     "typescript": "5.9.2",
     "typescript-eslint": "8.42.0",
-    "vike": "0.4.239",
+    "vike": "0.4.240",
     "vite": "7.1.5",
     "vite-plugin-pwa": "1.0.3"
   },
