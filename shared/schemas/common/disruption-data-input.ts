@@ -41,7 +41,6 @@ export type BusReplacementsDisruptionDataInput = z.infer<
 export const DelaysDisruptionDataInputJson = z.object({
   stationId: z.number(),
   delayInMinutes: z.number(),
-  sections: LineSectionInputJson.array(),
 });
 export type DelaysDisruptionDataInput = z.infer<
   typeof DelaysDisruptionDataInputJson

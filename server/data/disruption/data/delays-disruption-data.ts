@@ -5,21 +5,16 @@ import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-hi
 import { RouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/route-graph-modifier";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
 import { DelaysDisruptionWriteupAuthor } from "@/server/data/disruption/writeup/delays-disruption-writeup-author";
-import { LineSection } from "@/server/data/line-section";
 import { DelayMapHighlighter } from "@/server/data/disruption/map-highlighting/delay-map-highlighter";
 import { SimpleRouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/simple-route-graph-modifier";
 
 export class DelaysDisruptionData extends DisruptionDataBase {
   constructor(
+    readonly affectedLines: readonly number[],
     readonly stationId: number,
     readonly delayInMinutes: number,
-    readonly sections: LineSection[],
   ) {
     super();
-
-    if (sections.length === 0) {
-      throw new Error("Must have at least one section.");
-    }
 
     if (!Number.isInteger(delayInMinutes) || delayInMinutes < 1) {
       throw new Error(
@@ -32,13 +27,17 @@ export class DelaysDisruptionData extends DisruptionDataBase {
   static readonly bson = z
     .object({
       type: z.literal("delays"),
+      affectedLines: z.number().array().readonly(),
       stationId: z.number(),
       delayInMinutes: z.number(),
-      sections: LineSection.bson.array(),
     })
     .transform(
       (x) =>
-        new DelaysDisruptionData(x.stationId, x.delayInMinutes, x.sections),
+        new DelaysDisruptionData(
+          x.affectedLines,
+          x.stationId,
+          x.delayInMinutes,
+        ),
     );
 
   inspect(): string {
@@ -48,14 +47,14 @@ export class DelaysDisruptionData extends DisruptionDataBase {
   toBson(): z.input<typeof DelaysDisruptionData.bson> {
     return {
       type: "delays",
+      affectedLines: this.affectedLines,
       stationId: this.stationId,
       delayInMinutes: this.delayInMinutes,
-      sections: this.sections.map((x) => x.toBson()),
     };
   }
 
   getImpactedLines(_app: App): readonly number[] {
-    return this.sections.map((x) => x.line);
+    return this.affectedLines;
   }
 
   getWriteupAuthor(): DisruptionWriteupAuthor {
@@ -69,14 +68,13 @@ export class DelaysDisruptionData extends DisruptionDataBase {
   }
 
   getMapHighlighter(): MapHighlighter {
-    return new DelayMapHighlighter(this.sections, [this.stationId]);
+    return new DelayMapHighlighter(this.stationId);
   }
 
   validate(app: App): boolean {
     return (
-      this.sections.every((section) =>
-        app.lines.get(section.line)?.isValidSection(section),
-      ) && app.stations.has(this.stationId)
+      this.affectedLines.every((line) => app.lines.has(line)) &&
+      app.stations.has(this.stationId)
     );
   }
 }

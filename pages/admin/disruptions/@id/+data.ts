@@ -144,9 +144,9 @@ function parseData(
   switch (bson.type) {
     case "station-closure":
     case "no-city-loop":
+    case "delays":
       return bson;
     case "bus-replacements":
-    case "delays":
     case "no-trains-running":
       return {
         ...bson,
