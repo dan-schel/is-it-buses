@@ -3,9 +3,11 @@ import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { stations } from "@/server/entry-point/data/stations";
-import { lines } from "@/server/entry-point/data/lines";
-import { listifyAnd } from "@dan-schel/js-utils";
-import { LineGroupNode } from "@/server/data/line-group/line-group-node";
+import {
+  formatLine,
+  formatLines,
+  formatNode,
+} from "@/tests/server/entry-point/data/utils";
 
 const groups = Object.values(group);
 
@@ -52,21 +54,4 @@ function formatGroup(group: LineGroup) {
     return `[${line}] ${nodes}`;
   });
   return `${name}\n${branches.map((x) => `  ${x}`).join("\n")}`;
-}
-
-function formatNode(boundary: LineGroupNode) {
-  if (boundary === "the-city") {
-    return '"The city"';
-  } else {
-    return stations.require(boundary).name;
-  }
-}
-
-function formatLines(lineIds: readonly number[]) {
-  const suffix = lineIds.length === 1 ? " Line" : " lines";
-  return listifyAnd(lineIds.map((x) => formatLine(x))) + suffix;
-}
-
-function formatLine(lineId: number) {
-  return lines.require(lineId).name;
 }

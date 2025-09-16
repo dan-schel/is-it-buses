@@ -56,6 +56,12 @@ export class LineGroup {
 
   // getChildNodes(node: LineGroupNode): LineGroupNode[] {}
 
+  getBranchesForLine(lineId: number) {
+    const result = this.branches.find((b) => b.lineId === lineId);
+    if (!result) throw new Error("Line not part of this group.");
+    return result;
+  }
+
   getEdgesBetween(a: LineGroupNode, b: LineGroupNode): LineGroupEdge[] {
     const br = this._branches.find((x) => x.includes(a) && x.includes(b));
     if (!br) throw new Error("Invalid nodes (different branches/not found).");
@@ -66,6 +72,10 @@ export class LineGroup {
 
     const nodes = i < j ? br.slice(i, j + 1) : br.slice(j, i + 1).reverse();
     return LineGroupEdge.chain(nodes);
+  }
+
+  getEdgesOnLine(lineId: number): LineGroupEdge[] {
+    return LineGroupEdge.chain(this.getBranchesForLine(lineId).nodes);
   }
 
   getNodesOnLine(lineId: number): LineGroupNode[] {
