@@ -2,16 +2,8 @@ import { DelaysParserRule } from "@/server/auto-parser/rules/delays-parser-rule"
 import { DelaysDisruptionData } from "@/server/data/disruption/data/delays-disruption-data";
 import { EndsNever } from "@/server/data/disruption/period/ends/ends-never";
 import { StandardDisruptionPeriod } from "@/server/data/disruption/period/standard-disruption-period";
-import { LineSection } from "@/server/data/line-section";
 import { FRANKSTON, SUNBURY } from "@/shared/line-ids";
-import {
-  ARMADALE,
-  CAULFIELD,
-  FOOTSCRAY,
-  MALVERN,
-  MIDDLE_FOOTSCRAY,
-  WEST_FOOTSCRAY,
-} from "@/shared/station-ids";
+import { MALVERN, MIDDLE_FOOTSCRAY } from "@/shared/station-ids";
 import { SampleAlerts } from "@/tests/server/parser/sample-alerts";
 import { createTestApp } from "@/tests/server/utils";
 import { describe, expect, it } from "vitest";
@@ -26,9 +18,7 @@ describe("Delays Auto Parser", () => {
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
-      new DelaysDisruptionData(MALVERN, 10, [
-        new LineSection(FRANKSTON, ARMADALE, CAULFIELD),
-      ]),
+      new DelaysDisruptionData([FRANKSTON], MALVERN, 10),
     );
     expect(output?.period).toStrictEqual(
       new StandardDisruptionPeriod(null, new EndsNever()),
@@ -54,9 +44,7 @@ describe("Delays Auto Parser", () => {
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
-      new DelaysDisruptionData(MIDDLE_FOOTSCRAY, 50, [
-        new LineSection(SUNBURY, FOOTSCRAY, WEST_FOOTSCRAY),
-      ]),
+      new DelaysDisruptionData([SUNBURY], MIDDLE_FOOTSCRAY, 50),
     );
     expect(output?.period).toStrictEqual(
       new StandardDisruptionPeriod(null, new EndsNever()),

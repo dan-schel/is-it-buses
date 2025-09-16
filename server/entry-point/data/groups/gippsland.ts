@@ -27,4 +27,4 @@ export const group = new LineGroupBuilder()
   .add(station.STRATFORD)
   .add(station.BAIRNSDALE)
   .terminate(line.GIPPSLAND)
-  .build();
+  .build([]);

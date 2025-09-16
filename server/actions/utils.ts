@@ -78,9 +78,10 @@ export function createData(input: DisruptionDataInput): DisruptionData {
       return new StationClosureDisruptionData(input.stationId);
     case "delays":
       return new DelaysDisruptionData(
+        // TODO: [DS] Allow admin to specify affected lines.
+        [],
         input.stationId,
         input.delayInMinutes,
-        input.sections.map(createSection),
       );
     case "no-city-loop":
       return new NoCityLoopDisruptionData(input.lineIds);

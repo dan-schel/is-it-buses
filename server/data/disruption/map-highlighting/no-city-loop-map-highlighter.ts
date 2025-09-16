@@ -57,7 +57,7 @@ export class NoCityLoopMapHighlighter extends MapHighlighter {
       .filter(nonNull);
     const segments = lines
       .flatMap(({ line, section }) =>
-        line.route
+        line
           .getMapSegmentsInSection(section)
           .filter(({ mapNodeA }) =>
             DirectToFlindersStreet.every((node) => mapNodeA !== node),

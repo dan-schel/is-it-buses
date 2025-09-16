@@ -14,7 +14,7 @@ export class SectionMapHighlighter extends MapHighlighter {
   getHighlighting(app: App): MapHighlighting {
     const segments = this._sections
       .flatMap((section) =>
-        app.lines.require(section.line).route.getMapSegmentsInSection(section),
+        app.lines.require(section.line).getMapSegmentsInSection(section),
       )
       .map((x) => new HighlightedSegment(x, "standard"));
 

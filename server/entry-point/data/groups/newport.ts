@@ -1,6 +1,7 @@
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
+import { altonaLoopOverride } from "@/server/entry-point/data/station-mapping-overrides";
 
 export const group = new LineGroupBuilder()
   .add(station.FLINDERS_STREET)
@@ -28,4 +29,4 @@ export const group = new LineGroupBuilder()
   .add(station.WERRIBEE)
   .terminate(line.WERRIBEE)
 
-  .build();
+  .build([altonaLoopOverride]);

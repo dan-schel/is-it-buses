@@ -36,4 +36,4 @@ export const group = new LineGroupBuilder()
   .add(station.SHEPPARTON)
   .terminate(line.SEYMOUR)
 
-  .build();
+  .build([]);

@@ -18,4 +18,4 @@ export const group = new LineGroupBuilder()
   .add(station.HAMPTON)
   .add(station.SANDRINGHAM)
   .terminate(line.SANDRINGHAM)
-  .build();
+  .build([]);

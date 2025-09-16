@@ -30,4 +30,4 @@ export const group = new LineGroupBuilder()
   .add(station.ARARAT)
   .terminate(line.BALLARAT)
 
-  .build();
+  .build([]);

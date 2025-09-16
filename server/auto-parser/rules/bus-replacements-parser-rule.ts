@@ -42,8 +42,8 @@ export class BusReplacementsParserRule extends AutoParserRuleBase {
       .filter(nonNull);
 
     const lineSections = affectedLines.flatMap((line) => {
-      let stations = line.route
-        .getAllServedStations()
+      let stations = line
+        .getStations()
         .filter((station) =>
           data.description.includes(this._app.stations.require(station).name),
         );
@@ -65,7 +65,7 @@ export class BusReplacementsParserRule extends AutoParserRuleBase {
         return [];
       }
 
-      const nodes = line.route.getAllLineShapeNodes();
+      const nodes = line.getNodes();
       const a =
         doesLineRunThroughCityLoop(nodes) && isPartOfTheCity(stations[0])
           ? "the-city"
@@ -76,7 +76,7 @@ export class BusReplacementsParserRule extends AutoParserRuleBase {
           : stations[1];
 
       const section = new LineSection(line.id, a, b);
-      return line.route.isValidSection(section) ? section : [];
+      return line.isValidSection(section) ? section : [];
     });
 
     if (lineSections.length === 0) {

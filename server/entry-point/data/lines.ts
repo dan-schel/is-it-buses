@@ -1,48 +1,184 @@
+import * as id from "@/shared/line-ids";
+import * as group from "@/server/entry-point/data/groups";
+import * as map from "@/server/entry-point/data/map";
+import { Line } from "@/server/data/line/line";
 import { LineCollection } from "@/server/data/line/line-collection";
-import { line as alamein } from "@/server/entry-point/data/lines/alamein";
-import { line as ballarat } from "@/server/entry-point/data/lines/ballarat";
-import { line as belgrave } from "@/server/entry-point/data/lines/belgrave";
-import { line as bendigo } from "@/server/entry-point/data/lines/bendigo";
-import { line as craigieburn } from "@/server/entry-point/data/lines/craigieburn";
-import { line as cranbourne } from "@/server/entry-point/data/lines/cranbourne";
-import { line as flemingtonRacecourse } from "@/server/entry-point/data/lines/flemington-racecourse";
-import { line as frankston } from "@/server/entry-point/data/lines/frankston";
-import { line as geelong } from "@/server/entry-point/data/lines/geelong";
-import { line as gippsland } from "@/server/entry-point/data/lines/gippsland";
-import { line as glenWaverley } from "@/server/entry-point/data/lines/glen-waverley";
-import { line as hurstbridge } from "@/server/entry-point/data/lines/hurstbridge";
-import { line as lilydale } from "@/server/entry-point/data/lines/lilydale";
-import { line as mernda } from "@/server/entry-point/data/lines/mernda";
-import { line as pakenham } from "@/server/entry-point/data/lines/pakenham";
-import { line as sandringham } from "@/server/entry-point/data/lines/sandringham";
-import { line as seymour } from "@/server/entry-point/data/lines/seymour";
-import { line as stonyPoint } from "@/server/entry-point/data/lines/stony-point";
-import { line as sunbury } from "@/server/entry-point/data/lines/sunbury";
-import { line as upfield } from "@/server/entry-point/data/lines/upfield";
-import { line as werribee } from "@/server/entry-point/data/lines/werribee";
-import { line as williamstown } from "@/server/entry-point/data/lines/williamstown";
 
 export const lines = new LineCollection([
-  alamein,
-  ballarat,
-  belgrave,
-  bendigo,
-  craigieburn,
-  cranbourne,
-  flemingtonRacecourse,
-  frankston,
-  geelong,
-  gippsland,
-  glenWaverley,
-  hurstbridge,
-  lilydale,
-  mernda,
-  pakenham,
-  sandringham,
-  seymour,
-  stonyPoint,
-  sunbury,
-  upfield,
-  werribee,
-  williamstown,
+  new Line({
+    id: id.ALAMEIN,
+    name: "Alamein",
+    ptvIds: [1],
+    lineType: "suburban",
+    group: group.BURNLEY,
+    mappingData: map.BURNLEY,
+  }),
+  new Line({
+    id: id.BALLARAT,
+    name: "Ballarat",
+    ptvIds: [1728, 1837, 4871],
+    lineType: "regional",
+    group: group.BALLARAT,
+    mappingData: map.BALLARAT,
+  }),
+  new Line({
+    id: id.BELGRAVE,
+    name: "Belgrave",
+    ptvIds: [2],
+    lineType: "suburban",
+    group: group.BURNLEY,
+    mappingData: map.BURNLEY,
+  }),
+  new Line({
+    id: id.BENDIGO,
+    name: "Bendigo",
+    ptvIds: [1740, 1848, 1849],
+    lineType: "regional",
+    group: group.BENDIGO,
+    mappingData: map.BENDIGO,
+  }),
+  new Line({
+    id: id.CRAIGIEBURN,
+    name: "Craigieburn",
+    ptvIds: [3],
+    lineType: "suburban",
+    group: group.NORTHERN,
+    mappingData: map.NORTHERN,
+  }),
+  new Line({
+    id: id.CRANBOURNE,
+    name: "Cranbourne",
+    ptvIds: [4],
+    lineType: "suburban",
+    group: group.DANDENONG,
+    mappingData: map.DANDENONG,
+  }),
+  new Line({
+    id: id.FLEMINGTON_RACECOURSE,
+    name: "Flemington Racecourse",
+    ptvIds: [1482],
+    lineType: "suburban",
+    group: group.FLEMINGTON_RACECOURSE,
+    mappingData: null,
+  }),
+  new Line({
+    id: id.FRANKSTON,
+    name: "Frankston",
+    ptvIds: [6],
+    lineType: "suburban",
+    group: group.FRANKSTON,
+    mappingData: map.FRANKSTON,
+  }),
+  new Line({
+    id: id.GEELONG,
+    name: "Geelong",
+    ptvIds: [1745, 1853],
+    lineType: "regional",
+    group: group.GEELONG,
+    mappingData: map.GEELONG,
+  }),
+  new Line({
+    id: id.GIPPSLAND,
+    name: "Gippsland",
+    ptvIds: [1823, 1824],
+    lineType: "regional",
+    group: group.GIPPSLAND,
+    mappingData: map.GIPPSLAND,
+  }),
+  new Line({
+    id: id.GLEN_WAVERLEY,
+    name: "Glen Waverley",
+    ptvIds: [7],
+    lineType: "suburban",
+    group: group.BURNLEY,
+    mappingData: map.BURNLEY,
+  }),
+  new Line({
+    id: id.HURSTBRIDGE,
+    name: "Hurstbridge",
+    ptvIds: [8],
+    lineType: "suburban",
+    group: group.CLIFTON_HILL,
+    mappingData: map.CLIFTON_HILL,
+  }),
+  new Line({
+    id: id.LILYDALE,
+    name: "Lilydale",
+    ptvIds: [9],
+    lineType: "suburban",
+    group: group.BURNLEY,
+    mappingData: map.BURNLEY,
+  }),
+  new Line({
+    id: id.MERNDA,
+    name: "Mernda",
+    ptvIds: [5],
+    lineType: "suburban",
+    group: group.CLIFTON_HILL,
+    mappingData: map.CLIFTON_HILL,
+  }),
+  new Line({
+    id: id.PAKENHAM,
+    name: "Pakenham",
+    ptvIds: [11],
+    lineType: "suburban",
+    group: group.DANDENONG,
+    mappingData: map.DANDENONG,
+  }),
+  new Line({
+    id: id.SANDRINGHAM,
+    name: "Sandringham",
+    ptvIds: [12],
+    lineType: "suburban",
+    group: group.SANDRINGHAM,
+    mappingData: map.SANDRINGHAM,
+  }),
+  new Line({
+    id: id.SEYMOUR,
+    name: "Seymour",
+    ptvIds: [1706, 1710, 1908],
+    lineType: "regional",
+    group: group.SEYMOUR,
+    mappingData: map.SEYMOUR,
+  }),
+  new Line({
+    id: id.STONY_POINT,
+    name: "Stony Point",
+    ptvIds: [13],
+    lineType: "suburban",
+    group: group.STONY_POINT,
+    mappingData: map.STONY_POINT,
+  }),
+  new Line({
+    id: id.SUNBURY,
+    name: "Sunbury",
+    ptvIds: [14],
+    lineType: "suburban",
+    group: group.NORTHERN,
+    mappingData: map.NORTHERN,
+  }),
+  new Line({
+    id: id.UPFIELD,
+    name: "Upfield",
+    ptvIds: [15],
+    lineType: "suburban",
+    group: group.NORTHERN,
+    mappingData: map.NORTHERN,
+  }),
+  new Line({
+    id: id.WERRIBEE,
+    name: "Werribee",
+    ptvIds: [16],
+    lineType: "suburban",
+    group: group.NEWPORT,
+    mappingData: map.NEWPORT,
+  }),
+  new Line({
+    id: id.WILLIAMSTOWN,
+    name: "Williamstown",
+    ptvIds: [17],
+    lineType: "suburban",
+    group: group.NEWPORT,
+    mappingData: map.NEWPORT,
+  }),
 ]);

@@ -148,7 +148,7 @@ function prepContext(app: App): ProcessingContextData {
     lines: app.lines.map((line) => ({
       id: line.id,
       name: line.name,
-      lineShapeNodes: line.route.getAllLineShapeNodes().map((node) => ({
+      lineShapeNodes: line.getNodes().map((node) => ({
         // The frontend shouldn't have to care about "the-city" | number, it
         // just deals with strings.
         id: typeof node === "string" ? node : node.toFixed(),

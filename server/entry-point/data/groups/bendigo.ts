@@ -37,4 +37,4 @@ export const group = new LineGroupBuilder()
   .add(station.SWAN_HILL)
   .terminate(line.BENDIGO)
 
-  .build();
+  .build([]);

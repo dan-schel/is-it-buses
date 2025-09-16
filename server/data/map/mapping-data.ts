@@ -12,4 +12,10 @@ export class MappingData {
       segments: readonly MapSegment[];
     }[],
   ) {}
+
+  getMapSegmentsForEdge(edge: LineGroupEdge): readonly MapSegment[] {
+    const entry = this.data.find((x) => x.edge.sameEdge(edge));
+    if (entry == null) throw new Error(`No such edge.`);
+    return entry.segments;
+  }
 }
