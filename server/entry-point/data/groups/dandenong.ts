@@ -1,6 +1,7 @@
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
+import { metroTunnelOrCityLoopOverride } from "@/server/entry-point/data/station-mapping-overrides";
 
 export const group = new LineGroupBuilder()
   .add("the-city")
@@ -38,4 +39,4 @@ export const group = new LineGroupBuilder()
   .add(station.EAST_PAKENHAM)
   .terminate(line.PAKENHAM)
 
-  .build();
+  .build([metroTunnelOrCityLoopOverride]);

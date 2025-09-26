@@ -147,11 +147,11 @@ function getLines(
 
   return {
     suburban: lines
-      .filter((l) => l.lineGroup === "suburban")
+      .filter((l) => l.lineType === "suburban")
       .map(populate)
       .sort(byNameDesc),
     regional: lines
-      .filter((l) => l.lineGroup === "regional")
+      .filter((l) => l.lineType === "regional")
       .map(populate)
       .sort(byNameDesc),
   };

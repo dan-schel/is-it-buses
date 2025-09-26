@@ -14,4 +14,4 @@ export const group = new LineGroupBuilder()
   .add(station.CRIB_POINT)
   .add(station.STONY_POINT)
   .terminate(line.STONY_POINT)
-  .build();
+  .build([]);

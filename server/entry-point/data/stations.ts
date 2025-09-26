@@ -5,7 +5,7 @@ import * as corridor from "@/server/entry-point/data/corridors";
 import * as node from "@/shared/map-node-ids";
 import * as station from "@/shared/station-ids";
 
-const data = [
+export const stations = new StationCollection([
   new Station({
     id: station.AIRCRAFT,
     name: "Aircraft",
@@ -1964,6 +1964,4 @@ const data = [
       node.GIPPSLAND.EAST_PAKENHAM,
     ),
   }),
-];
-
-export const stations = new StationCollection(data);
+]);

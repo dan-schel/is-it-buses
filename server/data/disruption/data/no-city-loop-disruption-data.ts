@@ -54,7 +54,7 @@ export class NoCityLoopDisruptionData extends DisruptionDataBase {
 
   validate(app: App): boolean {
     return this.lineIds.every((line) =>
-      app.lines.get(line)?.route.getAllLineShapeNodes().includes("the-city"),
+      app.lines.get(line)?.getNodes().includes("the-city"),
     );
   }
 }

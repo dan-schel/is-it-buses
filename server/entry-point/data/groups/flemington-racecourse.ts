@@ -9,4 +9,4 @@ export const group = new LineGroupBuilder()
   .add(station.SHOWGROUNDS)
   .add(station.FLEMINGTON_RACECOURSE)
   .terminate(line.FLEMINGTON_RACECOURSE)
-  .build();
+  .build([]);

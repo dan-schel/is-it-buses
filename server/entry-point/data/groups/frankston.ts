@@ -32,4 +32,4 @@ export const group = new LineGroupBuilder()
   .add(station.KANANOOK)
   .add(station.FRANKSTON)
   .terminate(line.FRANKSTON)
-  .build();
+  .build([]);

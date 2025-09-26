@@ -1,6 +1,11 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 
+export type StationMappingOverride = {
+  node: LineGroupNode;
+  stations: number[];
+};
+
 export class LineGroupBuilder {
   private _branches: LineGroupNode[][] = [[]];
   private _lineIds: number[] = [];
@@ -34,11 +39,15 @@ export class LineGroupBuilder {
     return this;
   }
 
-  build() {
+  build(stationMappingOverrides: StationMappingOverride[]) {
     if (this._workingIndex > 0) {
       throw new Error("Cannot build - some branches have not terminated yet.");
     }
 
-    return new LineGroup(this._branches, this._lineIds);
+    return new LineGroup(
+      this._branches,
+      this._lineIds,
+      new Map(stationMappingOverrides.map((x) => [x.node, x.stations])),
+    );
   }
 }

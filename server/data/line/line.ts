@@ -1,35 +1,59 @@
-import { LineRoute } from "@/server/data/line/line-routes/line-route";
+import { LineGroup } from "@/server/data/line-group/line-group";
+import { LineSection } from "@/server/data/line-section";
+import { MapSegment } from "@/server/data/map-segment";
+import { MappingData } from "@/server/data/map/mapping-data";
 
-// TODO: Rename this. LineCategory? LineMode?
-type LineGroup = "suburban" | "regional";
+type LineType = "suburban" | "regional";
 
-// TODO: Redefine a line as one (or more - in the case of branching regional
-// lines) branches of a LineGroup, i.e. we shouldn't have to list out all the
-// stations twice.
 export class Line {
   readonly id: number;
   readonly name: string;
   readonly ptvIds: readonly number[];
-  readonly route: LineRoute;
-  readonly lineGroup: LineGroup;
+  readonly lineType: LineType;
+  private readonly _group: LineGroup;
+  private readonly _mappingData: MappingData | null;
 
   constructor({
     id,
     name,
     ptvIds,
-    route,
-    lineGroup,
+    lineType,
+    group,
+    mappingData,
   }: {
     id: number;
     name: string;
     ptvIds: readonly number[];
-    route: LineRoute;
-    lineGroup: LineGroup;
+    lineType: LineType;
+    group: LineGroup;
+    mappingData: MappingData | null;
   }) {
     this.id = id;
     this.name = name;
     this.ptvIds = ptvIds;
-    this.route = route;
-    this.lineGroup = lineGroup;
+    this.lineType = lineType;
+    this._group = group;
+    this._mappingData = mappingData;
+  }
+
+  getNodes() {
+    return this._group.getNodesOnLine(this.id);
+  }
+
+  isValidSection(section: LineSection) {
+    const nodes = this.getNodes();
+    return nodes.includes(section.a) && nodes.includes(section.b);
+  }
+
+  getStations() {
+    return this._group.getStationsOnLine(this.id);
+  }
+
+  getMapSegmentsInSection(section: LineSection): readonly MapSegment[] {
+    const mappingData = this._mappingData;
+    if (mappingData == null) return [];
+
+    const edges = this._group.getEdgesBetween(section.a, section.b);
+    return edges.flatMap((edge) => mappingData.getMapSegmentsForEdge(edge));
   }
 }

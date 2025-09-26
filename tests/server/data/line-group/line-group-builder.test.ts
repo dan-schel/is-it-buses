@@ -16,7 +16,7 @@ describe("LineGroupBuilder", () => {
       .terminate(98)
       .add(7)
       .terminate(99)
-      .build();
+      .build([]);
     expect(group.branches).toEqual([
       { lineId: 99, nodes: [1, 2, 4, 7] },
       { lineId: 98, nodes: [1, 2, 4, 5, 6] },
@@ -44,7 +44,7 @@ describe("LineGroupBuilder", () => {
 
   it("throws if you attempt to build() before every branch is terminated", () => {
     expect(() => {
-      new LineGroupBuilder().add(1).build();
+      new LineGroupBuilder().add(1).build([]);
     }).toThrow();
   });
 });
