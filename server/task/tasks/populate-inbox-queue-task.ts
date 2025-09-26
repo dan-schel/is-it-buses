@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { AutoParsingPipeline } from "@/server/auto-parser/auto-parsing-pipeline";
+import { AutoParsingPipeline } from "@/server/data/alert/parsing/lib/auto-parsing-pipeline";
 import { Alert } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
 import { Disruption } from "@/server/data/disruption/disruption";

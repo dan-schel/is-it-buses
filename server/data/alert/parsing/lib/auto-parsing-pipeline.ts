@@ -1,6 +1,6 @@
 import { App } from "@/server/app";
-import { AutoParsingOutput } from "@/server/auto-parser/auto-parsing-output";
-import { AutoParserRule } from "@/server/auto-parser/rules/auto-parser-rule-base";
+import { AutoParsingOutput } from "@/server/data/alert/parsing/lib/auto-parsing-output";
+import { AutoParserRule } from "@/server/data/alert/parsing/rules/auto-parser-rule-base";
 // import { BusReplacementsParserRule } from "@/server/auto-parser/rules/bus-replacements-parser-rule";
 import { AlertData } from "@/server/data/alert/alert-data";
 

@@ -1,10 +1,10 @@
 import { App } from "@/server/app";
-import { AutoParsingOutput } from "@/server/auto-parser/auto-parsing-output";
-import { AutoParserRuleBase } from "@/server/auto-parser/rules/auto-parser-rule-base";
+import { AutoParsingOutput } from "@/server/data/alert/parsing/lib/auto-parsing-output";
+import { AutoParserRuleBase } from "@/server/data/alert/parsing/rules/auto-parser-rule-base";
 import {
   isPartOfTheCity,
   doesLineRunThroughCityLoop,
-} from "@/server/auto-parser/rules/utils";
+} from "@/server/data/alert/parsing/lib/utils";
 import { AlertData } from "@/server/data/alert/alert-data";
 import { BusReplacementsDisruptionData } from "@/server/data/disruption/data/bus-replacements-disruption-data";
 import { EndsAfterLastService } from "@/server/data/disruption/period/ends/ends-after-last-service";

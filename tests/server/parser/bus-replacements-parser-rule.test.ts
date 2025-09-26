@@ -1,4 +1,4 @@
-import { BusReplacementsParserRule } from "@/server/auto-parser/rules/bus-replacements-parser-rule";
+import { BusReplacementsParserRule } from "@/server/data/alert/parsing/rules/bus-replacements-parser-rule";
 import { BusReplacementsDisruptionData } from "@/server/data/disruption/data/bus-replacements-disruption-data";
 import { EndsAfterLastService } from "@/server/data/disruption/period/ends/ends-after-last-service";
 import { EndsExactly } from "@/server/data/disruption/period/ends/ends-exactly";
