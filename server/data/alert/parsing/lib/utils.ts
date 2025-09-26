@@ -1,3 +1,4 @@
+import { AlertData } from "@/server/data/alert/alert-data";
 import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 import {
   FLAGSTAFF,
@@ -21,4 +22,8 @@ export function isPartOfTheCity(stationId: number) {
 
 export function doesLineRunThroughCityLoop(nodes: readonly LineGroupNode[]) {
   return nodes.includes("the-city");
+}
+
+export function titleMatchesRegex(data: AlertData, regex: RegExp[]) {
+  return regex.some((r) => r.test(data.title));
 }

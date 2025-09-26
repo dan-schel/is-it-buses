@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { AutoParsingPipeline } from "@/server/data/alert/parsing/lib/auto-parsing-pipeline";
+import { AlertParsingPipeline } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { Alert } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
 import { Disruption } from "@/server/data/disruption/disruption";
@@ -7,8 +7,8 @@ import { ALERTS, DISRUPTIONS } from "@/server/database/models";
 import { IntervalScheduler } from "@/server/task/lib/interval-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
-import { PtvAlert } from "@/server/alert-source/ptv-alert";
 import { z } from "zod";
+import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 
 /**
  * Fetches fresh alerts from the alert source, and writes all unseen alerts to
@@ -45,7 +45,7 @@ export class PopulateInboxQueueTask extends Task {
     ptvAlerts: PtvAlert[],
     alerts: Alert[],
   ) {
-    const parser = new AutoParsingPipeline(app);
+    const parser = new AlertParsingPipeline(app);
 
     for (const ptvAlert of ptvAlerts) {
       const alertId = ptvAlert.id.toString();
@@ -63,7 +63,7 @@ export class PopulateInboxQueueTask extends Task {
       if (parserOutput != null) {
         await app.database
           .of(DISRUPTIONS)
-          .create(parserOutput.toNewDisruption([alertId]));
+          .create(parserOutput.toNewDisruption(alertId));
       }
     }
   }
@@ -73,7 +73,7 @@ export class PopulateInboxQueueTask extends Task {
     ptvAlerts: PtvAlert[],
     alerts: Alert[],
   ) {
-    const parser = new AutoParsingPipeline(app);
+    const parser = new AlertParsingPipeline(app);
 
     for (const ptvAlert of ptvAlerts) {
       const id = ptvAlert.id.toString();

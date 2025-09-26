@@ -1,4 +1,4 @@
-import { BusReplacementsParserRule } from "@/server/data/alert/parsing/rules/bus-replacements-parser-rule";
+import { BusReplacementsParsingRule } from "@/server/data/alert/parsing/rules/bus-replacements-parsing-rule";
 import { BusReplacementsDisruptionData } from "@/server/data/disruption/data/bus-replacements-disruption-data";
 import { EndsAfterLastService } from "@/server/data/disruption/period/ends/ends-after-last-service";
 import { EndsExactly } from "@/server/data/disruption/period/ends/ends-exactly";
@@ -22,8 +22,8 @@ import { utcToLocalTime } from "@/server/data/disruption/period/utils/utils";
 describe("Bus Replacement Auto Parser", () => {
   it("parses alert to a disruption with a standard period that ends after the last service", () => {
     const { app } = createTestApp();
-    const parser = new BusReplacementsParserRule(app);
-    const output = parser.parseAlert(standardToAfterLastService);
+    const parser = new BusReplacementsParsingRule(app);
+    const output = parser.parse(standardToAfterLastService);
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
@@ -43,8 +43,8 @@ describe("Bus Replacement Auto Parser", () => {
 
   it("parses alert to a disruption with a standard period that ends at an exact time", () => {
     const { app } = createTestApp();
-    const parser = new BusReplacementsParserRule(app);
-    const output = parser.parseAlert(standardToExactly);
+    const parser = new BusReplacementsParsingRule(app);
+    const output = parser.parse(standardToExactly);
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
@@ -62,9 +62,9 @@ describe("Bus Replacement Auto Parser", () => {
 
   it("parses alert to a disruption with a evening only period that ends after the last service", () => {
     const { app } = createTestApp();
-    const parser = new BusReplacementsParserRule(app);
+    const parser = new BusReplacementsParsingRule(app);
 
-    const output = parser.parseAlert(eveningsOnlyToAfterLastService);
+    const output = parser.parse(eveningsOnlyToAfterLastService);
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
@@ -87,8 +87,8 @@ describe("Bus Replacement Auto Parser", () => {
 
   it("selects the correct stations", () => {
     const { app } = createTestApp();
-    const parser = new BusReplacementsParserRule(app);
-    const output = parser.parseAlert(nameCollision);
+    const parser = new BusReplacementsParsingRule(app);
+    const output = parser.parse(nameCollision);
 
     expect(output).not.toBeNull();
     expect(output?.data).toStrictEqual(
@@ -114,8 +114,8 @@ describe("Bus Replacement Auto Parser", () => {
 
   it("ignores alerts that don't qualify as bus replacements", () => {
     const { app } = createTestApp();
-    const parser = new BusReplacementsParserRule(app);
-    const outputs = irrelevant.map((x) => parser.parseAlert(x));
+    const parser = new BusReplacementsParsingRule(app);
+    const outputs = irrelevant.map((x) => parser.parse(x));
 
     expect(outputs).toHaveLength(irrelevant.length);
     expect(outputs).toStrictEqual(
