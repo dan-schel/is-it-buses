@@ -1,4 +1,4 @@
-import { Range } from "@/server/data/utils/range";
+import { Range } from "@/server/data/range";
 import { groupBy } from "@dan-schel/js-utils";
 import { z } from "zod";
 

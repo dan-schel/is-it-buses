@@ -1,5 +1,5 @@
-import { MapSegment } from "@/server/data/map-segment";
-import { Range } from "@/server/data/utils/range";
+import { MapSegment } from "@/server/data/map/map-segment";
+import { Range } from "@/server/data/range";
 import { describe, expect, it } from "vitest";
 
 describe("MapSegment", () => {

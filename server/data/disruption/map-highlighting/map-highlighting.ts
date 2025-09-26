@@ -1,5 +1,5 @@
-import { MapPoint } from "@/server/data/map-point";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapPoint } from "@/server/data/map/map-point";
+import { MapSegment } from "@/server/data/map/map-segment";
 import {
   SerializedHighlightedMapPoint,
   SerializedHighlightedMapSegment,
