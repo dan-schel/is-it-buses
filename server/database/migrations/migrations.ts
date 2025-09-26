@@ -1,4 +1,5 @@
 import { Migration_2025_09_26_WipeDisruptions } from "@/server/database/migrations/migration-2025-09-26-wipe-disruptions";
+import { Migration_2025_09_26_WipeDisruptionsAgain } from "@/server/database/migrations/migration-2025-09-26-wipe-disruptions-again";
 import { Migration } from "@dan-schel/db";
 
 /**
@@ -9,4 +10,5 @@ export const migrations: Migration[] = [
   // Always add new migrations to the end of the list, so that they don't run
   // out of order.
   new Migration_2025_09_26_WipeDisruptions(),
+  new Migration_2025_09_26_WipeDisruptionsAgain(),
 ];
