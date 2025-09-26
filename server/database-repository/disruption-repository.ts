@@ -3,7 +3,7 @@ import { Disruption } from "@/server/data/disruption/disruption";
 import { TimeRange } from "@/server/data/disruption/period/utils/time-range";
 import { LineStatusIndicatorPriority } from "@/server/data/disruption/writeup/disruption-writeup";
 import { DisruptionModel } from "@/server/database/models/disruption";
-import { DISRUPTIONS } from "@/server/database/models/models";
+import { DISRUPTIONS } from "@/server/database/models";
 import { DisruptionType } from "@/shared/types/disruption";
 import { Repository } from "@dan-schel/db";
 
@@ -101,7 +101,7 @@ export class DisruptionRepository {
     const app = this.app;
     return function (disruption: Disruption) {
       if (valid === "either") return true;
-      return valid === disruption.data.validate(app);
+      return valid === disruption.data.isValid(app);
     };
   }
 }

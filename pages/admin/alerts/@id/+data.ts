@@ -7,7 +7,6 @@ import sanitizeHtml from "sanitize-html";
 import { formatDate } from "@/server/data/disruption/period/utils/utils";
 import { ProcessingContextData } from "@/shared/types/processing-context-data";
 import { formatLineShapeNode } from "@/server/data/disruption/writeup/utils";
-import { AlertRepository } from "@/server/database-repository/alert-repository";
 import { AlertData } from "@/server/data/alert/alert-data";
 
 type UrlPreview = { html: string } | { error: string };
@@ -76,7 +75,7 @@ export async function data(
 
   const id = routeParams.id;
   const back = determineBackBehaviour(urlParsed);
-  const alert = await AlertRepository.getRepository(app).getAlert(id);
+  const alert = await app.alerts.get(id);
 
   if (alert == null) {
     return { alert: null, back };

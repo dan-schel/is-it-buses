@@ -13,8 +13,12 @@ import { TaskScheduler } from "@/server/task/lib/task-scheduler";
 import { SeedSuperAdminTask } from "@/server/task/tasks/seed-super-admin-task";
 import { DiscordBot } from "@/server/discord/bot";
 import { ClearExpiredSessionTask } from "@/server/task/tasks/clear-expired-sessions-task";
+import { AlertRepository } from "@/server/data/alert/alert-repository";
+import { DisruptionRepository } from "@/server/data/disruption/disruption-repository";
 
 export class App {
+  readonly alerts: AlertRepository;
+  readonly disruptions: DisruptionRepository;
   private readonly _taskSchedulers: TaskScheduler[];
 
   constructor(
@@ -29,6 +33,9 @@ export class App {
     private readonly username: string | null,
     private readonly password: string | null,
   ) {
+    this.alerts = new AlertRepository(this);
+    this.disruptions = new DisruptionRepository(this);
+
     const tasks = [
       new SendStartupMessageTask(),
       new PopulateInboxQueueTask(),

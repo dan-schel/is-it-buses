@@ -10,11 +10,11 @@ const endOfTime = new Date("2100-01-01T00:00:00Z");
 export class DisruptionModel extends DatabaseModel<
   Disruption,
   string,
-  z.input<typeof DisruptionModel.schema>
+  z.input<typeof DisruptionModel._schema>
 > {
   static instance = new DisruptionModel();
 
-  private static schema = z.object({
+  private static _schema = z.object({
     data: disruptionDataBson,
     sourceAlertIds: z.string().array(),
     period: disruptionPeriodBson,
@@ -33,7 +33,7 @@ export class DisruptionModel extends DatabaseModel<
     return item.id;
   }
 
-  serialize(item: Disruption): z.input<typeof DisruptionModel.schema> {
+  serialize(item: Disruption): z.input<typeof DisruptionModel._schema> {
     const { start, end } = this._getFullyEncompassingTimeRange(item);
 
     return {
@@ -48,7 +48,7 @@ export class DisruptionModel extends DatabaseModel<
   }
 
   deserialize(id: string, item: unknown): Disruption {
-    const parsed = DisruptionModel.schema.parse(item);
+    const parsed = DisruptionModel._schema.parse(item);
     return new Disruption(
       id,
       parsed.data,

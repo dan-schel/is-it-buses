@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { DEPLOYMENT_LOGS } from "@/server/database/models/models";
+import { DEPLOYMENT_LOGS } from "@/server/database/models";
 import { OnStartupScheduler } from "@/server/task/lib/on-startup-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";

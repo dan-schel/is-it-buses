@@ -7,6 +7,7 @@ import { BusReplacementsDisruptionWriteupAuthor } from "@/server/data/disruption
 import { App } from "@/server/app";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
 import { SectionMapHighlighter } from "@/server/data/disruption/map-highlighting/section-map-highlighter";
+import { FilterableDisruptionCategory } from "@/shared/settings";
 
 /** All or part of one or more train lines are replaced by buses. */
 export class BusReplacementsDisruptionData extends DisruptionDataBase {
@@ -48,9 +49,15 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
     return new SectionMapHighlighter(this.sections);
   }
 
-  validate(app: App): boolean {
-    return this.sections.every((section) =>
-      app.lines.get(section.line)?.isValidSection(section),
-    );
+  isValid(app: App): boolean {
+    return this.sections.every((section) => {
+      const line = app.lines.get(section.line);
+      if (line == null) return false;
+      return line.isValidSection(section);
+    });
+  }
+
+  applicableCategory(_app: App): FilterableDisruptionCategory | null {
+    return null;
   }
 }

@@ -5,7 +5,7 @@ import { App } from "@/server/app";
 import { randomFillSync } from "crypto";
 import { uuid } from "@dan-schel/js-utils";
 import { Admin } from "@/server/database/models/admin";
-import { ADMINS } from "@/server/database/models/models";
+import { ADMINS } from "@/server/database/models";
 import { validateMiddleware } from "@/server/routes/middleware/validate";
 
 export function createUsersRouter(app: App) {

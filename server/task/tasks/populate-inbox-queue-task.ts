@@ -3,7 +3,7 @@ import { AutoParsingPipeline } from "@/server/auto-parser/auto-parsing-pipeline"
 import { Alert } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
 import { Disruption } from "@/server/data/disruption/disruption";
-import { ALERTS, DISRUPTIONS } from "@/server/database/models/models";
+import { ALERTS, DISRUPTIONS } from "@/server/database/models";
 import { IntervalScheduler } from "@/server/task/lib/interval-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";

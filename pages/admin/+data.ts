@@ -1,5 +1,5 @@
 import { PageContext } from "vike/types";
-import { HISTORICAL_ALERTS } from "@/server/database/models/models";
+import { HISTORICAL_ALERTS } from "@/server/database/models";
 import { JsonSerializable } from "@/shared/json-serializable";
 
 const historicalRecordsStartDate = Date.parse("2025-03-02");

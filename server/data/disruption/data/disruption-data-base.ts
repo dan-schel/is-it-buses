@@ -1,6 +1,7 @@
 import { App } from "@/server/app";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
+import { FilterableDisruptionCategory } from "@/shared/settings";
 
 /** Stores the data inherent to this particular type of disruption. */
 export abstract class DisruptionDataBase {
@@ -8,5 +9,6 @@ export abstract class DisruptionDataBase {
   abstract getImpactedLines(app: App): readonly number[];
   abstract getWriteupAuthor(): DisruptionWriteupAuthor;
   abstract getMapHighlighter(): MapHighlighter;
-  abstract validate(app: App): boolean;
+  abstract isValid(app: App): boolean;
+  abstract applicableCategory(app: App): FilterableDisruptionCategory | null;
 }

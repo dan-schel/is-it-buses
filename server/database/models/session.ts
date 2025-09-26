@@ -13,10 +13,11 @@ export class Session {
 export class SessionModel extends DatabaseModel<
   Session,
   string,
-  z.input<typeof SessionModel.schema>
+  z.input<typeof SessionModel._schema>
 > {
   static instance = new SessionModel();
-  private static schema = z.object({
+
+  private static _schema = z.object({
     expires: z.date(),
     userId: z.string(),
     userRole: z.enum(["super", "admin"]),
@@ -43,7 +44,7 @@ export class SessionModel extends DatabaseModel<
   }
 
   deserialize(id: string, item: unknown): Session {
-    const parsed = SessionModel.schema.parse(item);
+    const parsed = SessionModel._schema.parse(item);
     return new Session(id, parsed.expires, parsed.userId, parsed.userRole);
   }
 }

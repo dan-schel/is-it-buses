@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { SESSIONS } from "@/server/database/models/models";
+import { SESSIONS } from "@/server/database/models";
 import { IntervalScheduler } from "@/server/task/lib/interval-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
