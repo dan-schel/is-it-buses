@@ -1,6 +1,12 @@
+import {
+  AlertSource,
+  Details,
+} from "@/server/services/alert-source/alert-source";
+import {
+  PtvAlert,
+  ptvAlertJson,
+} from "@/server/services/alert-source/ptv-alert";
 import { z } from "zod";
-import { PtvAlert, ptvAlertJson } from "@/server/alert-source/ptv-alert";
-import { AlertSource, Details } from "@/server/alert-source/alert-source";
 
 export class VtarAlertSource extends AlertSource {
   constructor(

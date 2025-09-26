@@ -1,5 +1,8 @@
-import { PtvAlert } from "@/server/alert-source/ptv-alert";
-import { AlertSource, Details } from "@/server/alert-source/alert-source";
+import {
+  AlertSource,
+  Details,
+} from "@/server/services/alert-source/alert-source";
+import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 
 // For testing purposes.
 export class FakeAlertSource extends AlertSource {

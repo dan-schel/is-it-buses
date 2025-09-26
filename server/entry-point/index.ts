@@ -10,8 +10,8 @@ import { stations } from "@/server/entry-point/data/stations";
 import { initDatabase } from "@/server/entry-point/services/database";
 import { initAlertSource } from "@/server/entry-point/services/alert-source";
 import { initDiscordBot } from "@/server/entry-point/services/discord";
-import { RealTimeProvider } from "@/server/time-provider/real-time-provider";
 import { sessionMiddleware } from "@/server/routes/middleware/authentication";
+import { RealTimeProvider } from "@/server/services/time-provider/real-time-provider";
 
 export async function run(root: string) {
   const database = await initDatabase();

@@ -1,4 +1,4 @@
-import { TimeProvider } from "@/server/time-provider/time-provider";
+import { TimeProvider } from "@/server/services/time-provider/time-provider";
 
 /** Returns the real time. */
 export class RealTimeProvider extends TimeProvider {

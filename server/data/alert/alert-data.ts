@@ -1,4 +1,4 @@
-import { PtvAlert } from "@/server/alert-source/ptv-alert";
+import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 import { arraysMatch } from "@dan-schel/js-utils";
 import { z } from "zod";
 

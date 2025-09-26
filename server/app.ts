@@ -1,20 +1,20 @@
 import { StationCollection } from "@/server/data/station/station-collection";
 import { Database, MongoDatabase } from "@dan-schel/db";
-import { AlertSource } from "@/server/alert-source/alert-source";
-import { migrations } from "@/server/database/migrations/migrations";
+import { migrations } from "@/server/database/migrations";
 import { LineCollection } from "@/server/data/line/line-collection";
-import { TimeProvider } from "@/server/time-provider/time-provider";
 import { PopulateInboxQueueTask } from "@/server/task/tasks/populate-inbox-queue-task";
 import { LogHistoricalAlertsTask } from "@/server/task/tasks/log-historical-alerts-task";
 import { SendStartupMessageTask } from "@/server/task/tasks/send-startup-message-task";
 import { areUnique } from "@dan-schel/js-utils";
-import { VtarAlertSource } from "@/server/alert-source/vtar-alert-source";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
 import { SeedSuperAdminTask } from "@/server/task/tasks/seed-super-admin-task";
-import { DiscordBot } from "@/server/discord/bot";
 import { ClearExpiredSessionTask } from "@/server/task/tasks/clear-expired-sessions-task";
 import { AlertRepository } from "@/server/data/alert/alert-repository";
 import { DisruptionRepository } from "@/server/data/disruption/disruption-repository";
+import { AlertSource } from "@/server/services/alert-source/alert-source";
+import { VtarAlertSource } from "@/server/services/alert-source/vtar-alert-source";
+import { DiscordBot } from "@/server/services/discord/bot";
+import { TimeProvider } from "@/server/services/time-provider/time-provider";
 
 export class App {
   readonly alerts: AlertRepository;

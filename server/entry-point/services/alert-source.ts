@@ -1,7 +1,7 @@
 import { config } from "@/server/entry-point/config";
 import { env } from "@/server/entry-point/env";
-import { FakeAlertSource } from "@/server/alert-source/fake-alert-source";
-import { VtarAlertSource } from "@/server/alert-source/vtar-alert-source";
+import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-source";
+import { VtarAlertSource } from "@/server/services/alert-source/vtar-alert-source";
 
 /**
  * Ideally returns a VtarAlertSource, but falls back to a FakeAlertSource if

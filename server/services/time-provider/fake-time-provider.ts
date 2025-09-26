@@ -1,4 +1,4 @@
-import { TimeProvider } from "@/server/time-provider/time-provider";
+import { TimeProvider } from "@/server/services/time-provider/time-provider";
 
 // TODO: Unlike FakeAlertSource and InMemoryDatabase, this is NEVER used outside
 // the tests, so maybe it should go in /tests?

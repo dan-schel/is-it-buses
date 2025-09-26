@@ -2,12 +2,12 @@ import { PageContext } from "vike/types";
 import { JsonSerializable } from "@/shared/json-serializable";
 import { App } from "@/server/app";
 import { nonNull, unique } from "@dan-schel/js-utils";
-import { DetailsError } from "@/server/alert-source/alert-source";
 import sanitizeHtml from "sanitize-html";
 import { formatDate } from "@/server/data/disruption/period/utils/utils";
 import { ProcessingContextData } from "@/shared/types/processing-context-data";
 import { formatLineGroupNode } from "@/server/data/disruption/writeup/utils";
 import { AlertData } from "@/server/data/alert/alert-data";
+import { DetailsError } from "@/server/services/alert-source/alert-source";
 
 type UrlPreview = { html: string } | { error: string };
 
