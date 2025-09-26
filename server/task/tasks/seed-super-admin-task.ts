@@ -26,22 +26,18 @@ export class SeedSuperAdminTask extends Task {
   }
 
   async execute(app: App): Promise<void> {
-    try {
-      if (!this.username || !this.password) {
-        return;
-      }
-      const existing = await app.database
+    if (!this.username || !this.password) return;
+
+    const existing = await app.database
+      .of(ADMINS)
+      .first({ where: { role: "super" } });
+
+    if (!existing) {
+      const hashedPW = await hash(this.password, 10);
+
+      await app.database
         .of(ADMINS)
-        .first({ where: { role: "super" } });
-      if (!existing) {
-        const hashedPW = await hash(this.password, 10);
-        await app.database
-          .of(ADMINS)
-          .create(new Admin(uuid(), this.username, hashedPW, "super", null));
-      }
-    } catch (error) {
-      console.warn("Failed to seed super admin into the database.");
-      console.warn(error);
+        .create(new Admin(uuid(), this.username, hashedPW, "super", null));
     }
   }
 }

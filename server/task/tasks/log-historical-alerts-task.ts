@@ -21,27 +21,33 @@ export class LogHistoricalAlertsTask extends Task {
   }
 
   async execute(app: App): Promise<void> {
+    const ptvAlerts = await this._tryFetchingPtvAlerts(app);
+    if (ptvAlerts == null) return;
+
+    for (const ptvAlert of ptvAlerts) {
+      const existing = await app.database
+        .of(HISTORICAL_ALERTS)
+        .get(ptvAlert.id);
+
+      if (existing != null) return;
+
+      const record = new HistoricalAlert(
+        ptvAlert.id,
+        ptvAlert.title,
+        ptvAlert.description,
+      );
+
+      await app.database.of(HISTORICAL_ALERTS).create(record);
+    }
+  }
+
+  private async _tryFetchingPtvAlerts(app: App) {
     try {
-      const ptvAlerts = await app.alertSource.fetchAlerts();
-
-      for (const ptvAlert of ptvAlerts) {
-        const existing = await app.database
-          .of(HISTORICAL_ALERTS)
-          .get(ptvAlert.id);
-
-        if (existing != null) return;
-
-        const record = new HistoricalAlert(
-          ptvAlert.id,
-          ptvAlert.title,
-          ptvAlert.description,
-        );
-
-        await app.database.of(HISTORICAL_ALERTS).create(record);
-      }
+      return await app.alertSource.fetchAlerts();
     } catch (error) {
-      console.warn("Failed to log historical alerts.");
+      console.warn("Failed fetch new alerts from PTV.");
       console.warn(error);
+      return null;
     }
   }
 }

@@ -5,8 +5,8 @@ import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
 
 /**
- * Removes session stored in the database that have expired
- * due to user inactivity.
+ * Removes session stored in the database that have expired due to user
+ * inactivity.
  */
 export class ClearExpiredSessionTask extends Task {
   static readonly TASK_ID = "clear-expired-session";
@@ -20,17 +20,12 @@ export class ClearExpiredSessionTask extends Task {
   }
 
   async execute(app: App): Promise<void> {
-    try {
-      const sessions = await app.database
-        .of(SESSIONS)
-        .find({ where: { expires: { lt: app.time.now() } } });
+    const sessions = await app.database
+      .of(SESSIONS)
+      .find({ where: { expires: { lt: app.time.now() } } });
 
-      for (const session of sessions) {
-        await app.database.of(SESSIONS).delete(session.id);
-      }
-    } catch (error) {
-      console.warn("Failed to clear expired sessions.");
-      console.warn(error);
+    for (const session of sessions) {
+      await app.database.of(SESSIONS).delete(session.id);
     }
   }
 }
