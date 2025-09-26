@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { LineSection } from "@/server/data/line-section";
-import { RouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/route-graph-modifier";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
 import { DisruptionDataBase } from "@/server/data/disruption/data/disruption-data-base";
 import { unique } from "@dan-schel/js-utils";
 import { BusReplacementsDisruptionWriteupAuthor } from "@/server/data/disruption/writeup/bus-replacements-disruption-writeup-author";
-import { BusReplacementsRouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/bus-replacements-route-graph-modifier";
 import { App } from "@/server/app";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
 import { SectionMapHighlighter } from "@/server/data/disruption/map-highlighting/section-map-highlighter";
@@ -44,10 +42,6 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
 
   getWriteupAuthor(): DisruptionWriteupAuthor {
     return new BusReplacementsDisruptionWriteupAuthor(this);
-  }
-
-  getRouteGraphModifier(): RouteGraphModifier {
-    return new BusReplacementsRouteGraphModifier(this.sections);
   }
 
   getMapHighlighter(): MapHighlighter {

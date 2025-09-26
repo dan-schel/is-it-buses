@@ -8,17 +8,11 @@ import { Data } from "@/pages/admin/alerts/@id/+data";
 import { useData } from "vike-react/useData";
 import { AlertData } from "@/pages/admin/alerts/@id/AlertData";
 import { Spacer } from "@/components/core/Spacer";
-import { usePageContext } from "vike-react/usePageContext";
-import { navigate } from "vike/client/router";
 import { DisruptionBuilder } from "@/pages/admin/alerts/@id/DisruptionBuilder";
 
 export default function Page() {
-  const { id } = usePageContext().routeParams;
+  // const { id } = usePageContext().routeParams;
   const { alert, back } = useData<Data>();
-
-  function handleProcessed() {
-    navigate("/admin/alerts");
-  }
 
   return (
     <Column>
@@ -33,11 +27,7 @@ export default function Page() {
               <Spacer h="8" />
               <hr className="border-soft-border" />
               <Spacer h="8" />
-              <DisruptionBuilder
-                id={id}
-                context={alert.context}
-                onProcessed={handleProcessed}
-              />
+              <DisruptionBuilder />
             </Column>
           ) : (
             <Column className="gap-4">
