@@ -3,13 +3,6 @@ import { DisruptionDataBase } from "@/server/data/disruption/data/disruption-dat
 import { DisruptionWriteup } from "@/server/data/disruption/writeup/disruption-writeup";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
 import { CustomDisruptionWriteupAuthor } from "@/server/data/disruption/writeup/custom-disruption-writeup-author";
-import { RouteGraphTrainEdge } from "@/server/data/route-graph/edge/route-graph-train-edge";
-import {
-  RouteGraphEdge,
-  routeGraphEdgeBson,
-} from "@/server/data/route-graph/edge/route-graph-edge";
-import { RouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/route-graph-modifier";
-import { SimpleRouteGraphModifier } from "@/server/data/disruption/route-graph-modifier/simple-route-graph-modifier";
 import { CustomMapHighlighter } from "@/server/data/disruption/map-highlighting/custom-map-highlighter";
 import { MapHighlighting } from "@/server/data/disruption/map-highlighting/map-highlighting";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
@@ -24,8 +17,6 @@ export class CustomDisruptionData extends DisruptionDataBase {
   constructor(
     readonly impactedLines: readonly number[],
     readonly writeup: DisruptionWriteup,
-    readonly edgesToRemove: readonly RouteGraphTrainEdge[],
-    readonly edgesToAdd: readonly RouteGraphEdge[],
     readonly highlighting: MapHighlighting,
   ) {
     super();
@@ -36,19 +27,11 @@ export class CustomDisruptionData extends DisruptionDataBase {
       type: z.literal("custom"),
       impactedLines: z.number().array().readonly(),
       writeup: DisruptionWriteup.bson,
-      edgesToRemove: RouteGraphTrainEdge.bson.array(),
-      edgesToAdd: routeGraphEdgeBson.array(),
       highlighting: MapHighlighting.bson,
     })
     .transform(
       (x) =>
-        new CustomDisruptionData(
-          x.impactedLines,
-          x.writeup,
-          x.edgesToRemove,
-          x.edgesToAdd,
-          x.highlighting,
-        ),
+        new CustomDisruptionData(x.impactedLines, x.writeup, x.highlighting),
     );
 
   toBson(): z.input<typeof CustomDisruptionData.bson> {
@@ -56,8 +39,6 @@ export class CustomDisruptionData extends DisruptionDataBase {
       type: "custom",
       impactedLines: this.impactedLines,
       writeup: this.writeup.toBson(),
-      edgesToRemove: this.edgesToRemove.map((x) => x.toBson()),
-      edgesToAdd: this.edgesToAdd.map((x) => x.toBson()),
       highlighting: this.highlighting.toBson(),
     };
   }
@@ -72,10 +53,6 @@ export class CustomDisruptionData extends DisruptionDataBase {
 
   getWriteupAuthor(): DisruptionWriteupAuthor {
     return new CustomDisruptionWriteupAuthor(this);
-  }
-
-  getRouteGraphModifier(): RouteGraphModifier {
-    return new SimpleRouteGraphModifier(this.edgesToRemove, this.edgesToAdd);
   }
 
   getMapHighlighter(): MapHighlighter {
