@@ -1,8 +1,24 @@
 import { App } from "@/server/app";
 import { Alert } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
+import { AlertRefreshContext } from "@/server/task/tasks/refresh-alerts-task";
 
-export async function updateAlert(app: App, alert: Alert, newData: AlertData) {
+export async function updateExistingAlerts(context: AlertRefreshContext) {
+  const { app, ptvAlerts, alerts } = context;
+
+  for (const ptvAlert of ptvAlerts) {
+    const alert = alerts.find((x) => x.id === ptvAlert.id.toString());
+    if (alert == null) continue;
+
+    const newData = AlertData.fromPtvAlert(ptvAlert);
+
+    if (!newData.equals(alert.latestData)) {
+      updateAlert(app, alert, newData);
+    }
+  }
+}
+
+async function updateAlert(app: App, alert: Alert, newData: AlertData) {
   if (alert.wasManuallyProcessed) {
     // Possible states:
     // - processed-manually

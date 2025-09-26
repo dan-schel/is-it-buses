@@ -15,6 +15,7 @@ const schema = z.object({
   NODE_ENV: z
     .enum(["production", "development", "test"])
     .default("development"),
+
   TZ: z.literal("Etc/UTC"),
   NPM_CONFIG_PRODUCTION: z.string().default("false"),
   PORT: stringNumberSchema.prefault("3000"),
