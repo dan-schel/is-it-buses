@@ -1,10 +1,12 @@
+import { Migration_2025_09_26_WipeDisruptions } from "@/server/database/migrations/migration-2025-09-26-wipe-disruptions";
 import { Migration } from "@dan-schel/db";
 
 /**
- * See docs/database/writing-database-migrations.md for help writing a database
- * migration.
+ * See https://github.com/dan-schel/node-db/blob/master/docs/writing-database-migrations.md
+ * for help writing a database migration.
  */
 export const migrations: Migration[] = [
   // Always add new migrations to the end of the list, so that they don't run
   // out of order.
+  new Migration_2025_09_26_WipeDisruptions(),
 ];

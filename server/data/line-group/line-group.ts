@@ -3,14 +3,17 @@ import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 import { nonNull, unique } from "@dan-schel/js-utils";
 
 type Branches = readonly (readonly LineGroupNode[])[];
+type Overrides = Map<LineGroupNode, readonly number[]>;
 
 export class LineGroup {
   constructor(
     private readonly _branches: Branches,
     private readonly _lineIds: readonly number[],
-    private readonly _stationMappingOverrides: Map<LineGroupNode, number[]>,
+    private readonly _stationMappingOverrides: Overrides,
   ) {
     LineGroup._ensureTreeStructure(_branches);
+    LineGroup._ensureValidOverrides(_branches, _stationMappingOverrides);
+
     if (_lineIds.length !== _branches.length) {
       throw new Error("Mismatched number of line IDs and branches");
     }
@@ -33,6 +36,23 @@ export class LineGroup {
       if (alreadySeen) throw new Error("Node seen before at different index.");
 
       nodesAtIndex.forEach((x) => seenNodes.add(x));
+    }
+  }
+
+  private static _ensureValidOverrides(nodes: Branches, overrides: Overrides) {
+    const allNodes = unique(nodes.flat());
+    const nonNumericNodes = allNodes.filter((x) => typeof x !== "number");
+
+    for (const node of nonNumericNodes) {
+      if (!overrides.has(node)) {
+        throw new Error(`Node '${node}' requires a station mapping override`);
+      }
+    }
+
+    for (const node of overrides.keys()) {
+      if (!allNodes.includes(node)) {
+        throw new Error(`Override provided for unknown node '${node}'`);
+      }
     }
   }
 
@@ -92,7 +112,7 @@ export class LineGroup {
 
   getStationsForNode(node: LineGroupNode): number[] {
     const overrides = this._stationMappingOverrides.get(node);
-    if (overrides) return overrides;
+    if (overrides) return [...overrides];
 
     if (typeof node === "number") {
       return [node];

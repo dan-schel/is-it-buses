@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 
 describe("LineGroup", () => {
   describe("constructor", () => {
+    const overrides = new Map([["the-city", [100]]] as const);
+
     it("doesn't throw for a valid tree", () => {
       const lineIds = [1, 2, 3];
       const branches = [
@@ -11,7 +13,7 @@ describe("LineGroup", () => {
         ["the-city", 1, 3, 4],
         ["the-city", 1, 3, 5],
       ] as const;
-      expect(() => new LineGroup(branches, lineIds, new Map())).not.toThrow();
+      expect(() => new LineGroup(branches, lineIds, overrides)).not.toThrow();
     });
 
     it("allows duplicated line IDs", () => {
@@ -22,7 +24,7 @@ describe("LineGroup", () => {
         ["the-city", 1, 2],
         ["the-city", 1, 3],
       ] as const;
-      expect(() => new LineGroup(branches, lineIds, new Map())).not.toThrow();
+      expect(() => new LineGroup(branches, lineIds, overrides)).not.toThrow();
     });
 
     it("ensures that every branch has a line ID", () => {
@@ -31,7 +33,7 @@ describe("LineGroup", () => {
         ["the-city", 1, 2],
         ["the-city", 1, 3],
       ] as const;
-      expect(() => new LineGroup(branches, lineIds, new Map())).toThrow();
+      expect(() => new LineGroup(branches, lineIds, overrides)).toThrow();
     });
 
     it("ensures the input forms a valid tree shape", () => {
@@ -41,13 +43,13 @@ describe("LineGroup", () => {
         ["the-city", 1, 2],
         ["the-city", 2],
       ] as const;
-      expect(() => new LineGroup(branches1, lineIds, new Map())).toThrow();
+      expect(() => new LineGroup(branches1, lineIds, overrides)).toThrow();
 
       const branches2 = [
         ["the-city", 1, 2],
         [2, 1, "the-city"],
       ] as const;
-      expect(() => new LineGroup(branches2, lineIds, new Map())).toThrow();
+      expect(() => new LineGroup(branches2, lineIds, overrides)).toThrow();
 
       const branches3 = [
         [1, 2, 3, 4],
@@ -57,11 +59,14 @@ describe("LineGroup", () => {
     });
 
     it("ensures every node with an override exists in a branch", () => {
-      expect(true).toBe(false);
+      const branches = [[1, 2]] as const;
+      expect(() => new LineGroup(branches, [1], overrides)).toThrow();
     });
 
     it("ensures any non-numeric nodes have station overrides", () => {
-      expect(true).toBe(false);
+      const branches = [[1, 2, "the-city"]] as const;
+      expect(() => new LineGroup(branches, [1], new Map())).toThrow();
+      expect(() => new LineGroup(branches, [1], overrides)).not.toThrow();
     });
   });
 

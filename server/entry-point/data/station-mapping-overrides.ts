@@ -28,6 +28,8 @@ export const metroTunnelOrCityLoopOverride = config.METRO_TUNNEL_OPEN
   ? metroTunnelOverride
   : cityLoopOverride;
 
+// TODO: [DS] This suggests that station overrides should be defined for an EDGE
+// not a NODE, since Laverton - Werribee shouldn't include these stations.
 export const altonaLoopOverride: StationMappingOverride = {
   node: station.LAVERTON,
   stations: [
