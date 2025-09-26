@@ -10,7 +10,7 @@ export abstract class AlertParsingRuleBase {
    * this alert. If multiple rules return true, we do not attempt to parse the
    * alert.
    */
-  abstract callDibs(data: AlertData): boolean;
+  abstract isCallingDibs(data: AlertData): boolean;
 
   abstract parse(data: AlertData): AlertParsingOutput;
 }

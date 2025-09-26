@@ -4,7 +4,7 @@ import { AlertParsingRuleBase } from "@/server/data/alert/parsing/lib/alert-pars
 import { titleMatchesRegex } from "@/server/data/alert/parsing/lib/utils";
 
 export class BusReplacementsParsingRule extends AlertParsingRuleBase {
-  callDibs(data: AlertData): boolean {
+  isCallingDibs(data: AlertData): boolean {
     return titleMatchesRegex(data, [
       /\b(buses|coaches) ((will )?replace|(will be )?replacing) (all|select )?(evening )?trains\b/i,
     ]);
@@ -12,7 +12,7 @@ export class BusReplacementsParsingRule extends AlertParsingRuleBase {
 
   parse(_data: AlertData): AlertParsingOutput {
     // TODO: [DS] Implement it, using inspiration from implementation below.
-    return AlertParsingOutput.unsure;
+    return AlertParsingOutput.inconclusive;
   }
 }
 

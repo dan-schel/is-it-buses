@@ -86,6 +86,7 @@ export class Alert {
       "processed-manually",
       "updated-since-manual-processing",
       "ignored-manually",
+      "ignored-permanently",
     );
   }
 
@@ -127,6 +128,21 @@ export class Alert {
       updatedAt,
       deleteAt,
     );
+  }
+
+  static fresh({
+    id,
+    state,
+    data,
+    now,
+  }: {
+    id: string;
+    state: AlertState;
+    data: AlertData;
+    now: Date;
+  }) {
+    const processedAt = state === "new" ? null : now;
+    return new Alert(id, state, data, null, now, processedAt, null, null);
   }
 
   private _assertForStates(

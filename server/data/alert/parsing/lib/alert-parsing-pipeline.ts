@@ -12,11 +12,14 @@ export class AlertParsingPipeline {
     ];
   }
 
-  parseAlert(data: AlertData): AlertParsingOutput | null {
-    for (const rule of this._rules) {
-      const output = rule.parse(data);
-      if (output) return output;
-    }
-    return null;
+  parse(data: AlertData): AlertParsingOutput {
+    const applicableRules = this._findApplicableRules(data);
+    if (applicableRules.length !== 1) return AlertParsingOutput.inconclusive;
+
+    return applicableRules[0].parse(data);
+  }
+
+  private _findApplicableRules(data: AlertData) {
+    return this._rules.filter((r) => r.isCallingDibs(data));
   }
 }

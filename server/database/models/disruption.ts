@@ -1,11 +1,14 @@
 import { z } from "zod";
 import { DatabaseModel } from "@dan-schel/db";
-import { Disruption } from "@/server/data/disruption/disruption";
+import {
+  curationTypeJson,
+  Disruption,
+} from "@/server/data/disruption/disruption";
 import { disruptionPeriodBson } from "@/server/data/disruption/period/disruption-period";
 import { disruptionDataBson } from "@/server/data/disruption/data/disruption-data";
 
-const beginningOfTime = new Date("2000-01-01T00:00:00Z");
-const endOfTime = new Date("2100-01-01T00:00:00Z");
+const beginningOfTime = new Date("1900-01-01T00:00:00Z");
+const endOfTime = new Date("2400-01-01T00:00:00Z");
 
 export class DisruptionModel extends DatabaseModel<
   Disruption,
@@ -16,9 +19,9 @@ export class DisruptionModel extends DatabaseModel<
 
   private static _schema = z.object({
     data: disruptionDataBson,
-    sourceAlertIds: z.string().array(),
     period: disruptionPeriodBson,
-    curation: z.enum(["automatic", "manual"]).default("manual"),
+    sourceAlertId: z.string().nullable(),
+    curationType: curationTypeJson,
 
     // Computed fields - included for ease of querying.
     earliestImpactedDate: z.date(),
@@ -38,9 +41,9 @@ export class DisruptionModel extends DatabaseModel<
 
     return {
       data: item.data.toBson(),
-      sourceAlertIds: item.sourceAlertIds,
       period: item.period.toBson(),
-      curation: item.curation,
+      sourceAlertId: item.sourceAlertId,
+      curationType: item.curationType,
 
       earliestImpactedDate: start,
       latestImpactedDate: end,
@@ -52,9 +55,9 @@ export class DisruptionModel extends DatabaseModel<
     return new Disruption(
       id,
       parsed.data,
-      parsed.sourceAlertIds,
       parsed.period,
-      parsed.curation,
+      parsed.sourceAlertId,
+      parsed.curationType,
     );
   }
 

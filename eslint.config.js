@@ -88,6 +88,18 @@ export default tseslint.config(
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+
+  // TODO: [DS] Switch to using this.
+  // ...tseslint.configs.recommendedTypeChecked,
+  // {
+  //   languageOptions: {
+  //     parserOptions: {
+  //       projectService: true,
+  //       tsconfigRootDir: import.meta.dirname,
+  //     },
+  //   },
+  // },
+
   reactConfig,
   prettier,
   customRules,

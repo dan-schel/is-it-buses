@@ -37,6 +37,22 @@ export class DisruptionRepository {
     return null;
   }
 
+  async deleteAllFromAlert(alertId: string) {
+    const matches = await this._database.find({
+      where: { sourceAlertId: alertId },
+    });
+
+    for (const disruption of matches) {
+      await this._database.delete(disruption.id);
+    }
+  }
+
+  async create(...disruptions: Disruption[]) {
+    for (const d of disruptions) {
+      await this._database.create(d);
+    }
+  }
+
   private _passesQuery(disruption: Disruption, options: QueryOptions) {
     const includeInvalid = options.includeInvalid ?? false;
     const includePast = options.includePast ?? true;

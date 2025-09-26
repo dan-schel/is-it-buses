@@ -3,68 +3,77 @@ import { Disruption } from "@/server/data/disruption/disruption";
 import { DisruptionPeriod } from "@/server/data/disruption/period/disruption-period";
 import { uuid } from "@dan-schel/js-utils";
 
+type ParsingConfidence = "low" | "high";
+
 type AlertParsingOutputData =
   | {
-      readonly result: "disruption";
-      readonly data: DisruptionData;
-      readonly period: DisruptionPeriod;
-      readonly confidence: "low" | "high";
+      readonly result: "disruptions";
+      readonly disruptions: {
+        readonly data: DisruptionData;
+        readonly period: DisruptionPeriod;
+      }[];
+      readonly confidence: ParsingConfidence;
     }
   | {
       readonly result: "ignore";
     }
   | {
-      readonly result: "unsure";
+      readonly result: "inconclusive";
     };
 
 export class AlertParsingOutput {
   static ignore = new AlertParsingOutput({ result: "ignore" });
-  static unsure = new AlertParsingOutput({ result: "unsure" });
+  static inconclusive = new AlertParsingOutput({ result: "inconclusive" });
 
   constructor(private readonly _data: AlertParsingOutputData) {}
 
-  static disruption(
+  static singleDisruption(
     data: DisruptionData,
     period: DisruptionPeriod,
-    confidence: "low" | "high",
+    confidence: ParsingConfidence,
   ) {
     return new AlertParsingOutput({
-      result: "disruption",
-      data,
-      period,
+      result: "disruptions",
+      disruptions: [{ data, period }],
       confidence,
     });
   }
 
-  get result() {
-    return this._data.result;
+  get confidence() {
+    return this._requireDisruptionResult().confidence;
   }
 
-  toNewDisruption(alertId: string): Disruption {
-    const data = this._assertIsDisruption();
-    return new Disruption(
-      uuid(),
-      data.data,
-      [alertId],
-      data.period,
-      "automatic",
-    );
+  get hasDisruptions() {
+    return this._data.result === "disruptions";
   }
 
-  updateExistingDisruption(disruptionId: string, alertId: string): Disruption {
-    const data = this._assertIsDisruption();
-    return new Disruption(
-      disruptionId,
-      data.data,
-      [alertId],
-      data.period,
-      "automatic",
-    );
+  get isInconclusive() {
+    return this._data.result === "inconclusive";
   }
 
-  private _assertIsDisruption() {
+  get resultantAlertState() {
+    return {
+      disruptions: () => {
+        return {
+          high: "processed-automatically" as const,
+          low: "processed-provisionally" as const,
+        }[this.confidence];
+      },
+      ignore: () => "ignored-automatically" as const,
+      inconclusive: () => "new" as const,
+    }[this._data.result]();
+  }
+
+  toDisruptions(alertId: string) {
+    const data = this._requireDisruptionResult();
+    return data.disruptions.map((d) => {
+      return new Disruption(uuid(), d.data, d.period, alertId, "automatic");
+    });
+  }
+
+  private _requireDisruptionResult() {
     const data = this._data;
-    if (data.result !== "disruption") {
+    if (data.result !== "disruptions") {
       throw new Error(`toNewDisruption() called on "${data.result}" output.`);
     }
     return data;
