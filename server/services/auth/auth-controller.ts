@@ -2,6 +2,7 @@ import { App } from "@/server/app";
 import { SESSIONS, USERS } from "@/server/database/models";
 import { SessionModel } from "@/server/database/models/session";
 import { UserModel } from "@/server/database/models/user";
+import { Session } from "@/server/services/auth/session";
 import { User } from "@/server/services/auth/user";
 import { Repository } from "@dan-schel/db";
 
@@ -17,23 +18,61 @@ export class AuthController {
     this._superadminUser = null; // Is lazy loaded.
   }
 
-  async getUserFromToken(token: string): Promise<User | null> {
+  async login(username: string, password: string) {
+    const user = await this.getUserByUsername(username);
+    if (user == null) return null;
+
+    const passwordMatches = await user.isCorrectPassword(password);
+    if (!passwordMatches) return null;
+
+    const session = Session.create(user.id, this._app.time.now());
+    await this._sessions.create(session);
+
+    return { user, session };
+  }
+
+  async logout(token: string): Promise<void> {
+    const session = await this._sessions.first({ where: { token } });
+    if (session == null) return;
+
+    await this._sessions.delete(session.id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | null> {
+    if (username === this._app.superadminUsername) {
+      return await this._getSuperadminUser();
+    }
+
+    return this._users.first({ where: { username } });
+  }
+
+  async getUserForToken(token: string): Promise<User | null> {
     const session = await this._sessions.first({
       where: { token, expiresAt: { gt: this._app.time.now() } },
     });
 
     if (session == null) return null;
 
-    return await this.getUser(session.userId);
+    return await this.getUserById(session.userId);
   }
 
-  async getUser(id: string): Promise<User | null> {
-    if (id === User.SUPERADMIN_ID) return await this.getSuperadminUser();
+  async getUserById(id: string): Promise<User | null> {
+    if (id === User.SUPERADMIN_ID) return await this._getSuperadminUser();
 
     return await this._users.get(id);
   }
 
-  async getSuperadminUser(): Promise<User> {
+  async deleteExpiredSessions(): Promise<void> {
+    const expiredSessions = await this._sessions.find({
+      where: { expiresAt: { lte: this._app.time.now() } },
+    });
+
+    for (const session of expiredSessions) {
+      await this._sessions.delete(session.id);
+    }
+  }
+
+  private async _getSuperadminUser(): Promise<User> {
     if (this._superadminUser != null) return this._superadminUser;
 
     const user = new User(
@@ -45,15 +84,5 @@ export class AuthController {
 
     this._superadminUser = user;
     return user;
-  }
-
-  async deleteExpiredSessions(): Promise<void> {
-    const expiredSessions = await this._sessions.find({
-      where: { expiresAt: { lte: this._app.time.now() } },
-    });
-
-    for (const session of expiredSessions) {
-      await this._sessions.delete(session.id);
-    }
   }
 }

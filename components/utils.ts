@@ -5,7 +5,7 @@ export async function callApi<Args extends ZodType, Result extends ZodType>(
   api: Api<Args, Result>,
   args: z.input<Args>,
 ): Promise<z.infer<Result>> {
-  const res = await fetch(`/api/${api.path}`, {
+  const res = await fetch(`/api${api.path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

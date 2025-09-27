@@ -4,6 +4,8 @@ import { getSettings } from "@/server/settings";
 import { App } from "@/server/app";
 import { Settings } from "@/shared/settings";
 import { z } from "zod";
+import { getToken } from "@/server/services/auth/cookie";
+import { UserProfile } from "@/shared/types/user-profile";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -19,7 +21,7 @@ declare global {
 export type CustomPageContext = {
   app: App;
   settings: Settings;
-  user: { id: string; role: "super" | "admin" } | null;
+  user: UserProfile | null;
 };
 
 export type ClientPageContext = {
@@ -30,14 +32,15 @@ export type ClientPageContext = {
 export function createVikeHandler(app: App) {
   return async (req: express.Request, res: express.Response) => {
     const settings = getSettings(req);
-    const user = req.session.getUser();
+    const token = getToken(req);
+    const user = token != null ? await app.auth.getUserForToken(token) : null;
 
     const { body, statusCode, headers } = (
       await renderPage({
         custom: {
           app,
           settings,
-          user,
+          user: user?.frontendProfile ?? null,
         },
         client: {
           isProduction: app.env === "production",

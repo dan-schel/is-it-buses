@@ -22,7 +22,7 @@ export function setToken(
 ): Response {
   if (token == null) return res.clearCookie("token");
 
-  return res.cookie("settings", token, {
+  return res.cookie("token", token, {
     // Using "lax" means only sent if it's the same site, but still send on the
     // when navigating from an external site.
     sameSite: "lax",

@@ -1,3 +1,4 @@
+import { UserProfile } from "@/shared/types/user-profile";
 import { compare, hash } from "bcrypt";
 import z from "zod";
 
@@ -35,6 +36,16 @@ export class User {
 
   get canCreateUsers() {
     return this.roles.includes("superadmin");
+  }
+
+  get frontendProfile(): UserProfile {
+    return {
+      username: this.username,
+      rank: this.roles.includes("superadmin") ? "Superadmin" : "Admin",
+      permissions: {
+        canCreateUsers: this.canCreateUsers,
+      },
+    };
   }
 
   static async hashPassword(password: string) {

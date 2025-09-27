@@ -7,6 +7,8 @@ import z, { ZodType } from "zod";
 import { Api } from "@/shared/apis/lib";
 import { getToken } from "@/server/services/auth/cookie";
 import { User } from "@/server/services/auth/user";
+import { setupLoginHandler } from "@/server/api/auth/login";
+import { setupLogoutHandler } from "@/server/api/auth/logout";
 
 export type ApiHandler<Args extends ZodType, Result extends ZodType> = (
   app: App,
@@ -18,7 +20,14 @@ export function createApiRouter(app: App) {
   const router = Router();
   router.use(createCorsMiddleware());
 
+  setupLoginHandler(app, router);
+  setupLogoutHandler(app, router);
+
   setupHandler(app, router, apis.USERS_CREATE, handlers.USERS_CREATE);
+
+  // router.use(/(.*)/, (_req, res) => {
+  //   res.sendStatus(404);
+  // });
 
   return router;
 }
@@ -38,7 +47,7 @@ function setupHandler<Args extends ZodType, Result extends ZodType>(
       }
 
       const token = getToken(req);
-      const user = token ? await app.auth.getUserFromToken(token) : null;
+      const user = token ? await app.auth.getUserForToken(token) : null;
       if (token != null && user == null) {
         res.sendStatus(401);
         return;
