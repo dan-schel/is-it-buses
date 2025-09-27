@@ -8,9 +8,16 @@ import { Text } from "@/components/core/Text";
 import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
 import { MingcuteToolLine } from "@/components/icons/MingcuteToolLine";
 import { useSettings } from "@/components/settings/common/use-settings";
+import { callApi } from "@/components/utils";
+import { USERS_CREATE } from "@/shared/apis";
 
 export function FinePrint() {
   const [settings] = useSettings();
+
+  async function handleTest() {
+    const response = await callApi(USERS_CREATE, { username: "hello" });
+    console.log(response);
+  }
 
   return (
     <Column className="gap-8">
@@ -29,6 +36,11 @@ export function FinePrint() {
           href="/about"
           icon={<MingcuteInformationLine />}
           text="About this site"
+          layout="small"
+        />
+        <SimpleButton
+          onClick={handleTest}
+          text="Test API call"
           layout="small"
         />
         {settings.showAdminTab && (

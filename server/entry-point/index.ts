@@ -2,7 +2,6 @@ import { createVikeHandler } from "@/server/vike-handler";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { env } from "@/server/entry-point/env";
-import { createApiRouter } from "@/server/routes/api";
 import { createDevMiddleware } from "vike/server";
 import { App } from "@/server/app";
 import { lines } from "@/server/entry-point/data/lines";
@@ -14,6 +13,7 @@ import { sessionMiddleware } from "@/server/routes/middleware/authentication";
 import { RealTimeProvider } from "@/server/services/time-provider/real-time-provider";
 import { ConsoleLogger } from "@/server/services/logger/console-logger";
 import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
+import { createApiRouter } from "@/server/api";
 
 export async function run(root: string) {
   const database = await initDatabase();
