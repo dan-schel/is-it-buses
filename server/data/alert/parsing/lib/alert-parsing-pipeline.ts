@@ -3,13 +3,13 @@ import { AlertParsingOutput } from "@/server/data/alert/parsing/lib/alert-parsin
 import { AlertData } from "@/server/data/alert/alert-data";
 import { AlertParsingRule } from "@/server/data/alert/parsing/rules";
 
+export type AlertParsingRulesBuilder = (app: App) => AlertParsingRule[];
+
 export class AlertParsingPipeline {
   private readonly _rules: AlertParsingRule[];
 
-  constructor(_app: App) {
-    this._rules = [
-      // new BusReplacementsParsingRule(app),
-    ];
+  constructor(app: App, rulesBuilder: AlertParsingRulesBuilder) {
+    this._rules = rulesBuilder(app);
   }
 
   parse(data: AlertData): AlertParsingOutput {

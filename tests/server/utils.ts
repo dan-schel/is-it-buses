@@ -8,10 +8,13 @@ import { fileURLToPath } from "node:url";
 import { FakeTimeProvider } from "@/server/services/time-provider/fake-time-provider";
 import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-source";
 import { FakeLogger } from "@/server/services/logger/fake-logger";
+import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 
 export const defaultMockedNow = new Date("2025-01-01T00:00:00Z");
 
-export function createTestApp() {
+export function createTestApp({
+  alertParsingRules = () => [],
+}: { alertParsingRules?: AlertParsingRulesBuilder } = {}) {
   const db = new InMemoryDatabase();
   const alertSource = new FakeAlertSource();
   const time = new FakeTimeProvider(defaultMockedNow);
@@ -27,6 +30,7 @@ export function createTestApp() {
     "test",
     null,
     log,
+    alertParsingRules,
     null,
     null,
   );

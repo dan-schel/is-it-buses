@@ -8,7 +8,10 @@ import { AlertSource } from "@/server/services/alert-source/alert-source";
 import { VtarAlertSource } from "@/server/services/alert-source/vtar-alert-source";
 import { DiscordBot } from "@/server/services/discord/bot";
 import { TimeProvider } from "@/server/services/time-provider/time-provider";
-import { AlertParsingPipeline } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
+import {
+  AlertParsingPipeline,
+  AlertParsingRulesBuilder,
+} from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { Tasks } from "@/server/task/lib/tasks";
 import { Logger } from "@/server/services/logger/logger";
 
@@ -29,13 +32,14 @@ export class App {
     readonly env: "production" | "development" | "test",
     readonly commitHash: string | null,
     readonly log: Logger,
+    readonly alertParsingRules: AlertParsingRulesBuilder,
 
     username: string | null,
     password: string | null,
   ) {
     this.alerts = new AlertRepository(this);
     this.disruptions = new DisruptionRepository(this);
-    this.alertParsing = new AlertParsingPipeline(this);
+    this.alertParsing = new AlertParsingPipeline(this, alertParsingRules);
 
     this._tasks = new Tasks(this, username, password);
   }
