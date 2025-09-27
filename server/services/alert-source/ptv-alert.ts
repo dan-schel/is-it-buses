@@ -28,8 +28,8 @@ export const ptvAlertJson = z
     lastUpdated: x.last_updated,
     fromDate: x.from_date,
     toDate: x.to_date,
-    routeIds: x.routes.map((r) => r.route_id),
-    stopIds: x.stops.map((r) => r.stop_id),
+    routeIds: Object.freeze(x.routes.map((r) => r.route_id)),
+    stopIds: Object.freeze(x.stops.map((r) => r.stop_id)),
   }));
 
 export type PtvAlert = z.infer<typeof ptvAlertJson>;

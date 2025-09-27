@@ -1,6 +1,4 @@
 import { App } from "@/server/app";
-import { Alert } from "@/server/data/alert/alert";
-import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 import { IntervalScheduler } from "@/server/task/lib/interval-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
@@ -8,12 +6,6 @@ import { createNewAlerts } from "@/server/task/tasks/refresh-alerts-task/create-
 import { deleteOldAlerts } from "@/server/task/tasks/refresh-alerts-task/delete-old-alerts";
 import { updateDeletionSchedules } from "@/server/task/tasks/refresh-alerts-task/update-deletion-schedules";
 import { updateExistingAlerts } from "@/server/task/tasks/refresh-alerts-task/update-existing-alerts";
-
-export type AlertRefreshContext = {
-  app: App;
-  ptvAlerts: PtvAlert[];
-  alerts: Alert[];
-};
 
 /**
  * Regularly fetches alerts from PTV, and creates, updates, and deletes alerts
@@ -36,13 +28,10 @@ export class RefreshAlertsTask extends Task {
     const ptvAlerts = await this._tryFetchingPtvAlerts(app);
     if (ptvAlerts == null) return;
 
-    const alerts = await app.alerts.all();
-
-    const context: AlertRefreshContext = { app, ptvAlerts, alerts };
-    await updateDeletionSchedules(context);
-    await deleteOldAlerts(context);
-    await updateExistingAlerts(context);
-    await createNewAlerts(context);
+    await updateDeletionSchedules(app, ptvAlerts);
+    await deleteOldAlerts(app);
+    await updateExistingAlerts(app, ptvAlerts);
+    await createNewAlerts(app, ptvAlerts);
   }
 
   private async _tryFetchingPtvAlerts(app: App) {

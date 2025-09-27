@@ -15,8 +15,8 @@ export class AlertData {
     readonly url: string,
     readonly startsAt: Date | null,
     readonly endsAt: Date | null,
-    readonly affectedLinePtvIds: number[],
-    readonly affectedStationPtvIds: number[],
+    readonly affectedLinePtvIds: readonly number[],
+    readonly affectedStationPtvIds: readonly number[],
   ) {}
 
   static readonly bson = z
@@ -26,8 +26,8 @@ export class AlertData {
       url: z.string(),
       startsAt: z.date().nullable(),
       endsAt: z.date().nullable(),
-      affectedLinePtvIds: z.number().array(),
-      affectedStationPtvIds: z.number().array(),
+      affectedLinePtvIds: z.number().array().readonly(),
+      affectedStationPtvIds: z.number().array().readonly(),
     })
     .transform(
       (x) =>

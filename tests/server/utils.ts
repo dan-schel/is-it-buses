@@ -9,10 +9,12 @@ import { FakeTimeProvider } from "@/server/services/time-provider/fake-time-prov
 import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-source";
 import { FakeLogger } from "@/server/services/logger/fake-logger";
 
+export const defaultMockedNow = new Date("2025-01-01T00:00:00Z");
+
 export function createTestApp() {
   const db = new InMemoryDatabase();
   const alertSource = new FakeAlertSource();
-  const time = new FakeTimeProvider(new Date("2025-01-01T00:00:00Z"));
+  const time = new FakeTimeProvider(defaultMockedNow);
   const log = new FakeLogger();
 
   const app = new App(

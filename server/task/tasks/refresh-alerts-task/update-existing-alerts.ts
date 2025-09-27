@@ -1,10 +1,10 @@
 import { App } from "@/server/app";
 import { Alert } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
-import { AlertRefreshContext } from "@/server/task/tasks/refresh-alerts-task";
+import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 
-export async function updateExistingAlerts(context: AlertRefreshContext) {
-  const { app, ptvAlerts, alerts } = context;
+export async function updateExistingAlerts(app: App, ptvAlerts: PtvAlert[]) {
+  const alerts = await app.alerts.all();
 
   for (const ptvAlert of ptvAlerts) {
     const alert = alerts.find((x) => x.id === ptvAlert.id.toString());
