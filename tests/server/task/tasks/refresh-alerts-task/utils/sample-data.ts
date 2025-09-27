@@ -13,7 +13,7 @@ export const in2Days = addDays(now, 2);
 export const in7Days = addDays(now, 7);
 export const date2DaysAgo = subDays(now, 2);
 
-export const outdatedAlert = new Alert(
+export const sampleAlert = new Alert(
   "1",
   "processed-manually",
   new AlertData(
@@ -32,7 +32,7 @@ export const outdatedAlert = new Alert(
   null,
 );
 
-export const updatedPtvAlert: PtvAlert = {
+export const samplePtvAlert: PtvAlert = {
   id: 1,
   title: "Updated title",
   url: "https://example.com/alert/1",
@@ -44,7 +44,7 @@ export const updatedPtvAlert: PtvAlert = {
   stopIds: [],
 };
 
-export const existingManualDisruption = new Disruption(
+export const sampleManualDisruption = new Disruption(
   uuid(),
   CustomDisruptionData.simple("Some disruption title"),
   StandardDisruptionPeriod.simple(in2Days, in7Days),
@@ -52,6 +52,6 @@ export const existingManualDisruption = new Disruption(
   "manual",
 );
 
-export const existingAutomaticDisruption = existingManualDisruption.with({
+export const sampleAutomaticDisruption = sampleManualDisruption.with({
   curationType: "automatic",
 });
