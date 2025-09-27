@@ -76,7 +76,15 @@ const pwaConfig: Partial<VitePWAOptions> = {
 };
 
 export default defineConfig({
-  plugins: [vike({}), react({}), VitePWA(pwaConfig), tailwindcss()],
+  plugins: [
+    // Omit the Vike plugin when running the tests, otherwise it complains in
+    // the output.
+    !process.env.VITEST && vike({}),
+
+    react({}),
+    VitePWA(pwaConfig),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./"),

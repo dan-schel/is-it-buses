@@ -1,14 +1,6 @@
+import { Session } from "@/server/services/auth/session";
 import { DatabaseModel } from "@dan-schel/db";
 import { z } from "zod";
-
-export class Session {
-  constructor(
-    readonly id: string,
-    readonly expires: Date,
-    readonly userId: string,
-    readonly userRole: "super" | "admin",
-  ) {}
-}
 
 export class SessionModel extends DatabaseModel<
   Session,
@@ -18,9 +10,9 @@ export class SessionModel extends DatabaseModel<
   static instance = new SessionModel();
 
   private static _schema = z.object({
-    expires: z.date(),
+    token: z.string(),
     userId: z.string(),
-    userRole: z.enum(["super", "admin"]),
+    expiresAt: z.date(),
   });
 
   private constructor() {
@@ -31,20 +23,16 @@ export class SessionModel extends DatabaseModel<
     return item.id;
   }
 
-  serialize(item: Session): {
-    expires: Date;
-    userId: string;
-    userRole: "super" | "admin";
-  } {
+  serialize(item: Session): z.input<typeof SessionModel._schema> {
     return {
-      expires: item.expires,
+      token: item.token,
       userId: item.userId,
-      userRole: item.userRole,
+      expiresAt: item.expiresAt,
     };
   }
 
   deserialize(id: string, item: unknown): Session {
     const parsed = SessionModel._schema.parse(item);
-    return new Session(id, parsed.expires, parsed.userId, parsed.userRole);
+    return new Session(id, parsed.token, parsed.userId, parsed.expiresAt);
   }
 }
