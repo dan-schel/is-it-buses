@@ -5,6 +5,14 @@ import * as handlers from "@/server/api/handlers";
 import { createCorsMiddleware } from "@/server/api/cors";
 import z, { ZodType } from "zod";
 import { Api } from "@/shared/apis/lib";
+import { getToken } from "@/server/services/auth/cookie";
+import { User } from "@/server/services/auth/user";
+
+export type ApiHandler<Args extends ZodType, Result extends ZodType> = (
+  app: App,
+  user: User | null,
+  args: z.infer<Args>,
+) => Promise<z.infer<Result>>;
 
 export function createApiRouter(app: App) {
   const router = Router();
@@ -19,18 +27,24 @@ function setupHandler<Args extends ZodType, Result extends ZodType>(
   app: App,
   router: Router,
   api: Api<Args, Result>,
-  handler: (app: App, args: z.infer<Args>) => Promise<z.infer<Result>>,
+  handler: ApiHandler<Args, Result>,
 ) {
   router.post(api.path, async (req, res) => {
     try {
       const args = api.argsSchema.safeParse(req.body);
-
       if (!args.success) {
         res.status(400).json(args.error);
         return;
       }
 
-      const result = await handler(app, args.data);
+      const token = getToken(req);
+      const user = token ? await app.auth.getUserFromToken(token) : null;
+      if (token != null && user == null) {
+        res.sendStatus(401);
+        return;
+      }
+
+      const result = await handler(app, user, args.data);
       res.json(result);
     } catch (err) {
       // TODO: In future we might want to allow handlers to throw some sort of

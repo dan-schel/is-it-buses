@@ -1,6 +1,7 @@
 import { configDotenv } from "dotenv";
 import { z } from "zod";
 import { stringNumberSchema } from "@/server/utils";
+import { User } from "@/server/services/auth/user";
 
 const schema = z.object({
   RELAY_KEY: z.string().optional(),
@@ -9,8 +10,8 @@ const schema = z.object({
   DISCORD_TOKEN: z.string().optional(),
   DISCORD_CHANNEL: z.string().optional(),
   COMMIT_HASH: z.string().optional(),
-  USER_NAME: z.string().optional(),
-  PASSWORD: z.string().optional(),
+  SUPERADMIN_USERNAME: z.string().default(User.SUPERADMIN_DEFAULT_USERNAME),
+  SUPERADMIN_PASSWORD: z.string().default(User.SUPERADMIN_DEFAULT_PASSWORD),
 
   NODE_ENV: z
     .enum(["production", "development", "test"])

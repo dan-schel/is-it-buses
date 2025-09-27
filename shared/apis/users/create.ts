@@ -7,7 +7,10 @@ const argsSchema = z.object({
 
 const resultSchema = z.union([
   z.object({ success: z.literal(true), password: z.string() }),
-  z.object({ success: z.literal(false), error: z.enum(["username-taken"]) }),
+  z.object({
+    success: z.literal(false),
+    error: z.enum(["insufficient-permissions", "username-taken"]),
+  }),
 ]);
 
 export const api: Api<typeof argsSchema, typeof resultSchema> = {

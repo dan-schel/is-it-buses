@@ -16,6 +16,8 @@ export function FinePrint() {
 
   async function handleTest() {
     const response = await callApi(USERS_CREATE, { username: "hello" });
+
+    // eslint-disable-next-line no-console
     console.log(response);
   }
 

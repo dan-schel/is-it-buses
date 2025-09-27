@@ -37,8 +37,8 @@ export async function run(root: string) {
     env.COMMIT_HASH ?? null,
     logger,
     alertParsingRules,
-    env.USER_NAME ?? null,
-    env.PASSWORD ?? null,
+    env.SUPERADMIN_USERNAME,
+    env.SUPERADMIN_PASSWORD,
   );
 
   await app.init();

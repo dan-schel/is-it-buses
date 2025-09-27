@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { agent } from "supertest";
 import { createTestServer } from "@/tests/server/utils";
-import { Admin } from "@/server/database/models/admin";
+import { Admin } from "@/server/database/models/user";
 import { ADMINS, SESSIONS } from "@/server/database/models";
 import { hashSync } from "bcrypt";
 import { Session } from "@/server/database/models/session";

@@ -14,8 +14,11 @@ import {
 } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { Tasks } from "@/server/task/lib/tasks";
 import { Logger } from "@/server/services/logger/logger";
+import { AuthController } from "@/server/services/auth/auth-controller";
+import { User } from "@/server/services/auth/user";
 
 export class App {
+  readonly auth: AuthController;
   readonly alerts: AlertRepository;
   readonly disruptions: DisruptionRepository;
   readonly alertParsing: AlertParsingPipeline;
@@ -33,15 +36,17 @@ export class App {
     readonly commitHash: string | null,
     readonly log: Logger,
     readonly alertParsingRules: AlertParsingRulesBuilder,
-
-    username: string | null,
-    password: string | null,
+    readonly superadminUsername: string,
+    readonly superadminPassword: string,
   ) {
+    this._assertNoDefaultCredsInProd();
+
+    this.auth = new AuthController(this);
     this.alerts = new AlertRepository(this);
     this.disruptions = new DisruptionRepository(this);
     this.alertParsing = new AlertParsingPipeline(this, alertParsingRules);
 
-    this._tasks = new Tasks(this, username, password);
+    this._tasks = new Tasks(this);
   }
 
   async init() {
@@ -84,5 +89,15 @@ export class App {
         ? `🟢 Commit hash: "${this.commitHash}"`
         : "⚫ Commit hash unknown",
     );
+  }
+
+  private _assertNoDefaultCredsInProd() {
+    if (
+      this.env === "production" &&
+      this.superadminUsername === User.SUPERADMIN_DEFAULT_USERNAME &&
+      this.superadminPassword === User.SUPERADMIN_DEFAULT_PASSWORD
+    ) {
+      throw new Error("Superadmin username/password must be set in prod.");
+    }
   }
 }

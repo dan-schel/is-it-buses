@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { Admin } from "@/server/database/models/admin";
+import { Admin } from "@/server/database/models/user";
 import { ADMINS, SESSIONS } from "@/server/database/models";
 import { Session } from "@/server/database/models/session";
 import { uuid } from "@dan-schel/js-utils";
