@@ -1,4 +1,4 @@
-import { MapPoint } from "@/server/data/map-point";
+import { MapPoint } from "@/server/data/map/map-point";
 import { Station } from "@/server/data/station/station";
 import { StationCollection } from "@/server/data/station/station-collection";
 import * as corridor from "@/server/entry-point/data/corridors";

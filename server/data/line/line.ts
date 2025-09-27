@@ -1,6 +1,6 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineSection } from "@/server/data/line-section";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 import { MappingData } from "@/server/data/map/mapping-data";
 
 type LineType = "suburban" | "regional";

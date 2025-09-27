@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 
 describe("MappingDataBuilder", () => {
   const stations = {

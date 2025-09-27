@@ -2,7 +2,7 @@ import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
 import * as map from "@/shared/map-node-ids";
 import { MappingDataBuilder } from "@/server/data/map/mapping-data-builder";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 
 const FOOTSCRAY_TO_SUNSHINE_JUNCTION = MapSegment.full(
   map.NORTHERN.FOOTSCRAY,

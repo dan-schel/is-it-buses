@@ -1,6 +1,6 @@
 import { App } from "@/server/app";
 import { Admin } from "@/server/database/models/admin";
-import { ADMINS, SESSIONS } from "@/server/database/models/models";
+import { ADMINS, SESSIONS } from "@/server/database/models";
 import { Session } from "@/server/database/models/session";
 import { uuid } from "@dan-schel/js-utils";
 import { addDays, differenceInMinutes } from "date-fns";

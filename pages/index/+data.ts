@@ -14,13 +14,12 @@ import {
 import { Line } from "@/server/data/line/line";
 import { MapHighlighting } from "@/server/data/disruption/map-highlighting/map-highlighting";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
-import { DisruptionRepository } from "@/server/database-repository/disruption-repository";
 import { FilterableDisruptionCategory } from "@/shared/settings";
-import { DisruptionType } from "@/shared/types/disruption";
 import { TimeRange } from "@/server/data/disruption/period/utils/time-range";
 import { addWeeks, endOfDay } from "date-fns";
 import { localToUtcTime } from "@/server/data/disruption/period/utils/utils";
 import { unique } from "@dan-schel/js-utils";
+import { App } from "@/server/app";
 
 const statusColorMapping: Record<
   LineStatusIndicatorPriority,
@@ -56,32 +55,29 @@ export async function data(
   const { app, settings } = pageContext.custom;
   const { occuring } = pageContext.urlParsed.search;
 
-  const disruptions: PreprocessedDisruption[] = (
-    await DisruptionRepository.getRepository(app).listDisruptions({
-      period:
-        occuring === "week"
-          ? new TimeRange(app.time.now(), addWeeks(app.time.now(), 1))
-          : occuring === "today"
-            ? new TimeRange(
-                app.time.now(),
-                localToUtcTime(endOfDay(app.time.now())),
-              )
-            : app.time.now(),
-      types: getTypesFromSettings(settings.enabledCategories),
-    })
-  ).map((x) => ({
-    disruption: x,
-    lines: x.data.getImpactedLines(app),
-    writeup: x.data.getWriteupAuthor().write(app, x),
-    map: x.data.getMapHighlighter().getHighlighting(app),
-  }));
+  const relevantPeriod = getRelevantPeriod(app, occuring);
+  const allDisruption = await app.disruptions.all({ includePast: false });
+  const disruptions = allDisruption.filter(
+    (x) =>
+      x.period.intersects(relevantPeriod) &&
+      matchesFilters(app, x, settings.enabledCategories),
+  );
+
+  const preprocessedDisruptions: PreprocessedDisruption[] = disruptions.map(
+    (x) => ({
+      disruption: x,
+      lines: x.data.getImpactedLines(app),
+      writeup: x.data.getWriteupAuthor().write(app, x),
+      map: x.data.getMapHighlighter().getHighlighting(app),
+    }),
+  );
 
   return {
     occuring: occuring === "week" || occuring === "today" ? occuring : "now",
-    disruptions: getSummaries(disruptions),
-    ...getLines(app.lines, disruptions),
+    disruptions: getSummaries(preprocessedDisruptions),
+    ...getLines(app.lines, preprocessedDisruptions),
     mapHighlighting: MapHighlighting.serializeGroup(
-      disruptions.map((x) => x.map),
+      preprocessedDisruptions.map((x) => x.map),
     ),
   };
 }
@@ -157,34 +153,26 @@ function getLines(
   };
 }
 
-function getTypesFromSettings(
+function matchesFilters(
+  app: App,
+  disruption: Disruption,
   filters: readonly FilterableDisruptionCategory[],
-): DisruptionType[] {
-  // Default options
-  const types: DisruptionType[] = [
-    "bus-replacements",
-    "no-city-loop",
-    "no-trains-running",
-    "custom",
-  ];
+): boolean {
+  const category = disruption.data.applicableCategory(app);
+  if (category == null) return true;
+  return filters.includes(category);
+}
 
-  filters.forEach((filter) => {
-    switch (filter) {
-      case "delays":
-        types.push("delays");
-        break;
-      case "station-closures":
-        types.push("station-closure");
-        break;
+function getRelevantPeriod(app: App, occurringParam: string) {
+  const now = app.time.now();
 
-      // TODO: Update with new disruptions when added
-      case "cancellations":
-      case "accessibility":
-      case "car-park-closures":
-      default:
-        break;
-    }
-  });
-
-  return types;
+  switch (occurringParam) {
+    case "today":
+      return new TimeRange(now, localToUtcTime(endOfDay(now)));
+    case "week":
+      return new TimeRange(now, addWeeks(now, 1));
+    case "now":
+    default:
+      return new TimeRange(now, null);
+  }
 }

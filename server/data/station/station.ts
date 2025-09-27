@@ -1,4 +1,4 @@
-import { MapPoint } from "@/server/data/map-point";
+import { MapPoint } from "@/server/data/map/map-point";
 
 export class Station {
   readonly id: number;

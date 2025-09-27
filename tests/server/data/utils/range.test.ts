@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Range } from "@/server/data/utils/range";
+import { Range } from "@/server/data/range";
 
 describe("Range", () => {
   describe("constructor", () => {

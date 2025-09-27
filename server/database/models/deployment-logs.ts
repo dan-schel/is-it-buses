@@ -12,11 +12,11 @@ export class DeploymentLog {
 export class DeploymentLogModel extends DatabaseModel<
   DeploymentLog,
   string,
-  z.input<typeof DeploymentLogModel.schema>
+  z.input<typeof DeploymentLogModel._schema>
 > {
   static instance = new DeploymentLogModel();
 
-  private static schema = z.object({
+  private static _schema = z.object({
     commitHash: z.string(),
     createdAt: z.date(),
   });
@@ -37,7 +37,7 @@ export class DeploymentLogModel extends DatabaseModel<
   }
 
   deserialize(id: string, item: unknown): DeploymentLog {
-    const parsed = DeploymentLogModel.schema.parse(item);
+    const parsed = DeploymentLogModel._schema.parse(item);
     return new DeploymentLog(id, parsed.commitHash, parsed.createdAt);
   }
 }

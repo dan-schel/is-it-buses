@@ -5,9 +5,8 @@ import { Line } from "@/server/data/line/line";
 import { JsonSerializable } from "@/shared/json-serializable";
 import { CalendarData } from "@/shared/types/calendar-data";
 import { createCalendarData } from "@/server/data/disruption/period/utils/create-calendar-data";
-import { TimeRange } from "@/server/data/disruption/period/utils/time-range";
 import {
-  LineStatusIndicatorPriorities,
+  lineStatusIndicatorPriorities,
   LineStatusIndicatorPriority,
 } from "@/server/data/disruption/writeup/disruption-writeup";
 import { Disruption } from "@/server/data/disruption/disruption";
@@ -16,7 +15,6 @@ import {
   LinePageStatusColour,
   LinePageUpcomingDisruption,
 } from "@/shared/types/line-page";
-import { DisruptionRepository } from "@/server/database-repository/disruption-repository";
 
 const statusColorMapping: Record<
   LineStatusIndicatorPriority,
@@ -54,17 +52,13 @@ export async function data(
 
   // Filter out disruptions from the past and sort by priority
   const disruptions = (
-    await DisruptionRepository.getRepository(app).listDisruptions({
-      lines: [line.id],
-      period: new TimeRange(app.time.now(), null),
-      priority: ["high", "medium", "low", "very-low"],
-    })
+    await app.disruptions.allForLine(line.id, { includePast: false })
   ).sort(
     (a, b) =>
-      LineStatusIndicatorPriorities.indexOf(
+      lineStatusIndicatorPriorities.indexOf(
         b.data.getWriteupAuthor().write(app, b).lineStatusIndicator.priority,
       ) -
-      LineStatusIndicatorPriorities.indexOf(
+      lineStatusIndicatorPriorities.indexOf(
         a.data.getWriteupAuthor().write(app, a).lineStatusIndicator.priority,
       ),
   );

@@ -1,21 +1,26 @@
 import { StationCollection } from "@/server/data/station/station-collection";
 import { Database, MongoDatabase } from "@dan-schel/db";
-import { AlertSource } from "@/server/alert-source/alert-source";
-import { migrations } from "@/server/database/migrations/migrations";
+import { migrations } from "@/server/database/migrations";
 import { LineCollection } from "@/server/data/line/line-collection";
-import { TimeProvider } from "@/server/time-provider/time-provider";
-import { PopulateInboxQueueTask } from "@/server/task/tasks/populate-inbox-queue-task";
-import { LogHistoricalAlertsTask } from "@/server/task/tasks/log-historical-alerts-task";
-import { SendStartupMessageTask } from "@/server/task/tasks/send-startup-message-task";
-import { areUnique } from "@dan-schel/js-utils";
-import { VtarAlertSource } from "@/server/alert-source/vtar-alert-source";
-import { TaskScheduler } from "@/server/task/lib/task-scheduler";
-import { SeedSuperAdminTask } from "@/server/task/tasks/seed-super-admin-task";
-import { DiscordBot } from "@/server/discord/bot";
-import { ClearExpiredSessionTask } from "@/server/task/tasks/clear-expired-sessions-task";
+import { AlertRepository } from "@/server/data/alert/alert-repository";
+import { DisruptionRepository } from "@/server/data/disruption/disruption-repository";
+import { AlertSource } from "@/server/services/alert-source/alert-source";
+import { VtarAlertSource } from "@/server/services/alert-source/vtar-alert-source";
+import { DiscordBot } from "@/server/services/discord/bot";
+import { TimeProvider } from "@/server/services/time-provider/time-provider";
+import {
+  AlertParsingPipeline,
+  AlertParsingRulesBuilder,
+} from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
+import { Tasks } from "@/server/task/lib/tasks";
+import { Logger } from "@/server/services/logger/logger";
 
 export class App {
-  private readonly _taskSchedulers: TaskScheduler[];
+  readonly alerts: AlertRepository;
+  readonly disruptions: DisruptionRepository;
+  readonly alertParsing: AlertParsingPipeline;
+
+  private readonly _tasks: Tasks;
 
   constructor(
     readonly lines: LineCollection,
@@ -26,64 +31,58 @@ export class App {
     readonly time: TimeProvider,
     readonly env: "production" | "development" | "test",
     readonly commitHash: string | null,
-    private readonly username: string | null,
-    private readonly password: string | null,
+    readonly log: Logger,
+    readonly alertParsingRules: AlertParsingRulesBuilder,
+
+    username: string | null,
+    password: string | null,
   ) {
-    const tasks = [
-      new SendStartupMessageTask(),
-      new PopulateInboxQueueTask(),
-      new LogHistoricalAlertsTask(),
-      new SeedSuperAdminTask(this.username, this.password),
-      new ClearExpiredSessionTask(),
-    ];
+    this.alerts = new AlertRepository(this);
+    this.disruptions = new DisruptionRepository(this);
+    this.alertParsing = new AlertParsingPipeline(this, alertParsingRules);
 
-    if (!areUnique(tasks.map((x) => x.taskId))) {
-      throw new Error("Two tasks cannot share the same ID.");
-    }
-
-    this._taskSchedulers = tasks.map((x) => x.getScheduler(this));
+    this._tasks = new Tasks(this, username, password);
   }
 
   async init() {
     // Has to run before anything else that might use the database.
     await this.database.runMigrations(migrations);
 
+    this.discordBot?.init(this);
+
     this._logStatus();
 
     // Run all startup tasks.
-    await Promise.all(this._taskSchedulers.map((t) => t.onServerInit()));
+    await this._tasks.onServerInit();
   }
 
   onServerReady(port: number) {
-    // eslint-disable-next-line no-console
-    console.log(`Server listening on http://localhost:${port}`);
+    this.log.info(`Server listening on http://localhost:${port}`);
 
     // Schedule all periodic tasks.
-    this._taskSchedulers.forEach((t) => t.onServerReady());
+    this._tasks.onServerReady();
   }
 
   private _logStatus() {
-    /* eslint-disable no-console */
-    console.log(
+    this.log.info(
       this.database instanceof MongoDatabase
         ? "🟢 Using MongoDB"
         : "⚫ Using in-memory database",
     );
-    console.log(
+    this.log.info(
       this.alertSource instanceof VtarAlertSource
         ? "🟢 Using relay server"
         : "⚫ Using fake alert source",
     );
-    console.log(
+    this.log.info(
       this.discordBot != null
         ? "🟢 Discord bot online"
         : "⚫ Discord bot offline",
     );
-    console.log(
+    this.log.info(
       this.commitHash != null
         ? `🟢 Commit hash: "${this.commitHash}"`
         : "⚫ Commit hash unknown",
     );
-    /* eslint-enable no-console */
   }
 }

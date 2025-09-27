@@ -10,14 +10,21 @@ import { stations } from "@/server/entry-point/data/stations";
 import { initDatabase } from "@/server/entry-point/services/database";
 import { initAlertSource } from "@/server/entry-point/services/alert-source";
 import { initDiscordBot } from "@/server/entry-point/services/discord";
-import { RealTimeProvider } from "@/server/time-provider/real-time-provider";
 import { sessionMiddleware } from "@/server/routes/middleware/authentication";
+import { RealTimeProvider } from "@/server/services/time-provider/real-time-provider";
+import { ConsoleLogger } from "@/server/services/logger/console-logger";
+import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 
 export async function run(root: string) {
   const database = await initDatabase();
   const alertSource = initAlertSource();
   const discordBot = initDiscordBot();
   const time = new RealTimeProvider();
+  const logger = new ConsoleLogger();
+
+  const alertParsingRules: AlertParsingRulesBuilder = (_app) => [
+    // new BusReplacementsParsingRule(app),
+  ];
 
   const app = new App(
     lines,
@@ -28,6 +35,8 @@ export async function run(root: string) {
     time,
     env.NODE_ENV,
     env.COMMIT_HASH ?? null,
+    logger,
+    alertParsingRules,
     env.USER_NAME ?? null,
     env.PASSWORD ?? null,
   );

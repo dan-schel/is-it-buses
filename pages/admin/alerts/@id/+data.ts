@@ -2,13 +2,12 @@ import { PageContext } from "vike/types";
 import { JsonSerializable } from "@/shared/json-serializable";
 import { App } from "@/server/app";
 import { nonNull, unique } from "@dan-schel/js-utils";
-import { DetailsError } from "@/server/alert-source/alert-source";
 import sanitizeHtml from "sanitize-html";
 import { formatDate } from "@/server/data/disruption/period/utils/utils";
 import { ProcessingContextData } from "@/shared/types/processing-context-data";
-import { formatLineShapeNode } from "@/server/data/disruption/writeup/utils";
-import { AlertRepository } from "@/server/database-repository/alert-repository";
+import { formatLineGroupNode } from "@/server/data/disruption/writeup/utils";
 import { AlertData } from "@/server/data/alert/alert-data";
+import { DetailsError } from "@/server/services/alert-source/alert-source";
 
 type UrlPreview = { html: string } | { error: string };
 
@@ -76,7 +75,7 @@ export async function data(
 
   const id = routeParams.id;
   const back = determineBackBehaviour(urlParsed);
-  const alert = await AlertRepository.getRepository(app).getAlert(id);
+  const alert = await app.alerts.get(id);
 
   if (alert == null) {
     return { alert: null, back };
@@ -152,7 +151,7 @@ function prepContext(app: App): ProcessingContextData {
         // The frontend shouldn't have to care about "the-city" | number, it
         // just deals with strings.
         id: typeof node === "string" ? node : node.toFixed(),
-        name: formatLineShapeNode(app, node, { capitalize: true }),
+        name: formatLineGroupNode(app, node, { capitalize: true }),
       })),
     })),
     stations: app.stations.map((station) => ({

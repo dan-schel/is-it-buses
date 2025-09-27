@@ -1,4 +1,4 @@
-import { MapCorridor } from "@/server/data/map-point";
+import { MapCorridor } from "@/server/data/map/map-point";
 import {
   BURNLEY,
   CLIFTON_HILL,

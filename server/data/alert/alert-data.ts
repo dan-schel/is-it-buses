@@ -1,4 +1,4 @@
-import { PtvAlert } from "@/server/alert-source/ptv-alert";
+import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 import { arraysMatch } from "@dan-schel/js-utils";
 import { z } from "zod";
 
@@ -15,8 +15,8 @@ export class AlertData {
     readonly url: string,
     readonly startsAt: Date | null,
     readonly endsAt: Date | null,
-    readonly affectedLinePtvIds: number[],
-    readonly affectedStationPtvIds: number[],
+    readonly affectedLinePtvIds: readonly number[],
+    readonly affectedStationPtvIds: readonly number[],
   ) {}
 
   static readonly bson = z
@@ -26,8 +26,8 @@ export class AlertData {
       url: z.string(),
       startsAt: z.date().nullable(),
       endsAt: z.date().nullable(),
-      affectedLinePtvIds: z.number().array(),
-      affectedStationPtvIds: z.number().array(),
+      affectedLinePtvIds: z.number().array().readonly(),
+      affectedStationPtvIds: z.number().array().readonly(),
     })
     .transform(
       (x) =>
@@ -63,6 +63,34 @@ export class AlertData {
       this.endsAt === other.endsAt &&
       arraysMatch(this.affectedLinePtvIds, other.affectedLinePtvIds) &&
       arraysMatch(this.affectedStationPtvIds, other.affectedStationPtvIds)
+    );
+  }
+
+  with({
+    title = this.title,
+    description = this.description,
+    url = this.url,
+    startsAt = this.startsAt,
+    endsAt = this.endsAt,
+    affectedLinePtvIds = this.affectedLinePtvIds,
+    affectedStationPtvIds = this.affectedStationPtvIds,
+  }: {
+    title?: string;
+    description?: string;
+    url?: string;
+    startsAt?: Date | null;
+    endsAt?: Date | null;
+    affectedLinePtvIds?: readonly number[];
+    affectedStationPtvIds?: readonly number[];
+  }) {
+    return new AlertData(
+      title,
+      description,
+      url,
+      startsAt,
+      endsAt,
+      affectedLinePtvIds,
+      affectedStationPtvIds,
     );
   }
 

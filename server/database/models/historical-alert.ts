@@ -5,11 +5,11 @@ import { HistoricalAlert } from "@/server/data/alert/historical-alert";
 export class HistoricalAlertModel extends DatabaseModel<
   HistoricalAlert,
   number,
-  z.input<typeof HistoricalAlertModel.schema>
+  z.input<typeof HistoricalAlertModel._schema>
 > {
   static instance = new HistoricalAlertModel();
 
-  private static schema = z.object({
+  private static _schema = z.object({
     name: z.string(),
     description: z.string(),
   });
@@ -24,7 +24,7 @@ export class HistoricalAlertModel extends DatabaseModel<
 
   serialize(
     item: HistoricalAlert,
-  ): z.input<typeof HistoricalAlertModel.schema> {
+  ): z.input<typeof HistoricalAlertModel._schema> {
     return {
       name: item.name,
       description: item.description,
@@ -32,7 +32,7 @@ export class HistoricalAlertModel extends DatabaseModel<
   }
 
   deserialize(id: number, item: unknown): HistoricalAlert {
-    const parsed = HistoricalAlertModel.schema.parse(item);
+    const parsed = HistoricalAlertModel._schema.parse(item);
     return new HistoricalAlert(id, parsed.name, parsed.description);
   }
 }

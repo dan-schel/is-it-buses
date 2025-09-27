@@ -1,4 +1,4 @@
-import { LineShapeNode } from "@/server/data/line/line-routes/line-shape";
+import { LineGroupNode } from "@/server/data/line-group/line-group-node";
 import { z } from "zod";
 
 /**
@@ -10,8 +10,8 @@ import { z } from "zod";
 export class LineSection {
   constructor(
     readonly line: number,
-    readonly a: LineShapeNode,
-    readonly b: LineShapeNode,
+    readonly a: LineGroupNode,
+    readonly b: LineGroupNode,
   ) {
     if (a === b) {
       throw new Error("Line section must exist between two different nodes.");

@@ -1,4 +1,4 @@
-import { ADMINS } from "@/server/database/models/models";
+import { ADMINS } from "@/server/database/models";
 import { JsonSerializable } from "@/shared/json-serializable";
 import { redirect } from "vike/abort";
 import { PageContext } from "vike/types";

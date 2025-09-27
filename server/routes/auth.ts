@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { ADMINS } from "@/server/database/models/models";
+import { ADMINS } from "@/server/database/models";
 import { validateMiddleware } from "@/server/routes/middleware/validate";
 import { loginSchema } from "@/shared/types/auth";
 import { compare } from "bcrypt";

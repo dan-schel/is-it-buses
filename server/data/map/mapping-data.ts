@@ -1,6 +1,6 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 
 export class MappingData {
   constructor(

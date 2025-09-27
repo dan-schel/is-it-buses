@@ -1,5 +1,5 @@
 import { App } from "@/server/app";
-import { DEPLOYMENT_LOGS } from "@/server/database/models/models";
+import { DEPLOYMENT_LOGS } from "@/server/database/models";
 import { OnStartupScheduler } from "@/server/task/lib/on-startup-scheduler";
 import { Task } from "@/server/task/lib/task";
 import { TaskScheduler } from "@/server/task/lib/task-scheduler";
@@ -43,13 +43,14 @@ export class SendStartupMessageTask extends Task {
 
       if (deployments.length < 2 || subHours(new Date(), 1) > lastDeployment) {
         await app.discordBot.logDeployment(
+          app,
           app.commitHash,
           deployments.length > 0,
         );
       }
     } catch (error) {
-      console.warn("Failed to send deploy message to Discord.");
-      console.warn(error);
+      app.log.warn("Failed to send deploy message to Discord.");
+      app.log.warn(error);
     }
   }
 }

@@ -5,7 +5,7 @@ import { App } from "@/server/app";
 import { randomFillSync } from "crypto";
 import { uuid } from "@dan-schel/js-utils";
 import { Admin } from "@/server/database/models/admin";
-import { ADMINS } from "@/server/database/models/models";
+import { ADMINS } from "@/server/database/models";
 import { validateMiddleware } from "@/server/routes/middleware/validate";
 
 export function createUsersRouter(app: App) {
@@ -63,6 +63,7 @@ export function createUsersRouter(app: App) {
       await app.database.of(ADMINS).create(user);
 
       await app.discordBot.inviteAdmin(
+        app,
         id,
         username,
         password,

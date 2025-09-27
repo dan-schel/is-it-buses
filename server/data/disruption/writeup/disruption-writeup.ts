@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const LineStatusIndicatorPriorities = [
+export const lineStatusIndicatorPriorities = [
   // Never shown on the line status indicator.
   "hidden",
 
@@ -18,7 +18,15 @@ export const LineStatusIndicatorPriorities = [
 ] as const;
 
 export type LineStatusIndicatorPriority =
-  (typeof LineStatusIndicatorPriorities)[number];
+  (typeof lineStatusIndicatorPriorities)[number];
+
+export const summaryIconTypes = [
+  "line",
+  "cross",
+  "altered-route",
+  "traffic",
+] as const;
+export type SummaryIconType = (typeof summaryIconTypes)[number];
 
 /**
  * The title, markdown description, etc. used in areas such as the disruption
@@ -38,7 +46,7 @@ export class DisruptionWriteup {
 
       // TODO: Choosing the icon should probably be the responsibility of the
       // code which handles telling the <Map> what to do.
-      readonly iconType: "line" | "cross" | "altered-route" | "traffic";
+      readonly iconType: SummaryIconType;
     },
     /** Line status indicator text on the overview page. */
     readonly lineStatusIndicator: {
@@ -55,16 +63,11 @@ export class DisruptionWriteup {
         headline: z.string().nullable(),
         subject: z.string(),
         period: z.string().nullable(),
-        iconType: z.union([
-          z.literal("line"),
-          z.literal("cross"),
-          z.literal("altered-route"),
-          z.literal("traffic"),
-        ]),
+        iconType: z.enum(summaryIconTypes),
       }),
       lineStatusIndicator: z.object({
         summary: z.string(),
-        priority: z.enum(LineStatusIndicatorPriorities),
+        priority: z.enum(lineStatusIndicatorPriorities),
       }),
     })
     .transform(
@@ -92,10 +95,10 @@ export class DisruptionWriteup {
     }
 
     const highestPriority =
-      LineStatusIndicatorPriorities[
+      lineStatusIndicatorPriorities[
         Math.max(
           ...writeups.map((x) =>
-            LineStatusIndicatorPriorities.indexOf(
+            lineStatusIndicatorPriorities.indexOf(
               x.lineStatusIndicator.priority,
             ),
           ),
@@ -104,6 +107,25 @@ export class DisruptionWriteup {
 
     return writeups.filter(
       (x) => x.lineStatusIndicator.priority === highestPriority,
+    );
+  }
+
+  static simple(
+    title: string,
+    description?: string,
+    icon: SummaryIconType = "cross",
+    priority: LineStatusIndicatorPriority = "high",
+  ) {
+    return new DisruptionWriteup(
+      title,
+      description ?? title,
+      {
+        headline: null,
+        subject: title,
+        period: null,
+        iconType: icon,
+      },
+      { summary: title, priority: priority },
     );
   }
 }

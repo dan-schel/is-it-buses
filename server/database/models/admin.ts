@@ -14,10 +14,11 @@ export class Admin {
 export class AdminModel extends DatabaseModel<
   Admin,
   string,
-  z.input<typeof AdminModel.schema>
+  z.input<typeof AdminModel._schema>
 > {
   static instance = new AdminModel();
-  private static schema = z.object({
+
+  private static _schema = z.object({
     username: z.string(),
     password: z.string(),
     role: z.enum(["super", "admin"]),
@@ -47,7 +48,7 @@ export class AdminModel extends DatabaseModel<
   }
 
   deserialize(id: string, item: unknown): Admin {
-    const parsed = AdminModel.schema.parse(item);
+    const parsed = AdminModel._schema.parse(item);
     return new Admin(
       id,
       parsed.username,

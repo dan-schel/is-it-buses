@@ -19,9 +19,9 @@ export function FinePrint() {
           Not affiliated with PTV, Metro, V/Line, Transport Victoria, etc.
         </Text>
         <Text style="tiny-weak">
-          Visit{" "}
-          <Link href="https://transport.vic.gov.au/">transport.vic.gov.au</Link>{" "}
-          for official information.
+          For official information, visit{" "}
+          <Link href="https://transport.vic.gov.au/">transport.vic.gov.au</Link>
+          .
         </Text>
       </Column>
       <Row className="gap-2">

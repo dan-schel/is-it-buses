@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as map from "@/server/entry-point/data/map";
 import * as mapIds from "@/shared/map-node-ids";
 import { MappingData } from "@/server/data/map/mapping-data";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 import {
   formatLine,
   formatLines,

@@ -1,4 +1,4 @@
-import { Collection } from "@/server/data/utils/collection";
+import { Collection } from "@/server/data/collection";
 import { Station } from "@/server/data/station/station";
 
 export class StationCollection extends Collection<number, Station> {

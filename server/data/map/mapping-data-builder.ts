@@ -1,9 +1,9 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { LineGroupNode } from "@/server/data/line-group/line-group-node";
-import { MapSegment } from "@/server/data/map-segment";
+import { MapSegment } from "@/server/data/map/map-segment";
 import { MappingData } from "@/server/data/map/mapping-data";
-import { Range } from "@/server/data/utils/range";
+import { Range } from "@/server/data/range";
 import { map } from "@dan-schel/js-utils";
 
 type IdConstants = { [key: string]: number };
