@@ -20,4 +20,20 @@ export class Disruption {
     readonly sourceAlertId: string | null,
     readonly curationType: CurationType,
   ) {}
+
+  with({
+    id = this.id,
+    data = this.data,
+    period = this.period,
+    sourceAlertId = this.sourceAlertId,
+    curationType = this.curationType,
+  }: {
+    id?: string;
+    data?: DisruptionData;
+    period?: DisruptionPeriod;
+    sourceAlertId?: string | null;
+    curationType?: CurationType;
+  }) {
+    return new Disruption(id, data, period, sourceAlertId, curationType);
+  }
 }

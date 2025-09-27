@@ -1,37 +1,20 @@
 import { DISRUPTIONS } from "@/server/database/models";
-import { createAlert } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-alert";
-import { createDisruption } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-disruption";
-import { createPtvAlert } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-ptv-alert";
+import {
+  date2DaysAgo,
+  existingAutomaticDisruption,
+  existingManualDisruption,
+  in2Days,
+  in7Days,
+  now,
+  outdatedAlert,
+  updatedPtvAlert,
+} from "@/tests/server/task/tasks/refresh-alerts-task/utils/sample-data";
 import { setupScenario } from "@/tests/server/task/tasks/refresh-alerts-task/utils/setup-scenario";
-import { defaultMockedNow } from "@/tests/server/utils";
-import { addDays, subDays } from "date-fns";
 import { millisecondsInDay } from "date-fns/constants";
 import { describe, expect, it } from "vitest";
 
 describe("RefreshAlertsTask", () => {
   describe("#execute", () => {
-    const now = defaultMockedNow;
-    const in2Days = addDays(now, 2);
-    const in7Days = addDays(now, 7);
-    const date2DaysAgo = subDays(now, 2);
-
-    const outdatedAlert = createAlert({
-      state: "processed-manually",
-      title: "Outdated title",
-      processedAt: date2DaysAgo,
-    });
-    const updatedPtvAlert = createPtvAlert({
-      id: outdatedAlert.id,
-      title: "Updated title",
-    });
-    const existingManualDisruption = createDisruption({
-      sourceAlertId: outdatedAlert.id,
-    });
-    const existingAutomaticDisruption = createDisruption({
-      sourceAlertId: outdatedAlert.id,
-      curationType: "automatic",
-    });
-
     it("gracefully handles PTV fetch failures", async () => {
       const { runTask, log } = await setupScenario({
         ptvAlert: "fetch-error",
@@ -45,7 +28,7 @@ describe("RefreshAlertsTask", () => {
 
     it("schedules alerts for deletion", async () => {
       const { runTask, requireAlert } = await setupScenario({
-        existingAlert: createAlert({}),
+        existingAlert: outdatedAlert,
       });
 
       expect((await requireAlert()).deleteAt).toBeNull();
@@ -55,8 +38,8 @@ describe("RefreshAlertsTask", () => {
 
     it("rescues alerts from deletion if they re-appear", async () => {
       const { runTask, requireAlert } = await setupScenario({
-        existingAlert: createAlert({ id: "1", deleteAt: in2Days }),
-        ptvAlert: createPtvAlert({ id: 1 }),
+        existingAlert: outdatedAlert.with({ deleteAt: in2Days }),
+        ptvAlert: updatedPtvAlert,
       });
 
       expect((await requireAlert()).deleteAt).not.toBeNull();
@@ -66,7 +49,7 @@ describe("RefreshAlertsTask", () => {
 
     it("deletes alerts which are due for deletion", async () => {
       const { runTask, getAlert, time } = await setupScenario({
-        existingAlert: createAlert({ deleteAt: in7Days }),
+        existingAlert: outdatedAlert.with({ deleteAt: in7Days }),
       });
 
       expect(await getAlert()).not.toBeNull();
