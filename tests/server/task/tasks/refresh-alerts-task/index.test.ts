@@ -1,303 +1,291 @@
-import { IgnoreEverythingParsingRule } from "@/server/data/alert/parsing/rules/ignore-everything-parsing-rule";
-import { PassthroughParsingRule } from "@/server/data/alert/parsing/rules/passthrough-parsing-rule";
-import { ALERTS, DISRUPTIONS } from "@/server/database/models";
-import { RefreshAlertsTask } from "@/server/task/tasks/refresh-alerts-task";
-import {
-  createAlert,
-  createDisruption,
-  createPtvAlert,
-} from "@/tests/server/task/tasks/refresh-alerts-task/utils";
-import { createTestApp } from "@/tests/server/utils";
+import { DISRUPTIONS } from "@/server/database/models";
+import { createAlert } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-alert";
+import { createDisruption } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-disruption";
+import { createPtvAlert } from "@/tests/server/task/tasks/refresh-alerts-task/utils/create-ptv-alert";
+import { setupScenario } from "@/tests/server/task/tasks/refresh-alerts-task/utils/setup-scenario";
+import { defaultMockedNow } from "@/tests/server/utils";
 import { addDays, subDays } from "date-fns";
 import { millisecondsInDay } from "date-fns/constants";
-import { assert, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("RefreshAlertsTask", () => {
   describe("#execute", () => {
-    it("gracefully handles PTV fetch failures", async () => {
-      const { app, alertSource, log } = createTestApp();
-      alertSource.setShouldFail(true);
+    const now = defaultMockedNow;
+    const in2Days = addDays(now, 2);
+    const in7Days = addDays(now, 7);
+    const date2DaysAgo = subDays(now, 2);
 
-      const promise = new RefreshAlertsTask().execute(app);
+    const outdatedAlert = createAlert({
+      state: "processed-manually",
+      title: "Outdated title",
+      processedAt: date2DaysAgo,
+    });
+    const updatedPtvAlert = createPtvAlert({
+      id: outdatedAlert.id,
+      title: "Updated title",
+    });
+    const existingManualDisruption = createDisruption({
+      sourceAlertId: outdatedAlert.id,
+    });
+    const existingAutomaticDisruption = createDisruption({
+      sourceAlertId: outdatedAlert.id,
+      curationType: "automatic",
+    });
+
+    it("gracefully handles PTV fetch failures", async () => {
+      const { runTask, log } = await setupScenario({
+        ptvAlert: "fetch-error",
+      });
+
+      const promise = runTask();
 
       await expect(promise).resolves.not.toThrow();
       expect(log.hasWarn("Failed to fetch new alerts from PTV.")).toBe(true);
     });
 
     it("schedules alerts for deletion", async () => {
-      const { app, db, time } = createTestApp();
-      const alert = await createAlert(db, {});
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: createAlert({}),
+      });
 
-      expect((await getAlert()).deleteAt).toBeNull();
-      await new RefreshAlertsTask().execute(app);
-      expect((await getAlert()).deleteAt).toStrictEqual(addDays(time.now(), 7));
+      expect((await requireAlert()).deleteAt).toBeNull();
+      await runTask();
+      expect((await requireAlert()).deleteAt).toStrictEqual(in7Days);
     });
 
     it("rescues alerts from deletion if they re-appear", async () => {
-      const { app, db, time, alertSource } = createTestApp();
-      const alert = await createAlert(db, { deleteAt: addDays(time.now(), 2) });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: createAlert({ id: "1", deleteAt: in2Days }),
+        ptvAlert: createPtvAlert({ id: 1 }),
+      });
 
-      const ptvAlert = createPtvAlert({ id: alert.id });
-      alertSource.setAlerts([ptvAlert]);
-
-      expect((await getAlert()).deleteAt).not.toBeNull();
-      await new RefreshAlertsTask().execute(app);
-      expect((await getAlert()).deleteAt).toBeNull();
+      expect((await requireAlert()).deleteAt).not.toBeNull();
+      await runTask();
+      expect((await requireAlert()).deleteAt).toBeNull();
     });
 
     it("deletes alerts which are due for deletion", async () => {
-      const { app, db, time } = createTestApp();
-      await createAlert(db, { deleteAt: addDays(time.now(), 7) });
-      time.advance(millisecondsInDay * 7);
+      const { runTask, getAlert, time } = await setupScenario({
+        existingAlert: createAlert({ deleteAt: in7Days }),
+      });
 
-      expect(await db.of(ALERTS).count()).toBe(1);
-      await new RefreshAlertsTask().execute(app);
-      expect(await db.of(ALERTS).count()).toBe(0);
+      expect(await getAlert()).not.toBeNull();
+
+      time.advance(millisecondsInDay * 7);
+      await runTask();
+
+      expect(await getAlert()).toBeNull();
     });
 
     it("contributes updated data to existing manually processed alerts", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      const { runTask, requireAlert, time } = await setupScenario({
+        parsingRules: "passthrough-high",
+        existingAlert: outdatedAlert.with({ state: "processed-manually" }),
+        ptvAlert: updatedPtvAlert,
       });
-      const alert = await createAlert(db, {
-        state: "processed-manually",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
-      });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
 
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
+      const before = await requireAlert();
+      expect(before.state).toBe("processed-manually");
+      expect(before.data.title).toBe("Outdated title");
+      expect(before.updatedAt).toBeNull();
+      expect(before.updatedData).toBeNull();
+      expect(before.processedAt).toStrictEqual(date2DaysAgo);
 
-      const alertBefore = await getAlert();
-      expect(alertBefore.state).toBe("processed-manually");
-      expect(alertBefore.data.title).toBe("Outdated title");
-      expect(alertBefore.updatedAt).toBeNull();
-      expect(alertBefore.updatedData).toBeNull();
-      expect(alertBefore.processedAt).toStrictEqual(subDays(time.now(), 2));
+      await runTask();
 
-      await new RefreshAlertsTask().execute(app);
-
-      const alertAfter = await getAlert();
-      expect(alertAfter.state).toBe("updated-since-manual-processing");
-      expect(alertAfter.data.title).toBe("Outdated title");
-      expect(alertAfter.updatedAt).toStrictEqual(time.now());
-      expect(alertAfter.updatedData?.title).toBe("Updated title");
-      expect(alertAfter.processedAt).toStrictEqual(subDays(time.now(), 2));
+      const after = await requireAlert();
+      expect(after.state).toBe("updated-since-manual-processing");
+      expect(after.data.title).toBe("Outdated title");
+      expect(after.updatedAt).toStrictEqual(time.now());
+      expect(after.updatedData?.title).toBe("Updated title");
+      expect(after.processedAt).toStrictEqual(date2DaysAgo);
     });
 
     it("keeps old disruptions from manually processed alerts when updated", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      const { runTask, getDisruption, requireAlert } = await setupScenario({
+        parsingRules: "passthrough-high",
+        existingAlert: outdatedAlert.with({ state: "processed-manually" }),
+        ptvAlert: updatedPtvAlert,
+        existingDisruption: existingManualDisruption,
       });
-      const alert = await createAlert(db, {
-        state: "processed-manually",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
-      });
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
-
-      const disruption = await createDisruption(db, {
-        sourceAlertId: alert.id,
-      });
-      const getDisruption = async () =>
-        await db.of(DISRUPTIONS).get(disruption.id);
 
       expect(await getDisruption()).not.toBeNull();
 
-      await new RefreshAlertsTask().execute(app);
+      await runTask();
 
-      const alertAfter = await db.of(ALERTS).require(alert.id);
+      const alertAfter = await requireAlert();
       expect(alertAfter.state).toBe("updated-since-manual-processing");
       expect(await getDisruption()).not.toBeNull();
     });
 
     it("continues to ignore alerts which were ignored permanently", async () => {
-      const { app, db, time, alertSource } = createTestApp();
-      const alert = await createAlert(db, {
-        state: "ignored-permanently",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: outdatedAlert.with({ state: "ignored-permanently" }),
+        ptvAlert: updatedPtvAlert,
       });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
 
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
+      const before = await requireAlert();
+      expect(before.state).toBe("ignored-permanently");
+      expect(before.data.title).toBe("Outdated title");
+      expect(before.updatedAt).toBeNull();
+      expect(before.updatedData).toBeNull();
+      expect(before.processedAt).toStrictEqual(date2DaysAgo);
 
-      const alertBefore = await getAlert();
-      expect(alertBefore.state).toBe("ignored-permanently");
-      expect(alertBefore.data.title).toBe("Outdated title");
-      expect(alertBefore.updatedAt).toBeNull();
-      expect(alertBefore.updatedData).toBeNull();
-      expect(alertBefore.processedAt).toStrictEqual(subDays(time.now(), 2));
+      await runTask();
 
-      await new RefreshAlertsTask().execute(app);
-
-      const alertAfter = await getAlert();
-      expect(alertAfter.state).toBe("ignored-permanently");
-      expect(alertAfter.data.title).toBe("Outdated title");
-      expect(alertAfter.updatedAt).toStrictEqual(time.now());
-      expect(alertAfter.updatedData?.title).toBe("Updated title");
-      expect(alertAfter.processedAt).toStrictEqual(subDays(time.now(), 2));
+      const after = await requireAlert();
+      expect(after.state).toBe("ignored-permanently");
+      expect(after.data.title).toBe("Outdated title");
+      expect(after.updatedAt).toStrictEqual(now);
+      expect(after.updatedData?.title).toBe("Updated title");
+      expect(after.processedAt).toStrictEqual(date2DaysAgo);
     });
 
     it("re-parses automatically processed alerts when updated", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      const { runTask, requireAlert, app, db } = await setupScenario({
+        parsingRules: "passthrough-high",
+        existingAlert: outdatedAlert.with({ state: "processed-automatically" }),
+        ptvAlert: updatedPtvAlert,
       });
-      const alert = await createAlert(db, {
-        state: "processed-automatically",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
-      });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
 
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
+      await runTask();
 
-      await new RefreshAlertsTask().execute(app);
-      expect((await getAlert()).state).toBe("processed-automatically");
-      expect((await getAlert()).processedAt).toBe(time.now());
+      const alert = await requireAlert();
+      expect(alert.state).toBe("processed-automatically");
+      expect(alert.processedAt).toBe(now);
 
       const disruptions = await db.of(DISRUPTIONS).all();
       expect(disruptions.length).toBe(1);
-
-      const writeup = disruptions[0].data
-        .getWriteupAuthor()
-        .write(app, disruptions[0]);
+      const first = disruptions[0];
+      const writeup = first.data.getWriteupAuthor().write(app, first);
       expect(writeup.title).toBe("Updated title");
     });
 
     it("removes outdated auto-parsed disruptions when new ones are parsed", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      const { runTask, getDisruption } = await setupScenario({
+        parsingRules: "passthrough-high",
+        existingAlert: outdatedAlert.with({ state: "processed-automatically" }),
+        ptvAlert: updatedPtvAlert,
+        existingDisruption: existingAutomaticDisruption,
       });
-      const alert = await createAlert(db, {
-        state: "processed-automatically",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
-      });
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
-
-      const disruption = await createDisruption(db, {
-        sourceAlertId: alert.id,
-        curationType: "automatic",
-      });
-      const getDisruption = async () =>
-        await db.of(DISRUPTIONS).get(disruption.id);
 
       expect(await getDisruption()).not.toBeNull();
-      await new RefreshAlertsTask().execute(app);
+      await runTask();
       expect(await getDisruption()).toBeNull();
     });
 
     it("creates alerts and disruptions for newly parsed alerts", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      const { runTask, getAlert, requireAlert, db } = await setupScenario({
+        parsingRules: "passthrough-high",
+        ptvAlert: updatedPtvAlert,
       });
-      const alertId = "1";
-      const ptvAlert = createPtvAlert({ id: alertId });
-      alertSource.setAlerts([ptvAlert]);
-      const getAlert = async () => await db.of(ALERTS).get(alertId);
 
-      expect(await getAlert()).toBeNull();
+      expect(await getAlert(updatedPtvAlert.id)).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(0);
 
-      await new RefreshAlertsTask().execute(app);
+      await runTask();
 
-      const afterAlert = await getAlert();
-      assert(afterAlert != null);
-      expect(afterAlert.state).toBe("processed-automatically");
-      expect(afterAlert.appearedAt).toBe(time.now());
-      expect(afterAlert.processedAt).toBe(time.now());
-      expect(afterAlert.updatedData).toBeNull();
+      const after = await requireAlert(updatedPtvAlert.id);
+      expect(after.state).toBe("processed-automatically");
+      expect(after.appearedAt).toBe(now);
+      expect(after.processedAt).toBe(now);
+      expect(after.updatedData).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(1);
     });
 
     it("ignores alerts automatically if auto-parsing suggests it", async () => {
-      const { app, db, time, alertSource } = createTestApp({
-        alertParsingRules: (app) => [new IgnoreEverythingParsingRule(app)],
+      const { runTask, getAlert, requireAlert, db } = await setupScenario({
+        parsingRules: "ignore-everything",
+        ptvAlert: updatedPtvAlert,
       });
-      const alertId = "1";
-      const ptvAlert = createPtvAlert({ id: alertId });
-      alertSource.setAlerts([ptvAlert]);
-      const getAlert = async () => await db.of(ALERTS).get(alertId);
 
-      expect(await getAlert()).toBeNull();
+      expect(await getAlert(updatedPtvAlert.id)).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(0);
 
-      await new RefreshAlertsTask().execute(app);
+      await runTask();
 
-      const afterAlert = await getAlert();
-      assert(afterAlert != null);
-      expect(afterAlert.state).toBe("ignored-automatically");
-      expect(afterAlert.appearedAt).toBe(time.now());
-      expect(afterAlert.processedAt).toBe(time.now());
-      expect(afterAlert.updatedData).toBeNull();
+      const after = await requireAlert(updatedPtvAlert.id);
+      expect(after.state).toBe("ignored-automatically");
+      expect(after.appearedAt).toBe(now);
+      expect(after.processedAt).toBe(now);
+      expect(after.updatedData).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(0);
     });
 
     it("creates new unprocessed alerts if auto-parsing is inconclusive", async () => {
-      const { app, db, time, alertSource } = createTestApp();
-      const alertId = "1";
-      const ptvAlert = createPtvAlert({ id: alertId });
-      alertSource.setAlerts([ptvAlert]);
-      const getAlert = async () => await db.of(ALERTS).get(alertId);
+      const { runTask, getAlert, requireAlert, db } = await setupScenario({
+        ptvAlert: updatedPtvAlert,
+      });
 
-      expect(await getAlert()).toBeNull();
+      expect(await getAlert(updatedPtvAlert.id)).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(0);
 
-      await new RefreshAlertsTask().execute(app);
+      await runTask();
 
-      const afterAlert = await getAlert();
-      assert(afterAlert != null);
-      expect(afterAlert.state).toBe("new");
-      expect(afterAlert.appearedAt).toBe(time.now());
-      expect(afterAlert.processedAt).toBeNull();
-      expect(afterAlert.updatedData).toBeNull();
+      const after = await requireAlert(updatedPtvAlert.id);
+      expect(after.state).toBe("new");
+      expect(after.appearedAt).toBe(now);
+      expect(after.processedAt).toBeNull();
+      expect(after.updatedData).toBeNull();
       expect(await db.of(DISRUPTIONS).count()).toBe(0);
     });
 
     it("unignores alerts ignored manually if updated", async () => {
-      const { app, db, time, alertSource } = createTestApp();
-      const alert = await createAlert(db, {
-        state: "ignored-manually",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: outdatedAlert.with({ state: "ignored-manually" }),
+        ptvAlert: updatedPtvAlert,
       });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
 
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
+      const before = await requireAlert();
+      expect(before.state).toBe("ignored-manually");
+      expect(before.updatedData).toBeNull();
 
-      expect((await getAlert()).state).toBe("ignored-manually");
-      expect((await getAlert()).updatedData).toBeNull();
-      await new RefreshAlertsTask().execute(app);
-      expect((await getAlert()).state).toBe("updated-since-manual-processing");
-      expect((await getAlert()).updatedData).not.toBeNull();
+      await runTask();
+
+      const after = await requireAlert();
+      expect(after.state).toBe("updated-since-manual-processing");
+      expect(after.updatedData).not.toBeNull();
     });
 
     it("reprocesses alerts which were ignored automatically", async () => {
-      const { app, db, time, alertSource } = createTestApp();
-      const alert = await createAlert(db, {
-        state: "ignored-automatically",
-        title: "Outdated title",
-        processedAt: subDays(time.now(), 2),
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: outdatedAlert.with({ state: "ignored-automatically" }),
+        ptvAlert: updatedPtvAlert,
       });
-      const getAlert = async () => await db.of(ALERTS).require(alert.id);
 
-      const ptvAlert = createPtvAlert({ id: alert.id, title: "Updated title" });
-      alertSource.setAlerts([ptvAlert]);
+      const before = await requireAlert();
+      expect(before.state).toBe("ignored-automatically");
+      expect(before.updatedData).toBeNull();
+      await runTask();
 
-      expect((await getAlert()).state).toBe("ignored-automatically");
-      expect((await getAlert()).updatedData).toBeNull();
-      await new RefreshAlertsTask().execute(app);
-      expect((await getAlert()).state).toBe("new");
-      expect((await getAlert()).updatedData).toBeNull();
+      const after = await requireAlert();
+      expect(after.state).toBe("new");
+      expect(after.updatedData).toBeNull();
+    });
+
+    it("further updates already updated events", async () => {
+      const { runTask, requireAlert } = await setupScenario({
+        existingAlert: outdatedAlert.with({
+          state: "updated-since-manual-processing",
+          updatedAt: date2DaysAgo,
+          updatedData: outdatedAlert.data.with({ title: "Slightly outdated" }),
+        }),
+        ptvAlert: updatedPtvAlert,
+      });
+
+      const before = await requireAlert();
+      expect(before.state).toBe("updated-since-manual-processing");
+      expect(before.data.title).toBe("Outdated title");
+      expect(before.updatedData?.title).toBe("Slightly outdated");
+      expect(before.updatedAt).toBe(date2DaysAgo);
+
+      await runTask();
+
+      const after = await requireAlert();
+      expect(after.state).toBe("updated-since-manual-processing");
+      expect(after.data.title).toBe("Outdated title");
+      expect(after.updatedData?.title).toBe("Updated title");
+      expect(after.updatedAt).toBe(now);
     });
   });
 });

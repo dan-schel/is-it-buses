@@ -66,6 +66,34 @@ export class AlertData {
     );
   }
 
+  with({
+    title = this.title,
+    description = this.description,
+    url = this.url,
+    startsAt = this.startsAt,
+    endsAt = this.endsAt,
+    affectedLinePtvIds = this.affectedLinePtvIds,
+    affectedStationPtvIds = this.affectedStationPtvIds,
+  }: {
+    title?: string;
+    description?: string;
+    url?: string;
+    startsAt?: Date | null;
+    endsAt?: Date | null;
+    affectedLinePtvIds?: readonly number[];
+    affectedStationPtvIds?: readonly number[];
+  }) {
+    return new AlertData(
+      title,
+      description,
+      url,
+      startsAt,
+      endsAt,
+      affectedLinePtvIds,
+      affectedStationPtvIds,
+    );
+  }
+
   static fromPtvAlert(ptvAlert: PtvAlert) {
     return new AlertData(
       ptvAlert.title,
