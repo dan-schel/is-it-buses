@@ -48,17 +48,19 @@ export class Alert {
     readonly updatedAt: Date | null,
     readonly deleteAt: Date | null,
   ) {
-    this._assertForStates(
-      updatedData != null,
-      "updatedData != null",
-      "updated-since-manual-processing",
-    );
-    this._assertForStates(
-      updatedAt != null,
-      "updatedAt != null",
-      "updated-since-manual-processing",
-    );
-    this._assertForStates(processedAt == null, "processedAt == null", "new");
+    if (state === "updated-since-manual-processing") {
+      this._assertPresent(updatedData, "updatedData");
+      this._assertPresent(updatedAt, "updatedAt");
+    } else if (state !== "ignored-permanently") {
+      this._assertIsNull(updatedData, "updatedData");
+      this._assertIsNull(updatedAt, "updatedAt");
+    }
+
+    if (state !== "new") {
+      this._assertPresent(processedAt, "processedAt");
+    } else {
+      this._assertIsNull(processedAt, "processedAt");
+    }
   }
 
   get latestData() {
@@ -145,16 +147,15 @@ export class Alert {
     return new Alert(id, state, data, null, now, processedAt, null, null);
   }
 
-  private _assertForStates(
-    condition: boolean,
-    message: string,
-    ...states: AlertState[]
-  ) {
-    if (condition && !states.includes(this.state)) {
-      throw new Error(`Not expecting ${message} for "${this.state}" alert.`);
+  private _assertPresent(value: unknown, name: string) {
+    if (value == null) {
+      throw new Error(`${name} must be provided when state = "${this.state}".`);
     }
-    if (!condition && states.includes(this.state)) {
-      throw new Error(`Expecting ${message} for "${this.state}" alert.`);
+  }
+
+  private _assertIsNull(value: unknown, name: string) {
+    if (value != null) {
+      throw new Error(`${name} must be null when state = "${this.state}".`);
     }
   }
 

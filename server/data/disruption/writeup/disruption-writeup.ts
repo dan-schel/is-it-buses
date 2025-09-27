@@ -112,13 +112,13 @@ export class DisruptionWriteup {
 
   static simple(
     title: string,
-    description: string,
+    description?: string,
     icon: SummaryIconType = "cross",
     priority: LineStatusIndicatorPriority = "high",
   ) {
     return new DisruptionWriteup(
       title,
-      description,
+      description ?? title,
       {
         headline: null,
         subject: title,

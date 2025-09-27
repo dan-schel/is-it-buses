@@ -1,10 +1,15 @@
 import { Alert, AlertState } from "@/server/data/alert/alert";
 import { AlertData } from "@/server/data/alert/alert-data";
-import { ALERTS } from "@/server/database/models";
+import { CustomDisruptionData } from "@/server/data/disruption/data/custom-disruption-data";
+import { DisruptionData } from "@/server/data/disruption/data/disruption-data";
+import { CurationType, Disruption } from "@/server/data/disruption/disruption";
+import { DisruptionPeriod } from "@/server/data/disruption/period/disruption-period";
+import { StandardDisruptionPeriod } from "@/server/data/disruption/period/standard-disruption-period";
+import { ALERTS, DISRUPTIONS } from "@/server/database/models";
 import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 import { defaultMockedNow } from "@/tests/server/utils";
 import { InMemoryDatabase } from "@dan-schel/db";
-import { parseIntThrow } from "@dan-schel/js-utils";
+import { parseIntThrow, uuid } from "@dan-schel/js-utils";
 import { addDays } from "date-fns";
 
 export function createPtvAlert({
@@ -41,7 +46,7 @@ export function createPtvAlert({
   };
 }
 
-export function createAlert(
+export async function createAlert(
   db: InMemoryDatabase | null,
   {
     id = "1",
@@ -95,8 +100,42 @@ export function createAlert(
   );
 
   if (db != null) {
-    db.of(ALERTS).create(alert);
+    await db.of(ALERTS).create(alert);
   }
 
   return alert;
+}
+
+export async function createDisruption(
+  db: InMemoryDatabase | null,
+  {
+    id = uuid(),
+    data = CustomDisruptionData.simple("Some disruption title"),
+    period = StandardDisruptionPeriod.simple(
+      addDays(defaultMockedNow, 2),
+      addDays(defaultMockedNow, 5),
+    ),
+    sourceAlertId = null,
+    curationType = "manual",
+  }: {
+    id?: string;
+    data?: DisruptionData;
+    period?: DisruptionPeriod;
+    sourceAlertId?: string | null;
+    curationType?: CurationType;
+  },
+) {
+  const disruption = new Disruption(
+    id,
+    data,
+    period,
+    sourceAlertId,
+    curationType,
+  );
+
+  if (db != null) {
+    await db.of(DISRUPTIONS).create(disruption);
+  }
+
+  return disruption;
 }

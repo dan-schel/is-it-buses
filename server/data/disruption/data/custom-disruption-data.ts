@@ -85,7 +85,7 @@ export class CustomDisruptionData extends DisruptionDataBase {
 
   static simple(
     title: string,
-    description: string,
+    description?: string,
     icon?: SummaryIconType,
     priority?: LineStatusIndicatorPriority,
     category: FilterableDisruptionCategory | null = null,
