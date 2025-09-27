@@ -63,6 +63,7 @@ export function createUsersRouter(app: App) {
       await app.database.of(ADMINS).create(user);
 
       await app.discordBot.inviteAdmin(
+        app,
         id,
         username,
         password,

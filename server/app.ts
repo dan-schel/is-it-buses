@@ -48,6 +48,8 @@ export class App {
     // Has to run before anything else that might use the database.
     await this.database.runMigrations(migrations);
 
+    this.discordBot?.init(this);
+
     this._logStatus();
 
     // Run all startup tasks.

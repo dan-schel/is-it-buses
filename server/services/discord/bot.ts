@@ -1,3 +1,4 @@
+import { App } from "@/server/app";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -21,11 +22,9 @@ export class DiscordBot {
     this.client = new Client({
       intents: [GatewayIntentBits.GuildMembers],
     });
-
-    this._init();
   }
 
-  private _init() {
+  init(app: App) {
     this.client.on(Events.InteractionCreate, async (readyClient) => {
       if (readyClient.isButton()) {
         // Handle the event to delete the message containing login credentials
@@ -33,8 +32,8 @@ export class DiscordBot {
           try {
             await readyClient.message.delete();
           } catch (error) {
-            console.warn("Failed to delete message");
-            console.warn(error);
+            app.log.warn("Failed to delete message");
+            app.log.warn(error);
           }
         }
       }
@@ -58,6 +57,7 @@ export class DiscordBot {
   }
 
   async inviteAdmin(
+    app: App,
     id: string,
     username: string,
     password: string,
@@ -86,12 +86,13 @@ export class DiscordBot {
         components: [actions.toJSON()],
       });
     } catch (error) {
-      console.warn("Failed to send invitation");
-      console.warn(error);
+      app.log.warn("Failed to send invitation");
+      app.log.warn(error);
     }
   }
 
   async logDeployment(
+    app: App,
     hash: string,
     previouslyDeployed: boolean,
   ): Promise<void> {
@@ -108,8 +109,8 @@ export class DiscordBot {
         }
       }
     } catch (error) {
-      console.warn(`🔴 Failed to send message to Discord`);
-      console.warn(error);
+      app.log.warn(`🔴 Failed to send message to Discord`);
+      app.log.warn(error);
     }
   }
 

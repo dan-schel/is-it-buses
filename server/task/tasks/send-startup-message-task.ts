@@ -43,6 +43,7 @@ export class SendStartupMessageTask extends Task {
 
       if (deployments.length < 2 || subHours(new Date(), 1) > lastDeployment) {
         await app.discordBot.logDeployment(
+          app,
           app.commitHash,
           deployments.length > 0,
         );
