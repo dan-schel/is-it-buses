@@ -6,7 +6,7 @@ import { JsonSerializable } from "@/shared/json-serializable";
 import { CalendarData } from "@/shared/types/calendar-data";
 import { createCalendarData } from "@/server/data/disruption/period/utils/create-calendar-data";
 import {
-  LineStatusIndicatorPriorities,
+  lineStatusIndicatorPriorities,
   LineStatusIndicatorPriority,
 } from "@/server/data/disruption/writeup/disruption-writeup";
 import { Disruption } from "@/server/data/disruption/disruption";
@@ -55,10 +55,10 @@ export async function data(
     await app.disruptions.allForLine(line.id, { includePast: false })
   ).sort(
     (a, b) =>
-      LineStatusIndicatorPriorities.indexOf(
+      lineStatusIndicatorPriorities.indexOf(
         b.data.getWriteupAuthor().write(app, b).lineStatusIndicator.priority,
       ) -
-      LineStatusIndicatorPriorities.indexOf(
+      lineStatusIndicatorPriorities.indexOf(
         a.data.getWriteupAuthor().write(app, a).lineStatusIndicator.priority,
       ),
   );

@@ -3,7 +3,7 @@ import { Disruption } from "@/server/data/disruption/disruption";
 import { DisruptionPeriod } from "@/server/data/disruption/period/disruption-period";
 import { uuid } from "@dan-schel/js-utils";
 
-type ParsingConfidence = "low" | "high";
+export type ParsingConfidence = "low" | "high";
 
 type AlertParsingOutputData =
   | {

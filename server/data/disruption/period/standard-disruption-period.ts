@@ -14,6 +14,8 @@ import {
 import { JustDate } from "@/server/data/disruption/period/utils/just-date";
 import { addHours } from "date-fns";
 import { CalendarMark } from "@/shared/types/calendar-data";
+import { EndsNever } from "@/server/data/disruption/period/ends/ends-never";
+import { EndsExactly } from "@/server/data/disruption/period/ends/ends-exactly";
 
 /** Disruption is active continuously from the start date to the end date. */
 export class StandardDisruptionPeriod extends DisruptionPeriodBase {
@@ -78,5 +80,12 @@ export class StandardDisruptionPeriod extends DisruptionPeriodBase {
 
   getFullyEncompassingTimeRange(): TimeRange {
     return new TimeRange(this.start, this.end.getLatestInterpretableDate());
+  }
+
+  static simple(starts: Date | null, ends: Date | null) {
+    return new StandardDisruptionPeriod(
+      starts,
+      ends != null ? new EndsExactly(ends) : new EndsNever(),
+    );
   }
 }

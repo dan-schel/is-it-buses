@@ -1,3 +1,4 @@
+import { PassthroughParsingRule } from "@/server/data/alert/parsing/rules/passthrough-parsing-rule";
 import { ALERTS } from "@/server/database/models";
 import { RefreshAlertsTask } from "@/server/task/tasks/refresh-alerts-task";
 import {
@@ -56,7 +57,9 @@ describe("RefreshAlertsTask", () => {
     });
 
     it("contributes updated data to existing manually processed alerts", async () => {
-      const { app, db, time, alertSource } = createTestApp();
+      const { app, db, time, alertSource } = createTestApp({
+        alertParsingRules: (app) => [new PassthroughParsingRule(app, "high")],
+      });
       const alert = createAlert(db, {
         state: "processed-manually",
         title: "Outdated title",

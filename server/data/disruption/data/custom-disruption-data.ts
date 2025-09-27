@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { DisruptionDataBase } from "@/server/data/disruption/data/disruption-data-base";
-import { DisruptionWriteup } from "@/server/data/disruption/writeup/disruption-writeup";
+import {
+  DisruptionWriteup,
+  LineStatusIndicatorPriority,
+  SummaryIconType,
+} from "@/server/data/disruption/writeup/disruption-writeup";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
 import { CustomDisruptionWriteupAuthor } from "@/server/data/disruption/writeup/custom-disruption-writeup-author";
 import { CustomMapHighlighter } from "@/server/data/disruption/map-highlighting/custom-map-highlighter";
@@ -77,5 +81,21 @@ export class CustomDisruptionData extends DisruptionDataBase {
 
   applicableCategory(_app: App): FilterableDisruptionCategory | null {
     return this.category;
+  }
+
+  static simple(
+    title: string,
+    description: string,
+    icon?: SummaryIconType,
+    priority?: LineStatusIndicatorPriority,
+    category: FilterableDisruptionCategory | null = null,
+    highlighting: MapHighlighting = MapHighlighting.none,
+  ) {
+    return new CustomDisruptionData(
+      [],
+      DisruptionWriteup.simple(title, description, icon, priority),
+      highlighting,
+      category,
+    );
   }
 }
