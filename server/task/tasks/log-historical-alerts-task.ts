@@ -45,8 +45,8 @@ export class LogHistoricalAlertsTask extends Task {
     try {
       return await app.alertSource.fetchAlerts();
     } catch (error) {
-      console.warn("Failed fetch new alerts from PTV.");
-      console.warn(error);
+      app.log.warn("Failed fetch new alerts from PTV.");
+      app.log.warn(error);
       return null;
     }
   }

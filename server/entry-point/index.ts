@@ -12,12 +12,14 @@ import { initAlertSource } from "@/server/entry-point/services/alert-source";
 import { initDiscordBot } from "@/server/entry-point/services/discord";
 import { sessionMiddleware } from "@/server/routes/middleware/authentication";
 import { RealTimeProvider } from "@/server/services/time-provider/real-time-provider";
+import { ConsoleLogger } from "@/server/services/logger/console-logger";
 
 export async function run(root: string) {
   const database = await initDatabase();
   const alertSource = initAlertSource();
   const discordBot = initDiscordBot();
   const time = new RealTimeProvider();
+  const logger = new ConsoleLogger();
 
   const app = new App(
     lines,
@@ -28,6 +30,7 @@ export async function run(root: string) {
     time,
     env.NODE_ENV,
     env.COMMIT_HASH ?? null,
+    logger,
     env.USER_NAME ?? null,
     env.PASSWORD ?? null,
   );

@@ -10,6 +10,7 @@ import { DiscordBot } from "@/server/services/discord/bot";
 import { TimeProvider } from "@/server/services/time-provider/time-provider";
 import { AlertParsingPipeline } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { Tasks } from "@/server/task/lib/tasks";
+import { Logger } from "@/server/services/logger/logger";
 
 export class App {
   readonly alerts: AlertRepository;
@@ -27,6 +28,7 @@ export class App {
     readonly time: TimeProvider,
     readonly env: "production" | "development" | "test",
     readonly commitHash: string | null,
+    readonly log: Logger,
 
     username: string | null,
     password: string | null,
@@ -49,35 +51,32 @@ export class App {
   }
 
   onServerReady(port: number) {
-    // eslint-disable-next-line no-console
-    console.log(`Server listening on http://localhost:${port}`);
+    this.log.info(`Server listening on http://localhost:${port}`);
 
     // Schedule all periodic tasks.
     this._tasks.onServerReady();
   }
 
   private _logStatus() {
-    /* eslint-disable no-console */
-    console.log(
+    this.log.info(
       this.database instanceof MongoDatabase
         ? "🟢 Using MongoDB"
         : "⚫ Using in-memory database",
     );
-    console.log(
+    this.log.info(
       this.alertSource instanceof VtarAlertSource
         ? "🟢 Using relay server"
         : "⚫ Using fake alert source",
     );
-    console.log(
+    this.log.info(
       this.discordBot != null
         ? "🟢 Discord bot online"
         : "⚫ Discord bot offline",
     );
-    console.log(
+    this.log.info(
       this.commitHash != null
         ? `🟢 Commit hash: "${this.commitHash}"`
         : "⚫ Commit hash unknown",
     );
-    /* eslint-enable no-console */
   }
 }

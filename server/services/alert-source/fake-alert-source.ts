@@ -7,12 +7,21 @@ import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 // For testing purposes.
 export class FakeAlertSource extends AlertSource {
   private _alerts: PtvAlert[] = [];
+  private _shouldFail: boolean = false;
 
   setAlerts(alerts: PtvAlert[]) {
     this._alerts = alerts;
   }
 
+  setShouldFail(shouldFail: boolean) {
+    this._shouldFail = shouldFail;
+  }
+
   async fetchAlerts(): Promise<PtvAlert[]> {
+    if (this._shouldFail) {
+      throw new Error("Fetch failed");
+    }
+
     return this._alerts;
   }
 

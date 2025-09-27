@@ -7,11 +7,13 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FakeTimeProvider } from "@/server/services/time-provider/fake-time-provider";
 import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-source";
+import { FakeLogger } from "@/server/services/logger/fake-logger";
 
 export function createTestApp() {
   const db = new InMemoryDatabase();
   const alertSource = new FakeAlertSource();
   const time = new FakeTimeProvider(new Date("2025-01-01T00:00:00Z"));
+  const log = new FakeLogger();
 
   const app = new App(
     lines,
@@ -22,11 +24,12 @@ export function createTestApp() {
     time,
     "test",
     null,
+    log,
     null,
     null,
   );
 
-  return { app, db, alertSource, time };
+  return { app, db, alertSource, time, log };
 }
 
 export async function createTestServer() {

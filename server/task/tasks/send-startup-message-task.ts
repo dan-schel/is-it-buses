@@ -48,8 +48,8 @@ export class SendStartupMessageTask extends Task {
         );
       }
     } catch (error) {
-      console.warn("Failed to send deploy message to Discord.");
-      console.warn(error);
+      app.log.warn("Failed to send deploy message to Discord.");
+      app.log.warn(error);
     }
   }
 }
