@@ -9,6 +9,7 @@ import { FakeTimeProvider } from "@/server/services/time-provider/fake-time-prov
 import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-source";
 import { FakeLogger } from "@/server/services/logger/fake-logger";
 import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
+import { User } from "@/server/services/auth/user";
 
 export const defaultMockedNow = new Date("2025-01-01T00:00:00Z");
 
@@ -31,8 +32,8 @@ export function createTestApp({
     null,
     log,
     alertParsingRules,
-    null,
-    null,
+    User.SUPERADMIN_DEFAULT_USERNAME,
+    User.SUPERADMIN_DEFAULT_PASSWORD,
   );
 
   return { app, db, alertSource, time, log };

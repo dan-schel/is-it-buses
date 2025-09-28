@@ -6,7 +6,7 @@ import { PagePadding } from "@/components/common/PagePadding";
 import { PageCenterer } from "@/components/common/PageCenterer";
 import { useData } from "vike-react/useData";
 import { UnwrapAuthProtectedData } from "@/components/auth/UnwrapAuthProtectedData";
-import { Data } from "@/pages/admin/alerts/+data";
+import { Data } from "@/pages/admin/disruptions/+data";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
 import { Grid } from "@/components/core/Grid";
 import clsx from "clsx";
@@ -24,12 +24,12 @@ export default function Page() {
               <Breadcrumbs
                 paths={[
                   { name: "Admin dashboard", href: "/admin" },
-                  { name: "Alerts", href: "/admin/alerts" },
+                  { name: "Disruptions", href: "/admin/disruptions" },
                 ]}
               />
-              <Text style="megatitle">Alerts</Text>
+              <Text style="megatitle">Disruptions</Text>
               <Column className="gap-8" align="left">
-                {data.alerts.map((a) => (
+                {data.disruptions.map((a) => (
                   <Grid columns="auto 1fr" className="gap-2" key={a.id}>
                     <div
                       className={clsx(
@@ -37,10 +37,10 @@ export default function Page() {
                         getIconStyle(a),
                       )}
                     />
-                    <Text style="small">{a.title}</Text>
+                    <Text style="small">{a.text}</Text>
                   </Grid>
                 ))}
-                {data.alerts.length === 0 && <Text>No alerts!</Text>}
+                {data.disruptions.length === 0 && <Text>No disruptions!</Text>}
               </Column>
             </Column>
           </PagePadding>
@@ -51,16 +51,16 @@ export default function Page() {
 }
 
 function getIconStyle({
-  isInInbox,
-  awaitingDeletion,
+  isActive,
+  isInvalid,
 }: {
-  isInInbox: boolean;
-  awaitingDeletion: boolean;
+  isActive: boolean;
+  isInvalid: boolean;
 }) {
-  if (awaitingDeletion) {
+  if (isInvalid) {
     return "bg-status-red";
   }
-  if (isInInbox) {
+  if (isActive) {
     return "bg-accent";
   }
   return "border border-accent";

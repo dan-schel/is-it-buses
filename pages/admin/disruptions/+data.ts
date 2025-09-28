@@ -5,12 +5,11 @@ import { User } from "@/server/services/auth/user";
 import { AuthProtectedData } from "@/shared/apis/lib";
 
 export type Data = AuthProtectedData<{
-  alerts: {
+  disruptions: {
     id: string;
-    title: string;
-    isInInbox: boolean;
-    awaitingDeletion: boolean;
-    appearedAt: Date;
+    isActive: boolean;
+    isInvalid: boolean;
+    text: string;
   }[];
 }>;
 
@@ -18,18 +17,20 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
   return await withUser(ctx, User.CAN_VIEW_ALERTS_AND_DISRUPTIONS, async () => {
     const { app } = ctx.custom;
 
-    const alerts = await app.alerts.all();
+    const disruptions = await app.disruptions.all({ includeInvalid: true });
 
     return {
-      alerts: alerts
-        .map((x) => ({
+      disruptions: disruptions.map((x) => {
+        const isValid = x.data.isValid(app);
+        return {
           id: x.id,
-          title: x.latestData.title,
-          isInInbox: x.isInInbox,
-          awaitingDeletion: x.deleteAt != null,
-          appearedAt: x.appearedAt,
-        }))
-        .sort((a, b) => b.appearedAt.getTime() - a.appearedAt.getTime()),
+          isActive: x.period.occursAt(app.time.now()),
+          isInvalid: !isValid,
+          text: isValid
+            ? x.data.getWriteupAuthor().write(app, x).title
+            : "Invalid disruption",
+        };
+      }),
     };
   });
 }

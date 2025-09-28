@@ -1,86 +1,85 @@
 import React from "react";
-import axios from "axios";
-import { Data } from "@/pages/admin/+data";
-import { reload } from "vike/client/router";
-import { useData } from "vike-react/useData";
 
 import { Text } from "@/components/core/Text";
 import { Column } from "@/components/core/Column";
-import { AdminButton } from "@/pages/admin/AdminButton";
 import { PagePadding } from "@/components/common/PagePadding";
 import { PageCenterer } from "@/components/common/PageCenterer";
-import { MingcuteExitFill } from "@/components/icons/MingcuteExitFill";
-import { MingcuteUser4Fill } from "@/components/icons/MingcuteUser4Fill";
-import { MingcuteGroup2Fill } from "@/components/icons/MingcuteGroup2Fill";
-import { MingcuteMailFill } from "@/components/icons/MingcuteMailFill";
-import { MingcuteAlertOctagonFill } from "@/components/icons/MingcuteAlertOctagonFill";
+import { useData } from "vike-react/useData";
+import { Data } from "@/pages/admin/+data";
+import { UnwrapAuthProtectedData } from "@/components/auth/UnwrapAuthProtectedData";
+import { SimpleButton } from "@/components/common/SimpleButton";
+import { useUser } from "@/components/auth/use-user";
+import { reload } from "vike/client/router";
+import { MingcuteUser3Line } from "@/components/icons/MingcuteUser3Line";
+import { Divider } from "@/components/common/Divider";
+import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
+import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
+import { MingcuteMailOpenLine } from "@/components/icons/MingcuteMailOpenLine";
+import { MingcuteAlertOctagonLine } from "@/components/icons/MingcuteAlertOctogonLine";
+import { Grid } from "@/components/core/Grid";
 
 export default function Page() {
-  // TODO: This is temporary. Saves me having to check the prod database all the
-  // time though. If you're here to work on the Admin page, free free to move
-  // all this to another place or delete it.
-  const { historicalAlertsCount, historicalAlertsAvgPerDay, isSuperAdmin } =
-    useData<Data>();
+  const data = useData<Data>();
+
+  const { logout } = useUser();
 
   async function handleLogout() {
-    try {
-      await axios.get("/api/auth/logout", { withCredentials: true });
-      await reload();
-    } catch (error) {
-      console.warn(error);
-    }
+    await logout();
+    reload();
   }
 
   return (
-    <PageCenterer>
-      <PagePadding>
-        <Column className="gap-4">
-          <Text style="megatitle">Admin</Text>
-          <Text>
-            {historicalAlertsCount}{" "}
-            {historicalAlertsCount === 1
-              ? "historical alert"
-              : "historical alerts"}{" "}
-            recorded so far.
-          </Text>
-          <Text>
-            That&apos;s an average of {historicalAlertsAvgPerDay.toFixed(2)} per
-            day.
-          </Text>
-
-          <AdminButton
-            action={"/admin/alerts"}
-            icon={<MingcuteMailFill className="size-8" />}
-            label="Alert Inbox"
-          />
-
-          <AdminButton
-            action={"/admin/disruptions"}
-            icon={<MingcuteAlertOctagonFill className="size-8" />}
-            label="Disruptions"
-          />
-
-          <AdminButton
-            action={"/admin/account"}
-            icon={<MingcuteUser4Fill className="size-8" />}
-            label="Account"
-          />
-
-          {isSuperAdmin && (
-            <AdminButton
-              action={"/admin/users"}
-              icon={<MingcuteGroup2Fill className="size-8" />}
-              label="Manage Users"
-            />
-          )}
-
-          <AdminButton
-            action={handleLogout}
-            icon={<MingcuteExitFill className="size-8" />}
-            label="Logout"
-          />
-        </Column>
-      </PagePadding>
-    </PageCenterer>
+    <UnwrapAuthProtectedData
+      data={data}
+      content={(_data, user) => (
+        <PageCenterer>
+          <PagePadding>
+            <Column className="gap-8">
+              <Breadcrumbs
+                paths={[{ name: "Admin dashboard", href: "/admin" }]}
+              />
+              <Text style="megatitle">Admin dashboard</Text>
+              <Column className="gap-4" align="left">
+                <Text>
+                  You&apos;re logged in as <b>{user.username}</b> ({user.type}
+                  ).
+                </Text>
+                <SimpleButton text="Logout" onClick={handleLogout} />
+              </Column>
+              <Divider />
+              <Column className="gap-4">
+                <Text style="title">Actions</Text>
+                <Grid className="gap-4" columns="1fr 1fr">
+                  <SimpleButton
+                    href="/admin/status"
+                    text="Status"
+                    icon={<MingcuteInformationLine />}
+                    layout="tile"
+                  />
+                  <SimpleButton
+                    href="/admin/users"
+                    text="Users"
+                    icon={<MingcuteUser3Line />}
+                    layout="tile"
+                  />
+                  <SimpleButton
+                    href="/admin/alerts"
+                    text="Alerts"
+                    icon={<MingcuteMailOpenLine />}
+                    layout="tile"
+                  />
+                  <SimpleButton
+                    href="/admin/disruptions"
+                    text="Disruptions"
+                    icon={<MingcuteAlertOctagonLine />}
+                    layout="tile"
+                  />
+                </Grid>
+              </Column>
+            </Column>
+          </PagePadding>
+        </PageCenterer>
+      )}
+    />
   );
 }

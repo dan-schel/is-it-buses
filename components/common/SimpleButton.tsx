@@ -102,7 +102,7 @@ function TileLayout(props: LayoutProps) {
   return (
     <Button {...props.action} alt={props.content.alt}>
       <Column
-        className={clsx("gap-2 px-4 py-2 select-none", props.theme)}
+        className={clsx("gap-2 px-4 py-3 select-none", props.theme)}
         align="center"
       >
         {props.content.icon && (

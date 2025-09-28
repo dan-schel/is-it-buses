@@ -2,7 +2,6 @@ import { createVikeHandler } from "@/server/vike-handler";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { env } from "@/server/entry-point/env";
-import { createApiRouter } from "@/server/routes/api";
 import { createDevMiddleware } from "vike/server";
 import { App } from "@/server/app";
 import { lines } from "@/server/entry-point/data/lines";
@@ -10,10 +9,10 @@ import { stations } from "@/server/entry-point/data/stations";
 import { initDatabase } from "@/server/entry-point/services/database";
 import { initAlertSource } from "@/server/entry-point/services/alert-source";
 import { initDiscordBot } from "@/server/entry-point/services/discord";
-import { sessionMiddleware } from "@/server/routes/middleware/authentication";
 import { RealTimeProvider } from "@/server/services/time-provider/real-time-provider";
 import { ConsoleLogger } from "@/server/services/logger/console-logger";
 import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
+import { createApiRouter } from "@/server/api";
 
 export async function run(root: string) {
   const database = await initDatabase();
@@ -37,8 +36,8 @@ export async function run(root: string) {
     env.COMMIT_HASH ?? null,
     logger,
     alertParsingRules,
-    env.USER_NAME ?? null,
-    env.PASSWORD ?? null,
+    env.SUPERADMIN_USERNAME,
+    env.SUPERADMIN_PASSWORD,
   );
 
   await app.init();
@@ -48,17 +47,7 @@ export async function run(root: string) {
 
 export async function startWebServer(app: App, root: string) {
   const server = express();
-
-  server.use(
-    cookieParser(env.NODE_ENV === "test" ? undefined : env.SESSION_SECRET),
-  );
-  server.use(
-    sessionMiddleware(
-      app,
-      env.NODE_ENV === "production",
-      env.NODE_ENV !== "test" && env.SESSION_SECRET !== undefined,
-    ),
-  );
+  server.use(cookieParser());
 
   if (env.NODE_ENV === "production") {
     // Required if DigitalOcean uses a proxy (e.g. nginx),
