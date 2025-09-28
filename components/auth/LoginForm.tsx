@@ -5,6 +5,9 @@ import { Column } from "@/components/core/Column";
 import { Text } from "@/components/core/Text";
 import { Input } from "@/components/core/Input";
 import { SimpleButton } from "@/components/common/SimpleButton";
+import { Spacer } from "@/components/core/Spacer";
+import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+import { Row } from "@/components/core/Row";
 
 export type LoginFormProps = {
   onLoginSuccess?: () => void;
@@ -16,30 +19,56 @@ export function LoginForm(props: LoginFormProps) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
-    const response = await login(username, password);
+    setLoading(true);
+    try {
+      const response = await login(username, password);
 
-    if (!response.success) {
-      const message = {
-        "invalid-credentials": "Invalid username or password.",
-      }[response.error];
-      setError(message);
-    } else {
-      setError(null);
-      props.onLoginSuccess?.();
+      if (!response.success) {
+        const message = {
+          "invalid-credentials": "Invalid username or password.",
+        }[response.error];
+        setError(message);
+      } else {
+        setError(null);
+        props.onLoginSuccess?.();
+      }
+    } finally {
+      setPassword("");
+      setLoading(false);
     }
   }
 
   return (
     <form onSubmit={handleLogin}>
-      <Column className="gap-4">
+      <Column align="left" className="max-w-120">
+        <Text>Username</Text>
+        <Spacer h="2" />
         <Input value={username} onChange={setUsername} />
-        <Input value={password} onChange={setPassword} />
-        {error != null && <Text style="small-red">{error}</Text>}
-        <SimpleButton text="Login" submit />
+        <Spacer h="8" />
+
+        <Text>Password</Text>
+        <Spacer h="2" />
+        <Input value={password} onChange={setPassword} password />
+        {error != null && (
+          <>
+            <Spacer h="4" />
+            <Text style="small-red">{error}</Text>
+          </>
+        )}
+        <Spacer h="8" />
+        <Row align="center" className="gap-2">
+          <SimpleButton text="Login" submit />
+          {loading && <LoadingSpinner />}
+        </Row>
+        <Spacer h="8" />
+        <Text style="tiny-weak">
+          Admin dashboard access is for site admins only.
+        </Text>
       </Column>
     </form>
   );

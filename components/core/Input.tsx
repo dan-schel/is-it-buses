@@ -3,6 +3,7 @@ import React from "react";
 export type InputProps = {
   value: string;
   onChange: (value: string) => void;
+  password?: boolean;
 };
 
 // TODO: [DS] Consider renaming to TextInput. Consider renaming existing
@@ -14,7 +15,7 @@ export type InputProps = {
 export function Input(props: InputProps) {
   return (
     <input
-      type="text"
+      type={(props.password ?? false) ? "password" : "text"}
       value={props.value}
       onChange={(e) => props.onChange(e.target.value)}
       // TODO: [DS] Temporary!

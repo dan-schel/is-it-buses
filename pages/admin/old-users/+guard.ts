@@ -1,8 +1,8 @@
-import { PageContext } from "vike/types";
+// import { PageContext } from "vike/types";
 
-import { redirect } from "vike/abort";
+// import { redirect } from "vike/abort";
 
-export function guard(pageContext: PageContext) {
-  const { user } = pageContext.custom;
-  if (!user || user.role !== "super") throw redirect("/admin");
-}
+// export function guard(pageContext: PageContext) {
+//   const { user } = pageContext.custom;
+//   if (!user || user.role !== "super") throw redirect("/admin");
+// }

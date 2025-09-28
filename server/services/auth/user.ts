@@ -1,4 +1,4 @@
-import { UserProfile } from "@/shared/user-profile";
+import { UserProfile, UserProfileType } from "@/shared/user-profile";
 import { compare, hash } from "bcrypt";
 import z from "zod";
 
@@ -40,15 +40,15 @@ export class User {
   }
 
   get profile(): UserProfile {
-    return new UserProfile(this.username, this.typeDisplayString, {
+    return new UserProfile(this.username, this.profileType, {
       canManageUsers: this.canManageUsers,
     });
   }
 
-  get typeDisplayString() {
-    if (this.isSuperadmin) return "Superadmin";
-    if (this.isAdmin) return "Admin";
-    return "Standard";
+  get profileType(): UserProfileType {
+    if (this.isSuperadmin) return "superadmin";
+    if (this.isAdmin) return "admin";
+    return "standard";
   }
 
   get isAdmin() {

@@ -1,9 +1,12 @@
 import z from "zod";
 
+export const userProfileTypes = ["superadmin", "admin", "standard"] as const;
+export type UserProfileType = (typeof userProfileTypes)[number];
+
 export class UserProfile {
   constructor(
     readonly username: string,
-    readonly typeDisplayString: string,
+    readonly type: UserProfileType,
     readonly permissions: {
       readonly canManageUsers: boolean;
     },
@@ -12,19 +15,17 @@ export class UserProfile {
   static readonly json = z
     .object({
       username: z.string(),
-      typeDisplayString: z.string(),
+      type: z.enum(userProfileTypes),
       permissions: z.object({
         canManageUsers: z.boolean(),
       }),
     })
-    .transform(
-      (x) => new UserProfile(x.username, x.typeDisplayString, x.permissions),
-    );
+    .transform((x) => new UserProfile(x.username, x.type, x.permissions));
 
   toJSON(): z.input<typeof UserProfile.json> {
     return {
       username: this.username,
-      typeDisplayString: this.typeDisplayString,
+      type: this.type,
       permissions: this.permissions,
     };
   }

@@ -7,6 +7,8 @@ import { UserProfile } from "@/shared/user-profile";
 import { Column } from "@/components/core/Column";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { reload } from "vike/client/router";
+import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
+import { Row } from "@/components/core/Row";
 
 export type UnwrapAuthProtectedDataProps<T> = {
   data: AuthProtectedData<T>;
@@ -42,7 +44,10 @@ export function UnwrapAuthProtectedData<T>(
 
   return (
     <Column className="gap-8">
-      <Text>{errorMessage}</Text>
+      <Row className="bg-soft h-12 gap-2 px-4" align="center">
+        <MingcuteInformationLine className="text-lg" />
+        <Text>{errorMessage}</Text>
+      </Row>
       {showLoginForm && <LoginForm onLoginSuccess={handleSuccessfulLogin} />}
     </Column>
   );
