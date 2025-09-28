@@ -4,6 +4,7 @@ import React from "react";
 
 import { Column } from "@/components/core/Column";
 import { SettingsProvider } from "@/components/settings/common/SettingsProvider";
+import { UserProvider } from "@/components/auth/UserProvider";
 
 export default function LayoutDefault({
   children,
@@ -16,7 +17,9 @@ export default function LayoutDefault({
 
   return (
     <Column className="min-h-screen">
-      <SettingsProvider>{children}</SettingsProvider>
+      <SettingsProvider>
+        <UserProvider>{children}</UserProvider>
+      </SettingsProvider>
     </Column>
   );
 }

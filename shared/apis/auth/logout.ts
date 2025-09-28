@@ -1,7 +1,7 @@
 import { Api } from "@/shared/apis/lib";
 import z from "zod";
 
-const argsSchema = z.null();
+const argsSchema = z.object({});
 
 const resultSchema = z.object({ success: z.boolean() });
 

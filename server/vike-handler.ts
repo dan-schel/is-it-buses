@@ -5,7 +5,8 @@ import { App } from "@/server/app";
 import { Settings } from "@/shared/settings";
 import { z } from "zod";
 import { getToken } from "@/server/services/auth/cookie";
-import { UserProfile } from "@/shared/types/user-profile";
+import { User } from "@/server/services/auth/user";
+import { UserProfile } from "@/shared/user-profile";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -21,12 +22,13 @@ declare global {
 export type CustomPageContext = {
   app: App;
   settings: Settings;
-  user: UserProfile | null;
+  user: User | null;
 };
 
 export type ClientPageContext = {
   isProduction: boolean;
   settings: z.input<typeof Settings.json>;
+  user: z.input<typeof UserProfile.json> | null;
 };
 
 export function createVikeHandler(app: App) {
@@ -40,11 +42,12 @@ export function createVikeHandler(app: App) {
         custom: {
           app,
           settings,
-          user: user?.frontendProfile ?? null,
+          user,
         },
         client: {
           isProduction: app.env === "production",
           settings: settings.toJSON(),
+          user: user?.profile.toJSON() ?? null,
         },
         urlOriginal: req.url,
       } satisfies Vike.PageContext)

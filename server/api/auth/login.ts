@@ -17,12 +17,18 @@ export function setupLoginHandler(app: App, router: Router) {
       const result = await app.auth.login(username, password);
 
       if (result == null) {
-        const response: ResultOf<typeof api> = { success: false };
+        const response: ResultOf<typeof api> = {
+          success: false,
+          error: "invalid-credentials",
+        };
         res.json(response);
         return;
       }
 
-      const response: ResultOf<typeof api> = { success: true };
+      const response: ResultOf<typeof api> = {
+        success: true,
+        profile: result.user.profile.toJSON(),
+      };
       setToken(res, app, result.session.token).json(response);
     } catch (err) {
       app.log.warn(`500 Error handling ${api.path}`);

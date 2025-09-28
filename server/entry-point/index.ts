@@ -1,5 +1,6 @@
 import { createVikeHandler } from "@/server/vike-handler";
 import express from "express";
+import cookieParser from "cookie-parser";
 import { env } from "@/server/entry-point/env";
 import { createDevMiddleware } from "vike/server";
 import { App } from "@/server/app";
@@ -46,6 +47,7 @@ export async function run(root: string) {
 
 export async function startWebServer(app: App, root: string) {
   const server = express();
+  server.use(cookieParser());
 
   if (env.NODE_ENV === "production") {
     // Required if DigitalOcean uses a proxy (e.g. nginx),
