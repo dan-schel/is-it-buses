@@ -16,6 +16,7 @@ import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
 import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
 import { MingcuteMailOpenLine } from "@/components/icons/MingcuteMailOpenLine";
 import { MingcuteAlertOctagonLine } from "@/components/icons/MingcuteAlertOctogonLine";
+import { Grid } from "@/components/core/Grid";
 
 export default function Page() {
   const data = useData<Data>();
@@ -48,28 +49,32 @@ export default function Page() {
               <Divider />
               <Column className="gap-4">
                 <Text style="title">Actions</Text>
-                <Column className="gap-4">
+                <Grid className="gap-4" columns="1fr 1fr">
                   <SimpleButton
                     href="/admin/status"
                     text="Status"
                     icon={<MingcuteInformationLine />}
-                  />
-                  <SimpleButton
-                    href="/admin/alerts"
-                    text="Alerts"
-                    icon={<MingcuteMailOpenLine />}
-                  />
-                  <SimpleButton
-                    href="/admin/disruptions"
-                    text="Disruptions"
-                    icon={<MingcuteAlertOctagonLine />}
+                    layout="tile"
                   />
                   <SimpleButton
                     href="/admin/users"
                     text="Users"
                     icon={<MingcuteUser3Line />}
+                    layout="tile"
                   />
-                </Column>
+                  <SimpleButton
+                    href="/admin/alerts"
+                    text="Alerts"
+                    icon={<MingcuteMailOpenLine />}
+                    layout="tile"
+                  />
+                  <SimpleButton
+                    href="/admin/disruptions"
+                    text="Disruptions"
+                    icon={<MingcuteAlertOctagonLine />}
+                    layout="tile"
+                  />
+                </Grid>
               </Column>
             </Column>
           </PagePadding>
