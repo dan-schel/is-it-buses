@@ -9,6 +9,8 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { reload } from "vike/client/router";
 import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
 import { Row } from "@/components/core/Row";
+import { PageCenterer } from "@/components/common/PageCenterer";
+import { PagePadding } from "@/components/common/PagePadding";
 
 export type UnwrapAuthProtectedDataProps<T> = {
   data: AuthProtectedData<T>;
@@ -17,7 +19,7 @@ export type UnwrapAuthProtectedDataProps<T> = {
 
 const errorMessages = {
   "not-authenticated": "You must be logged in to view this.",
-  "invalid-token": "Your session expired - please log in again.",
+  "invalid-token": "Your session expired. Please log in again.",
   "insufficient-permissions": "You don't have permission to view this.",
   "": "Something went wrong",
 } as const;
@@ -43,12 +45,19 @@ export function UnwrapAuthProtectedData<T>(
   }
 
   return (
-    <Column className="gap-8">
-      <Row className="bg-soft h-12 gap-2 px-4" align="center">
-        <MingcuteInformationLine className="text-lg" />
-        <Text>{errorMessage}</Text>
-      </Row>
-      {showLoginForm && <LoginForm onLoginSuccess={handleSuccessfulLogin} />}
-    </Column>
+    <PageCenterer>
+      <PagePadding>
+        <Column className="gap-8">
+          <Text style="megatitle">Admin dashboard</Text>
+          <Row className="bg-soft h-12 gap-2 px-4" align="center">
+            <MingcuteInformationLine className="text-lg" />
+            <Text>{errorMessage}</Text>
+          </Row>
+          {showLoginForm && (
+            <LoginForm onLoginSuccess={handleSuccessfulLogin} />
+          )}
+        </Column>
+      </PagePadding>
+    </PageCenterer>
   );
 }

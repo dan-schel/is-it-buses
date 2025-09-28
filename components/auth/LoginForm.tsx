@@ -8,6 +8,7 @@ import { SimpleButton } from "@/components/common/SimpleButton";
 import { Spacer } from "@/components/core/Spacer";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { Row } from "@/components/core/Row";
+import { Link } from "@/components/core/Link";
 
 export type LoginFormProps = {
   onLoginSuccess?: () => void;
@@ -67,7 +68,8 @@ export function LoginForm(props: LoginFormProps) {
         </Row>
         <Spacer h="8" />
         <Text style="tiny-weak">
-          Admin dashboard access is for site admins only.
+          Admin dashboard access is for site admins only.{" "}
+          <Link href="/">Back to main site.</Link>
         </Text>
       </Column>
     </form>
