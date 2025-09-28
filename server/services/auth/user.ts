@@ -6,7 +6,7 @@ export const roles = ["superadmin", "admin"] as const;
 export type Role = (typeof roles)[number];
 export const roleJson = z.enum(roles);
 
-const hashRotations = 15;
+const hashRotations = 12;
 
 export class User {
   static readonly SUPERADMIN_ID = "superadmin";

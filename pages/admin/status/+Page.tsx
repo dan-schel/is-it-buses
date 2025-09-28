@@ -8,6 +8,7 @@ import { useData } from "vike-react/useData";
 import { UnwrapAuthProtectedData } from "@/components/auth/UnwrapAuthProtectedData";
 import { Data } from "@/pages/admin/status/+data";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
+import { Divider } from "@/components/common/Divider";
 
 export default function Page() {
   const data = useData<Data>();
@@ -26,7 +27,21 @@ export default function Page() {
                 ]}
               />
               <Text style="megatitle">Status</Text>
+              <Divider />
               <Column className="gap-4" align="left">
+                <Text style="subtitle">Version</Text>
+                <Text>
+                  Commit hash:{" "}
+                  {data.commitHash != null ? (
+                    data.commitHash
+                  ) : (
+                    <i>&lt;unknown&gt;</i>
+                  )}
+                </Text>
+              </Column>
+              <Divider />
+              <Column className="gap-4" align="left">
+                <Text style="subtitle">Database</Text>
                 <Text>
                   {data.userCount} {data.userCount === 1 ? "user" : "users"}
                 </Text>

@@ -48,7 +48,7 @@ export default function Page() {
               </Column>
               <Divider />
               <Column className="gap-4">
-                <Text style="title">Actions</Text>
+                <Text style="subtitle">Actions</Text>
                 <Grid className="gap-4" columns="1fr 1fr">
                   <SimpleButton
                     href="/admin/status"
