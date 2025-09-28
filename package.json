@@ -14,7 +14,7 @@
     "@dan-schel/db": "0.1.4",
     "@dan-schel/js-utils": "4.4.1",
     "@tailwindcss/vite": "4.1.13",
-    "@vitejs/plugin-react": "5.0.3",
+    "@vitejs/plugin-react": "5.0.4",
     "bcrypt": "6.0.0",
     "clsx": "2.1.1",
     "cookie-parser": "1.4.7",
