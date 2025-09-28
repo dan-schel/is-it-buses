@@ -14,6 +14,7 @@ import { millisecondsInDay } from "date-fns/constants";
 const historicalRecordsStartDate = Date.parse("2025-03-02");
 
 export type Data = AuthProtectedData<{
+  commitHash: string | null;
   userCount: number;
   sessionCount: number;
   alertCount: number;
@@ -43,6 +44,7 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
       historicalAlertCount / daysSinceRecordsBegan;
 
     return {
+      commitHash: app.commitHash,
       userCount,
       sessionCount,
       alertCount,
