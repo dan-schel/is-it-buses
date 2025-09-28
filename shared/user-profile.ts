@@ -3,26 +3,28 @@ import z from "zod";
 export class UserProfile {
   constructor(
     readonly username: string,
-    readonly rank: string,
+    readonly typeDisplayString: string,
     readonly permissions: {
-      readonly canCreateUsers: boolean;
+      readonly canManageUsers: boolean;
     },
   ) {}
 
   static readonly json = z
     .object({
       username: z.string(),
-      rank: z.string(),
+      typeDisplayString: z.string(),
       permissions: z.object({
-        canCreateUsers: z.boolean(),
+        canManageUsers: z.boolean(),
       }),
     })
-    .transform((x) => new UserProfile(x.username, x.rank, x.permissions));
+    .transform(
+      (x) => new UserProfile(x.username, x.typeDisplayString, x.permissions),
+    );
 
   toJSON(): z.input<typeof UserProfile.json> {
     return {
       username: this.username,
-      rank: this.rank,
+      typeDisplayString: this.typeDisplayString,
       permissions: this.permissions,
     };
   }

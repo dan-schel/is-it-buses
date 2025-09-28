@@ -9,9 +9,10 @@ import { getToken } from "@/server/services/auth/cookie";
 import { setupLoginHandler } from "@/server/api/auth/login";
 import { setupLogoutHandler } from "@/server/api/auth/logout";
 
+export type ApiContext = { readonly app: App; readonly token: string | null };
+
 export type ApiHandler<Args extends ZodType, Result extends ZodType> = (
-  app: App,
-  token: string | null,
+  ctx: ApiContext,
   args: z.infer<Args>,
 ) => Promise<z.infer<Result>>;
 
@@ -46,7 +47,7 @@ function setupHandler<Args extends ZodType, Result extends ZodType>(
       }
 
       const token = getToken(req);
-      const result = await handler(app, token, args.data);
+      const result = await handler({ app, token }, args.data);
       res.json(result);
     } catch (err) {
       // TODO: In future we might want to allow handlers to throw some sort of

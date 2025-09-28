@@ -20,3 +20,14 @@ export const standardAuthErrors = [
   "insufficient-permissions",
 ] as const;
 export type StandardAuthError = (typeof standardAuthErrors)[number];
+
+export type AuthProtectedData<T> =
+  | { data?: undefined; error: StandardAuthError }
+  | { data: T; error?: undefined };
+
+export function buildAuthProtectedResultSchema<T extends z.ZodType>(schema: T) {
+  return z.union([
+    z.object({ error: standardAuthErrors }),
+    z.object({ data: schema }),
+  ]);
+}

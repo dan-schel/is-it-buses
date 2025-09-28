@@ -22,6 +22,7 @@ declare global {
 export type CustomPageContext = {
   app: App;
   settings: Settings;
+  token: string | null;
   user: User | null;
 };
 
@@ -42,6 +43,7 @@ export function createVikeHandler(app: App) {
         custom: {
           app,
           settings,
+          token,
           user,
         },
         client: {

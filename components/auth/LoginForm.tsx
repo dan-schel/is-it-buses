@@ -1,16 +1,18 @@
 import React from "react";
 
-import { LoginFunction } from "@/components/auth/use-user";
+import { useUser } from "@/components/auth/use-user";
 import { Column } from "@/components/core/Column";
 import { Text } from "@/components/core/Text";
 import { Input } from "@/components/core/Input";
 import { SimpleButton } from "@/components/common/SimpleButton";
 
 export type LoginFormProps = {
-  login: LoginFunction;
+  onLoginSuccess?: () => void;
 };
 
-export function LoginForm({ login }: LoginFormProps) {
+export function LoginForm(props: LoginFormProps) {
+  const { login } = useUser();
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
@@ -27,6 +29,7 @@ export function LoginForm({ login }: LoginFormProps) {
       setError(message);
     } else {
       setError(null);
+      props.onLoginSuccess?.();
     }
   }
 

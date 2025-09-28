@@ -13,6 +13,11 @@ export class User {
   static readonly SUPERADMIN_DEFAULT_USERNAME = "admin";
   static readonly SUPERADMIN_DEFAULT_PASSWORD = "admin";
 
+  static readonly ANYONE = (_user: User) => true;
+  static readonly IS_SUPERADMIN = (user: User) => user.isSuperadmin;
+  static readonly IS_ADMIN = (user: User) => user.isAdmin;
+  static readonly CAN_MANAGE_USERS = (user: User) => user.canManageUsers;
+
   constructor(
     readonly id: string,
     readonly username: string,
@@ -35,17 +40,26 @@ export class User {
   }
 
   get profile(): UserProfile {
-    return new UserProfile(
-      this.username,
-      this.roles.includes("superadmin") ? "Superadmin" : "Admin",
-      {
-        canCreateUsers: this.canCreateUsers,
-      },
-    );
+    return new UserProfile(this.username, this.typeDisplayString, {
+      canManageUsers: this.canManageUsers,
+    });
   }
 
-  get canCreateUsers() {
+  get typeDisplayString() {
+    if (this.isSuperadmin) return "Superadmin";
+    if (this.isAdmin) return "Admin";
+    return "Standard";
+  }
+
+  get isAdmin() {
+    return this.roles.includes("admin") || this.roles.includes("superadmin");
+  }
+  get isSuperadmin() {
     return this.roles.includes("superadmin");
+  }
+
+  get canManageUsers() {
+    return this.isSuperadmin;
   }
 
   static async hashPassword(password: string) {
