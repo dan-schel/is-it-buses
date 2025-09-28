@@ -14,6 +14,7 @@ import { MingcuteUser3Line } from "@/components/icons/MingcuteUser3Line";
 import { Divider } from "@/components/common/Divider";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
 import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
+import { MingcuteMailOpenLine } from "@/components/icons/MingcuteMailOpenLine";
 
 export default function Page() {
   const data = useData<Data>();
@@ -53,8 +54,13 @@ export default function Page() {
                     icon={<MingcuteInformationLine />}
                   />
                   <SimpleButton
+                    href="/admin/alerts"
+                    text="Alerts"
+                    icon={<MingcuteMailOpenLine />}
+                  />
+                  <SimpleButton
                     href="/admin/users"
-                    text="Manage users"
+                    text="Users"
                     icon={<MingcuteUser3Line />}
                   />
                 </Column>

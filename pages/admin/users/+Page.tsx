@@ -37,6 +37,7 @@ export default function Page() {
                     <Text>{u.type}</Text>
                   </Row>
                 ))}
+                {data.users.length === 0 && <Text>No users!</Text>}
               </Column>
             </Column>
           </PagePadding>

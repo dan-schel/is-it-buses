@@ -9,6 +9,8 @@ export type Data = AuthProtectedData<{}>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
   return await withUser(ctx, User.IS_ADMIN, async () => {
+    // TODO: Return if there's new alerts to process to display a badge on the
+    // dashboard?
     return {};
   });
 }

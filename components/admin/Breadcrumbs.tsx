@@ -20,7 +20,7 @@ export function Breadcrumbs(props: BreadcrumbsProps) {
         text="Exit to main site"
         icon={<MingcuteLeftLine />}
       />
-      <Row align="center" className="gap-2">
+      <Row align="center" className="gap-1">
         {props.paths.map((p, i) => (
           <React.Fragment key={i}>
             {i !== 0 && <MingcuteRightLine className="text-sm" />}

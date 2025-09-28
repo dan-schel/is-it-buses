@@ -17,6 +17,10 @@ export class User {
   static readonly IS_SUPERADMIN = (user: User) => user.isSuperadmin;
   static readonly IS_ADMIN = (user: User) => user.isAdmin;
   static readonly CAN_MANAGE_USERS = (user: User) => user.canManageUsers;
+  static readonly CAN_VIEW_ALERTS_AND_DISRUPTIONS = (user: User) =>
+    user.canViewAlertsAndDisruptions;
+  static readonly CAN_EDIT_ALERTS_AND_DISRUPTIONS = (user: User) =>
+    user.canEditAlertsAndDisruptions;
 
   constructor(
     readonly id: string,
@@ -60,6 +64,12 @@ export class User {
 
   get canManageUsers() {
     return this.isSuperadmin;
+  }
+  get canViewAlertsAndDisruptions() {
+    return this.isAdmin;
+  }
+  get canEditAlertsAndDisruptions() {
+    return this.isAdmin;
   }
 
   static async hashPassword(password: string) {

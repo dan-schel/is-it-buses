@@ -28,15 +28,25 @@ export default function Page() {
               <Text style="megatitle">Status</Text>
               <Column className="gap-4" align="left">
                 <Text>
+                  {data.userCount} {data.userCount === 1 ? "user" : "users"}
+                </Text>
+                <Text>
+                  {data.sessionCount}{" "}
+                  {data.sessionCount === 1 ? "session" : "sessions"}
+                </Text>
+                <Text>
+                  {data.alertCount} {data.alertCount === 1 ? "alert" : "alerts"}
+                </Text>
+                <Text>
+                  {data.disruptionCount}{" "}
+                  {data.disruptionCount === 1 ? "disruption" : "disruptions"}
+                </Text>
+                <Text>
                   {data.historicalAlertCount}{" "}
                   {data.historicalAlertCount === 1
                     ? "historical alert"
                     : "historical alerts"}{" "}
-                  recorded so far.
-                </Text>
-                <Text>
-                  That&apos;s an average of{" "}
-                  {data.historicalAlertAvgPerDay.toFixed(2)} per day.
+                  (~{data.historicalAlertAvgPerDay.toFixed(2)} per day)
                 </Text>
               </Column>
             </Column>
