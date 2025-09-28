@@ -40,7 +40,7 @@ export class User {
   }
 
   get profile(): UserProfile {
-    return new UserProfile(this.username, this.profileType, {
+    return new UserProfile(this.id, this.username, this.profileType, {
       canManageUsers: this.canManageUsers,
     });
   }

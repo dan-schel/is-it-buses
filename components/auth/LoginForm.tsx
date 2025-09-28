@@ -63,7 +63,7 @@ export function LoginForm(props: LoginFormProps) {
         )}
         <Spacer h="8" />
         <Row align="center" className="gap-2">
-          <SimpleButton text="Login" submit />
+          <SimpleButton text="Login" theme="primary" submit />
           {loading && <LoadingSpinner />}
         </Row>
         <Spacer h="8" />

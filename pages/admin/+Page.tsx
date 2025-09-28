@@ -10,6 +10,10 @@ import { UnwrapAuthProtectedData } from "@/components/auth/UnwrapAuthProtectedDa
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { useUser } from "@/components/auth/use-user";
 import { reload } from "vike/client/router";
+import { MingcuteUser3Line } from "@/components/icons/MingcuteUser3Line";
+import { Divider } from "@/components/common/Divider";
+import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
+import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationLine";
 
 export default function Page() {
   const data = useData<Data>();
@@ -24,10 +28,13 @@ export default function Page() {
   return (
     <UnwrapAuthProtectedData
       data={data}
-      content={(data, user) => (
+      content={(_data, user) => (
         <PageCenterer>
           <PagePadding>
             <Column className="gap-8">
+              <Breadcrumbs
+                paths={[{ name: "Admin dashboard", href: "/admin" }]}
+              />
               <Text style="megatitle">Admin dashboard</Text>
               <Column className="gap-4" align="left">
                 <Text>
@@ -36,18 +43,21 @@ export default function Page() {
                 </Text>
                 <SimpleButton text="Logout" onClick={handleLogout} />
               </Column>
-              <Column className="gap-4" align="left">
-                <Text>
-                  {data.historicalAlertsCount}{" "}
-                  {data.historicalAlertsCount === 1
-                    ? "historical alert"
-                    : "historical alerts"}{" "}
-                  recorded so far.
-                </Text>
-                <Text>
-                  That&apos;s an average of{" "}
-                  {data.historicalAlertsAvgPerDay.toFixed(2)} per day.
-                </Text>
+              <Divider />
+              <Column className="gap-4">
+                <Text style="title">Actions</Text>
+                <Column className="gap-4">
+                  <SimpleButton
+                    href="/admin/status"
+                    text="Status"
+                    icon={<MingcuteInformationLine />}
+                  />
+                  <SimpleButton
+                    href="/admin/users"
+                    text="Manage users"
+                    icon={<MingcuteUser3Line />}
+                  />
+                </Column>
               </Column>
             </Column>
           </PagePadding>

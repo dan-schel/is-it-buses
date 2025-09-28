@@ -72,6 +72,12 @@ export class AuthController {
     }
   }
 
+  async getAllUsers(): Promise<User[]> {
+    const superadmin = await this._getSuperadminUser();
+    const users = await this._users.all();
+    return [superadmin, ...users];
+  }
+
   private async _getSuperadminUser(): Promise<User> {
     if (this._superadminUser != null) return this._superadminUser;
 
