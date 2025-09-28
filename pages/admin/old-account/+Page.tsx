@@ -2,7 +2,7 @@ import { z } from "zod";
 import React from "react";
 import axios, { AxiosError } from "axios";
 import { useData } from "vike-react/useData";
-import { Data } from "@/pages/admin/account/+data";
+import { Data } from "@/pages/admin/old-account/+data";
 import { navigate, reload } from "vike/client/router";
 
 import { Row } from "@/components/core/Row";
