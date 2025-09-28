@@ -13,3 +13,10 @@ export type ArgsOf<ApiType> =
 export type ResultOf<ApiType> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ApiType extends Api<any, infer Result> ? z.input<Result> : never;
+
+export const standardAuthErrors = [
+  "not-authenticated",
+  "invalid-token",
+  "insufficient-permissions",
+] as const;
+export type StandardAuthError = (typeof standardAuthErrors)[number];

@@ -15,7 +15,8 @@ export function setupLogoutHandler(app: App, router: Router) {
 
       const token = getToken(req);
       if (token == null) {
-        res.sendStatus(401);
+        const response: ResultOf<typeof api> = { success: false };
+        setToken(res, app, null).json(response);
         return;
       }
 

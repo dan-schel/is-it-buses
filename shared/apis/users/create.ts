@@ -1,4 +1,4 @@
-import { Api } from "@/shared/apis/lib";
+import { Api, standardAuthErrors } from "@/shared/apis/lib";
 import z from "zod";
 
 const argsSchema = z.object({
@@ -9,7 +9,7 @@ const resultSchema = z.union([
   z.object({ success: z.literal(true), password: z.string() }),
   z.object({
     success: z.literal(false),
-    error: z.enum(["insufficient-permissions", "username-taken"]),
+    error: z.enum([...standardAuthErrors, "username-taken"]),
   }),
 ]);
 

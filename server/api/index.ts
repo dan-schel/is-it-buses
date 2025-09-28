@@ -6,13 +6,12 @@ import { createCorsMiddleware } from "@/server/api/cors";
 import z, { ZodType } from "zod";
 import { Api } from "@/shared/apis/lib";
 import { getToken } from "@/server/services/auth/cookie";
-import { User } from "@/server/services/auth/user";
 import { setupLoginHandler } from "@/server/api/auth/login";
 import { setupLogoutHandler } from "@/server/api/auth/logout";
 
 export type ApiHandler<Args extends ZodType, Result extends ZodType> = (
   app: App,
-  user: User | null,
+  token: string | null,
   args: z.infer<Args>,
 ) => Promise<z.infer<Result>>;
 
@@ -25,9 +24,9 @@ export function createApiRouter(app: App) {
 
   setupHandler(app, router, apis.USERS_CREATE, handlers.USERS_CREATE);
 
-  // router.use(/(.*)/, (_req, res) => {
-  //   res.sendStatus(404);
-  // });
+  router.use(/(.*)/, (_req, res) => {
+    res.sendStatus(404);
+  });
 
   return router;
 }
@@ -47,13 +46,7 @@ function setupHandler<Args extends ZodType, Result extends ZodType>(
       }
 
       const token = getToken(req);
-      const user = token ? await app.auth.getUserForToken(token) : null;
-      if (token != null && user == null) {
-        res.sendStatus(401);
-        return;
-      }
-
-      const result = await handler(app, user, args.data);
+      const result = await handler(app, token, args.data);
       res.json(result);
     } catch (err) {
       // TODO: In future we might want to allow handlers to throw some sort of
