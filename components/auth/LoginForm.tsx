@@ -47,14 +47,15 @@ export function LoginForm(props: LoginFormProps) {
   return (
     <form onSubmit={handleLogin}>
       <Column align="left" className="max-w-120">
-        <Text>Username</Text>
-        <Spacer h="2" />
-        <Input value={username} onChange={setUsername} />
+        <Column as="label" className="w-full gap-2">
+          <Text>Username</Text>
+          <Input value={username} onChange={setUsername} />
+        </Column>
         <Spacer h="8" />
-
-        <Text>Password</Text>
-        <Spacer h="2" />
-        <Input value={password} onChange={setPassword} password />
+        <Column as="label" className="w-full gap-2">
+          <Text>Password</Text>
+          <Input value={password} onChange={setPassword} password />
+        </Column>
         {error != null && (
           <>
             <Spacer h="4" />
