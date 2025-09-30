@@ -1,4 +1,4 @@
-import { format, isSameYear } from "date-fns";
+import { differenceInDays, format, isSameYear, startOfDay } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 const localTimezone = "Australia/Melbourne";
@@ -17,6 +17,26 @@ export function formatDate(
   const yearFormatCode = isSameYear(date, now) ? "" : " yyyy";
   const localDate = toZonedTime(date, localTimezone);
   return format(localDate, `${timeFormatCode}E do MMM${yearFormatCode}`);
+}
+
+export function formatRelativeDate(date: Date, now: Date) {
+  const localDate = toZonedTime(date, localTimezone);
+  const localNow = toZonedTime(now, localTimezone);
+
+  const daysDiff = differenceInDays(
+    startOfDay(localDate),
+    startOfDay(localNow),
+  );
+
+  if (daysDiff === 0) {
+    return `today at ${format(localDate, "h:mmaaa")}`;
+  } else if (daysDiff === 1) {
+    return `tomorrow at ${format(localDate, "h:mmaaa")}`;
+  } else if (daysDiff === -1) {
+    return `yesterday at ${format(localDate, "h:mmaaa")}`;
+  }
+
+  return formatDate(date, now, { includeTime: false });
 }
 
 export function utcToLocalTime(date: Date) {

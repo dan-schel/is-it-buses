@@ -2,6 +2,9 @@ import { z } from "zod";
 
 /** A start date and end date. */
 export class TimeRange {
+  static readonly beginningOfTime = new Date("1900-01-01T00:00:00Z");
+  static readonly endOfTime = new Date("2400-01-01T00:00:00Z");
+
   constructor(
     readonly start: Date | null,
     readonly end: Date | null,
@@ -21,16 +24,22 @@ export class TimeRange {
     };
   }
 
+  occursBefore(date: Date): boolean {
+    return this.end != null && date >= this.end;
+  }
+
+  occursAfter(date: Date): boolean {
+    return this.start != null && date < this.start;
+  }
+
   includes(date: Date): boolean {
-    if (this.start !== null && date < this.start) return false;
-    if (this.end !== null && date >= this.end) return false;
-    return true;
+    return !this.occursAfter(date) && !this.occursBefore(date);
   }
 
   intersects(other: TimeRange): boolean {
-    if (this.start !== null && other.end !== null && this.start >= other.end)
+    if (this.start != null && other.end !== null && this.start >= other.end)
       return false;
-    if (this.end !== null && other.start !== null && this.end <= other.start)
+    if (this.end != null && other.start !== null && this.end <= other.start)
       return false;
     return true;
   }

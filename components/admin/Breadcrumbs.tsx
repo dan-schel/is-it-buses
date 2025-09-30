@@ -23,13 +23,13 @@ export function Breadcrumbs(props: BreadcrumbsProps) {
       <Row align="center" className="gap-1">
         {props.paths.map((p, i) => (
           <React.Fragment key={i}>
-            {i !== 0 && <MingcuteRightLine className="text-sm" />}
+            {i !== 0 && <MingcuteRightLine className="text-xs" />}
             {p.href != null ? (
-              <Text style="small">
+              <Text style="tiny">
                 <Link href={p.href}>{p.name}</Link>
               </Text>
             ) : (
-              <Text style="small">{p.name}</Text>
+              <Text style="tiny">{p.name}</Text>
             )}
           </React.Fragment>
         ))}

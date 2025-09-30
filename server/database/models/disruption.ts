@@ -6,9 +6,7 @@ import {
 } from "@/server/data/disruption/disruption";
 import { disruptionPeriodBson } from "@/server/data/disruption/period/disruption-period";
 import { disruptionDataBson } from "@/server/data/disruption/data/disruption-data";
-
-const beginningOfTime = new Date("1900-01-01T00:00:00Z");
-const endOfTime = new Date("2400-01-01T00:00:00Z");
+import { TimeRange } from "@/server/data/disruption/period/utils/time-range";
 
 export class DisruptionModel extends DatabaseModel<
   Disruption,
@@ -67,8 +65,8 @@ export class DisruptionModel extends DatabaseModel<
     // Instead of null, use arbitrary dates far in the future/past so we can
     // easily do date comparisons when querying the database.
     return {
-      start: timeRange.start ?? beginningOfTime,
-      end: timeRange.end ?? endOfTime,
+      start: timeRange.start ?? TimeRange.beginningOfTime,
+      end: timeRange.end ?? TimeRange.endOfTime,
     };
   }
 }
