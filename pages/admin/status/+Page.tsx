@@ -33,7 +33,7 @@ export default function Page() {
                 <Text>
                   Commit hash:{" "}
                   {data.commitHash != null ? (
-                    data.commitHash
+                    data.commitHash.slice(0, 7)
                   ) : (
                     <i>&lt;unknown&gt;</i>
                   )}
