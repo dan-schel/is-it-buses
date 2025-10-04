@@ -59,9 +59,18 @@ export default function Page() {
   }
 
   return (
+    // Replace this (and the needless +data.ts hook) with a client side check
+    // for whether this user has enough permission via the frontend UserProfile.
+    // The error message should look the same as what UnwrapAuthProtectedData
+    // provides though. If the page was loaded by a logged out user, or a user
+    // with an invalid token, the UserProfile will be null, so we can show a
+    // login form in that case, just like UnwrapAuthProtectedData would. I guess
+    // we should add the error type to the ClientPageContext so that it can
+    // distinguish between not authed and invalid token, and therefore show the
+    // correct message.
     <UnwrapAuthProtectedData
       data={data}
-      content={(data, user) => (
+      content={(_data, _user) => (
         <PageCenterer>
           <PagePadding>
             <Column className="gap-8">

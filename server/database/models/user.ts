@@ -12,7 +12,7 @@ export class UserModel extends DatabaseModel<
   private static _schema = z.object({
     username: z.string(),
     passwordHash: z.string(),
-    roles: roleJson.array(),
+    roles: roleJson.array().readonly(),
   });
 
   private constructor() {

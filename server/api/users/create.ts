@@ -8,12 +8,21 @@ export async function handle(
   ctx: ApiContext,
   args: ArgsOf<typeof USERS_CREATE>,
 ): Promise<ResultOf<typeof USERS_CREATE>> {
-  return await withUser(ctx, User.CAN_MANAGE_USERS, async (user) => {
+  return await withUser(ctx, User.CAN_MANAGE_USERS, async () => {
     const { app } = ctx;
-    app.log.info(`"${user.username}" is creating new user "${args.username}"`);
 
-    return { data: { password: "a" } };
+    const existingUser = await app.auth.getUserByUsername(args.username);
+    if (existingUser != null) return { error: "username-taken" };
 
-    return { error: "username-taken" };
+    const password = User.generateRandomPassword();
+
+    const roles = {
+      admin: ["admin"] as const,
+      standard: ["standard"] as const,
+    }[args.permissions];
+
+    await app.auth.createUser(args.username, password, roles);
+
+    return { data: { password } };
   });
 }
