@@ -14,6 +14,13 @@ export type ResultOf<ApiType> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ApiType extends Api<any, infer Result> ? z.input<Result> : never;
 
+export type Failable<T, E extends string> = { data: T } | { error: E };
+export type AuthErrorResult = { error: StandardAuthError };
+export type AuthProtectedData<T, E extends string = never> = Failable<
+  T,
+  E | StandardAuthError
+>;
+
 export const standardAuthErrors = [
   "not-authenticated",
   "invalid-token",
@@ -21,13 +28,19 @@ export const standardAuthErrors = [
 ] as const;
 export type StandardAuthError = (typeof standardAuthErrors)[number];
 
-export type AuthProtectedData<T> =
-  | { data?: undefined; error: StandardAuthError }
-  | { data: T; error?: undefined };
+export const standardAuthErrorDisplayStrings = {
+  "not-authenticated": "You must be logged in to view this.",
+  "invalid-token": "Your session expired. Please log in again.",
+  "insufficient-permissions": "You don't have permission to view this.",
+} as const;
 
-export function buildAuthProtectedResultSchema<T extends z.ZodType>(schema: T) {
+export function buildAuthProtectedResultSchema<
+  SchemaType extends z.ZodType,
+  ErrorType extends string,
+>(schema: SchemaType, customErrorTypes: ErrorType[] = []) {
+  const errorTypes = [...standardAuthErrors, ...customErrorTypes];
   return z.union([
-    z.object({ error: standardAuthErrors }),
+    z.object({ error: z.enum(errorTypes) }),
     z.object({ data: schema }),
   ]);
 }

@@ -30,16 +30,18 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
     const alerts = await app.alerts.all();
 
     return {
-      alerts: alerts.sort(processingPrioritySort(now)).map((x) => ({
-        id: x.id,
-        title: x.latestData.title,
-        isInInbox: x.isInInbox,
-        isActive: x.latestData.timeRange.includes(now),
-        isPast: x.latestData.timeRange.occursBefore(now),
-        awaitingDeletion: x.deleteAt != null,
-        activePeriod: formatActivePeriod(now, x.latestData),
-        appearedAt: formatAppearedAt(now, x.appearedAt),
-      })),
+      data: {
+        alerts: alerts.sort(processingPrioritySort(now)).map((x) => ({
+          id: x.id,
+          title: x.latestData.title,
+          isInInbox: x.isInInbox,
+          isActive: x.latestData.timeRange.includes(now),
+          isPast: x.latestData.timeRange.occursBefore(now),
+          awaitingDeletion: x.deleteAt != null,
+          activePeriod: formatActivePeriod(now, x.latestData),
+          appearedAt: formatAppearedAt(now, x.appearedAt),
+        })),
+      },
     };
   });
 }

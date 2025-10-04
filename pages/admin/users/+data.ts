@@ -15,11 +15,13 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
     const users = await app.auth.getAllUsers();
 
     return {
-      users: users.map((x) => ({
-        id: x.id,
-        username: x.username,
-        type: x.profileType,
-      })),
+      data: {
+        users: users.map((x) => ({
+          id: x.id,
+          username: x.username,
+          type: x.profileType,
+        })),
+      },
     };
   });
 }

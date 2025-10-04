@@ -11,6 +11,9 @@ export async function handle(
   return await withUser(ctx, User.CAN_MANAGE_USERS, async (user) => {
     const { app } = ctx;
     app.log.info(`"${user.username}" is creating new user "${args.username}"`);
-    return { success: false, error: "username-taken" };
+
+    return { data: { password: "a" } };
+
+    return { error: "username-taken" };
   });
 }

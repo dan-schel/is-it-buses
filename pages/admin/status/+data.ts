@@ -44,13 +44,15 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
       historicalAlertCount / daysSinceRecordsBegan;
 
     return {
-      commitHash: app.commitHash,
-      userCount,
-      sessionCount,
-      alertCount,
-      disruptionCount,
-      historicalAlertCount,
-      historicalAlertAvgPerDay,
+      data: {
+        commitHash: app.commitHash,
+        userCount,
+        sessionCount,
+        alertCount,
+        disruptionCount,
+        historicalAlertCount,
+        historicalAlertAvgPerDay,
+      },
     };
   });
 }

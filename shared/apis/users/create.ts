@@ -1,15 +1,18 @@
 import { Api, buildAuthProtectedResultSchema } from "@/shared/apis/lib";
 import z from "zod";
 
+export const permissionLevels = ["admin", "standard"] as const;
+export type PermissionLevel = (typeof permissionLevels)[number];
+export const permissionLevelJson = z.enum(permissionLevels);
+
 const argsSchema = z.object({
   username: z.string(),
+  permissions: permissionLevelJson,
 });
 
 const resultSchema = buildAuthProtectedResultSchema(
-  z.union([
-    z.object({ success: z.literal(true), password: z.string() }),
-    z.object({ success: z.literal(false), error: z.enum(["username-taken"]) }),
-  ]),
+  z.object({ password: z.string() }),
+  ["username-taken"],
 );
 
 export const api: Api<typeof argsSchema, typeof resultSchema> = {

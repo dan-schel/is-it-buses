@@ -9,6 +9,6 @@ export type Data = AuthProtectedData<{}>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
   return await withUser(ctx, User.CAN_MANAGE_USERS, async () => {
-    return {};
+    return { data: {} };
   });
 }

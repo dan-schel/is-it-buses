@@ -1,15 +1,15 @@
 import { ApiContext } from "@/server/api";
 import { User } from "@/server/services/auth/user";
-import { AuthProtectedData } from "@/shared/apis/lib";
+import { AuthErrorResult, Failable } from "@/shared/apis/lib";
 import { PageContext } from "vike/types";
 
 export type Context = ApiContext | PageContext;
 
-export async function withUser<T>(
+export async function withUser<K extends Failable<A, B>, A, B extends string>(
   ctx: Context,
   hasPermissions: (user: User) => boolean,
-  func: (user: User) => Promise<T>,
-): Promise<AuthProtectedData<T>> {
+  func: (user: User) => Promise<K>,
+): Promise<K | AuthErrorResult> {
   const { userAlreadyFetched, app, user, token } = extractContext(ctx);
 
   if (token == null) return { error: "not-authenticated" };
@@ -23,7 +23,7 @@ export async function withUser<T>(
   if (!hasPermissions(resolvedUser))
     return { error: "insufficient-permissions" };
 
-  return { data: await func(resolvedUser) };
+  return await func(resolvedUser);
 }
 
 function extractContext(ctx: Context) {
