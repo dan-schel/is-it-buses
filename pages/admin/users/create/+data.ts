@@ -4,24 +4,11 @@ import { withUser } from "@/server/services/auth/protection";
 import { User } from "@/server/services/auth/user";
 import { AuthProtectedData } from "@/shared/apis/lib";
 
-export type Data = AuthProtectedData<{
-  users: { id: string; username: string; type: string }[];
-}>;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type Data = AuthProtectedData<{}>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
   return await withUser(ctx, User.CAN_MANAGE_USERS, async () => {
-    const { app } = ctx.custom;
-
-    const users = await app.auth.getAllUsers();
-
-    return {
-      data: {
-        users: users.map((x) => ({
-          id: x.id,
-          username: x.username,
-          type: x.profileType,
-        })),
-      },
-    };
+    return { data: {} };
   });
 }

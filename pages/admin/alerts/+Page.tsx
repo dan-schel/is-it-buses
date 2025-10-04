@@ -37,7 +37,12 @@ export default function Page() {
                         getIconStyle(a),
                       )}
                     />
-                    <Text style="small">{a.title}</Text>
+                    <Column className="gap-2">
+                      <Text style="small">{a.title}</Text>
+                      <Text style="tiny-weak">
+                        {a.activePeriod} &bull; {a.appearedAt}
+                      </Text>
+                    </Column>
                   </Grid>
                 ))}
                 {data.alerts.length === 0 && <Text>No alerts!</Text>}
@@ -51,17 +56,21 @@ export default function Page() {
 }
 
 function getIconStyle({
+  isActive,
+  isPast,
   isInInbox,
   awaitingDeletion,
 }: {
+  isActive: boolean;
+  isPast: boolean;
   isInInbox: boolean;
   awaitingDeletion: boolean;
 }) {
   if (awaitingDeletion) {
-    return "bg-status-red";
+    return isActive ? "bg-status-red" : "border-[1.5px] border-status-red";
+  } else if (isInInbox && !isPast) {
+    return isActive ? "bg-accent" : "border-[1.5px] border-accent";
+  } else {
+    return isActive ? "bg-soft" : "border-[1.5px] border-soft-border";
   }
-  if (isInInbox) {
-    return "bg-accent";
-  }
-  return "border border-accent";
 }

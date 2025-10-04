@@ -1,3 +1,4 @@
+import { TimeRange } from "@/server/data/disruption/period/utils/time-range";
 import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 import { arraysMatch } from "@dan-schel/js-utils";
 import { z } from "zod";
@@ -18,6 +19,10 @@ export class AlertData {
     readonly affectedLinePtvIds: readonly number[],
     readonly affectedStationPtvIds: readonly number[],
   ) {}
+
+  get timeRange(): TimeRange {
+    return new TimeRange(this.startsAt, this.endsAt);
+  }
 
   static readonly bson = z
     .object({

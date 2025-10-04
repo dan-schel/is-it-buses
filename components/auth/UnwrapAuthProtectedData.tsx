@@ -1,6 +1,10 @@
 import React from "react";
 
-import { AuthProtectedData, StandardAuthError } from "@/shared/apis/lib";
+import {
+  AuthProtectedData,
+  StandardAuthError,
+  standardAuthErrorDisplayStrings,
+} from "@/shared/apis/lib";
 import { Text } from "@/components/core/Text";
 import { useUser } from "@/components/auth/use-user";
 import { UserProfile } from "@/shared/user-profile";
@@ -18,9 +22,7 @@ export type UnwrapAuthProtectedDataProps<T> = {
 };
 
 const errorMessages = {
-  "not-authenticated": "You must be logged in to view this.",
-  "invalid-token": "Your session expired. Please log in again.",
-  "insufficient-permissions": "You don't have permission to view this.",
+  ...standardAuthErrorDisplayStrings,
   "": "Something went wrong",
 } as const;
 
@@ -32,13 +34,15 @@ const requiresLogin: string[] = [
 export function UnwrapAuthProtectedData<T>(
   props: UnwrapAuthProtectedDataProps<T>,
 ) {
-  const { data, error } = props.data;
+  const result = props.data;
   const { user } = useUser();
 
-  if (data != null && user != null) return props.content(data, user);
+  if ("data" in result && user != null) return props.content(result.data, user);
 
-  const errorMessage = errorMessages[error ?? ""];
-  const showLoginForm = requiresLogin.includes(error ?? "");
+  const error = "error" in result ? result.error : "";
+
+  const errorMessage = errorMessages[error];
+  const showLoginForm = requiresLogin.includes(error);
 
   async function handleSuccessfulLogin() {
     await reload();

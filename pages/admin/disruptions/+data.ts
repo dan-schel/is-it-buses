@@ -20,17 +20,19 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
     const disruptions = await app.disruptions.all({ includeInvalid: true });
 
     return {
-      disruptions: disruptions.map((x) => {
-        const isValid = x.data.isValid(app);
-        return {
-          id: x.id,
-          isActive: x.period.occursAt(app.time.now()),
-          isInvalid: !isValid,
-          text: isValid
-            ? x.data.getWriteupAuthor().write(app, x).title
-            : "Invalid disruption",
-        };
-      }),
+      data: {
+        disruptions: disruptions.map((x) => {
+          const isValid = x.data.isValid(app);
+          return {
+            id: x.id,
+            isActive: x.period.occursAt(app.time.now()),
+            isInvalid: !isValid,
+            text: isValid
+              ? x.data.getWriteupAuthor().write(app, x).title
+              : "Invalid disruption",
+          };
+        }),
+      },
     };
   });
 }

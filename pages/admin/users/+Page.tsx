@@ -9,6 +9,8 @@ import { UnwrapAuthProtectedData } from "@/components/auth/UnwrapAuthProtectedDa
 import { Data } from "@/pages/admin/users/+data";
 import { Row } from "@/components/core/Row";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
+import { SimpleButton } from "@/components/common/SimpleButton";
+import { MingcuteAddLine } from "@/components/icons/MingcuteAddLine";
 
 export default function Page() {
   const data = useData<Data>();
@@ -19,7 +21,7 @@ export default function Page() {
       content={(data, user) => (
         <PageCenterer>
           <PagePadding>
-            <Column className="gap-8">
+            <Column className="gap-8" align="left">
               <Breadcrumbs
                 paths={[
                   { name: "Admin dashboard", href: "/admin" },
@@ -27,6 +29,11 @@ export default function Page() {
                 ]}
               />
               <Text style="megatitle">Users</Text>
+              <SimpleButton
+                href="/admin/users/create"
+                text="Create new user"
+                icon={<MingcuteAddLine />}
+              />
               <Column className="gap-4" align="left">
                 {data.users.map((u) => (
                   <Row key={u.id} className="gap-4" align="center">

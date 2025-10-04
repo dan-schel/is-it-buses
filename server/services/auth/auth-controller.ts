@@ -3,8 +3,9 @@ import { SESSIONS, USERS } from "@/server/database/models";
 import { SessionModel } from "@/server/database/models/session";
 import { UserModel } from "@/server/database/models/user";
 import { Session } from "@/server/services/auth/session";
-import { User } from "@/server/services/auth/user";
+import { Role, User } from "@/server/services/auth/user";
 import { Repository } from "@dan-schel/db";
+import { uuid } from "@dan-schel/js-utils";
 
 export class AuthController {
   private _users: Repository<UserModel>;
@@ -78,6 +79,12 @@ export class AuthController {
     return [superadmin, ...users];
   }
 
+  async createUser(username: string, password: string, roles: readonly Role[]) {
+    await this._users.create(
+      new User(uuid(), username, await User.hashPassword(password), roles),
+    );
+  }
+
   private async _getSuperadminUser(): Promise<User> {
     if (this._superadminUser != null) return this._superadminUser;
 
@@ -85,7 +92,7 @@ export class AuthController {
       User.SUPERADMIN_ID,
       this._app.superadminUsername,
       await User.hashPassword(this._app.superadminPassword),
-      ["superadmin"],
+      [],
     );
 
     this._superadminUser = user;

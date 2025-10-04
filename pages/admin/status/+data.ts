@@ -24,7 +24,7 @@ export type Data = AuthProtectedData<{
 }>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
-  return await withUser(ctx, User.IS_ADMIN, async () => {
+  return await withUser(ctx, User.CAN_ACCESS_DASHBOARD, async () => {
     const { app } = ctx.custom;
 
     const userCount = (await app.auth.getAllUsers()).length;
@@ -44,13 +44,15 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
       historicalAlertCount / daysSinceRecordsBegan;
 
     return {
-      commitHash: app.commitHash,
-      userCount,
-      sessionCount,
-      alertCount,
-      disruptionCount,
-      historicalAlertCount,
-      historicalAlertAvgPerDay,
+      data: {
+        commitHash: app.commitHash,
+        userCount,
+        sessionCount,
+        alertCount,
+        disruptionCount,
+        historicalAlertCount,
+        historicalAlertAvgPerDay,
+      },
     };
   });
 }
