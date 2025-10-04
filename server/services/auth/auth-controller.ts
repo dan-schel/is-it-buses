@@ -85,6 +85,26 @@ export class AuthController {
     );
   }
 
+  async deleteUser(id: string): Promise<void> {
+    if (id === User.SUPERADMIN_ID) {
+      throw new Error("Cannot delete superadmin user");
+    }
+
+    const sessions = await this._sessions.find({ where: { userId: id } });
+    for (const session of sessions) {
+      await this._sessions.delete(session.id);
+    }
+    await this._users.delete(id);
+  }
+
+  async updateUser(user: User): Promise<void> {
+    if (user.isSuperadmin) {
+      throw new Error("Cannot update superadmin user");
+    }
+
+    await this._users.update(user);
+  }
+
   private async _getSuperadminUser(): Promise<User> {
     if (this._superadminUser != null) return this._superadminUser;
 
