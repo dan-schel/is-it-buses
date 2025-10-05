@@ -28,8 +28,8 @@ export default function HeadDefault() {
 }
 
 function RegisterPwa() {
-  // Vite PWA only creates `manifest.webmanifest` and `registerSW.js` in the dist
-  // folder, so they're not available in dev mode.
+  // Vite PWA only creates `manifest.webmanifest` and `registerSW.js` in the
+  // dist folder, so they're not available in dev mode.
   if (import.meta.env.DEV) {
     return <></>;
   }
