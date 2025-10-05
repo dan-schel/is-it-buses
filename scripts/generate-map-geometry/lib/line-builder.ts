@@ -1,6 +1,6 @@
-import { Segment } from "@/components/map/renderer/segment";
-import { LineColor } from "@/components/map/renderer/utils";
-import { FlexiPoint } from "@/components/map/renderer/dimensions/flexi-point";
+import { Segment } from "@/frontend/components/map/renderer/segment";
+import { LineColor } from "@/frontend/components/map/renderer/utils";
+import { FlexiPoint } from "@/frontend/components/map/renderer/dimensions/flexi-point";
 import { SegmentBuilder } from "@/scripts/generate-map-geometry/lib/segment-builder";
 import { SegmentInstruction } from "@/scripts/generate-map-geometry/lib/segment-instructions";
 

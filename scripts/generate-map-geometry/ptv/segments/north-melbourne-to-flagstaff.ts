@@ -1,4 +1,4 @@
-import { flexi } from "@/components/map/renderer/dimensions/flexi-length";
+import { flexi } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { measure45CurveLockedStraight } from "@/scripts/generate-map-geometry/ptv/utils";
 import * as loop from "@/scripts/generate-map-geometry/ptv/utils-city-loop";
 import {

@@ -1,4 +1,4 @@
 /node_modules/
 /dist/
 /coverage/
-/components/map/geometry/**/*.json
+/frontend/components/map/geometry/**/*.json

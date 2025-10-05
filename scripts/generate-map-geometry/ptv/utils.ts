@@ -1,7 +1,7 @@
 import {
   flexi,
   FlexiLength,
-} from "@/components/map/renderer/dimensions/flexi-length";
+} from "@/frontend/components/map/renderer/dimensions/flexi-length";
 
 export const lineGap = flexi(5);
 export const long45 = Math.cos(Math.PI / 4);

@@ -29,9 +29,6 @@ const customRules = [
       // Warn about prettier violations.
       "prettier/prettier": "warn",
 
-      // Warn if <Thing></Thing> can be changed to <Thing />.
-      "react/self-closing-comp": "warn",
-
       // Ensure return type of +data hooks checks against JsonSerializable.
       "custom/ensure-data-serializable": "warn",
 
@@ -50,14 +47,17 @@ const customRules = [
     },
   },
   {
-    ignores: ["server/**", "**/+data.ts"],
+    ignores: ["server/**", "frontend/**/+data.ts"],
     rules: {
       // Outside of /server and +data.ts files, only allow console.warn.
       "no-console": ["warn", { allow: ["warn"] }],
     },
   },
   {
-    files: ["server/**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}", "**/+data.ts"],
+    files: [
+      "server/**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}",
+      "frontend/**/+data.ts",
+    ],
     rules: {
       // Within /server and +data.ts files, don't allow any console use.
       "no-console": "warn",
@@ -67,7 +67,7 @@ const customRules = [
 
 const reactConfig = [
   {
-    files: ["**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
+    files: ["frontend/**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
     ...react,
     languageOptions: {
       ...react.languageOptions,
@@ -81,6 +81,10 @@ const reactConfig = [
         version: "detect",
       },
     },
+    rules: {
+      // Warn if <Thing></Thing> can be changed to <Thing />.
+      "react/self-closing-comp": "warn",
+    },
   },
   {
     plugins: {
@@ -89,7 +93,7 @@ const reactConfig = [
 
     // Ignore use of Vike hooks inside Vike's "+" files (this plugin thinks
     // anything starting with "use" is a React hook)
-    ignores: ["**/+*.ts"],
+    ignores: ["frontend/**/+*.ts"],
 
     rules: {
       "react-hooks/rules-of-hooks": "error",
@@ -100,7 +104,12 @@ const reactConfig = [
 
 export default tseslint.config(
   {
-    ignores: ["node_modules/*", "dist/*", "coverage/*", "components/icons/*"],
+    ignores: [
+      "node_modules/*",
+      "dist/*",
+      "coverage/*",
+      "frontend/components/icons/*",
+    ],
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,

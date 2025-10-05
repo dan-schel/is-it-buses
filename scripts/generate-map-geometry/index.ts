@@ -10,7 +10,7 @@ import path from "path";
 import example from "@/scripts/generate-map-geometry/example";
 import ptv from "@/scripts/generate-map-geometry/ptv";
 
-const outDir = "./components/map/geometry";
+const outDir = "./frontend/components/map/geometry";
 
 const geometry = {
   example,

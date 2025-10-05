@@ -1,4 +1,4 @@
-import { FlexiLength } from "@/components/map/renderer/dimensions/flexi-length";
+import { FlexiLength } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { measure45CurveLockedDiagonal } from "@/scripts/generate-map-geometry/ptv/utils";
 import * as loop from "@/scripts/generate-map-geometry/ptv/utils-city-loop";
 import * as direct from "@/scripts/generate-map-geometry/ptv/segments/flinders-street-to-richmond";
