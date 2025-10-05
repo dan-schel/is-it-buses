@@ -5,6 +5,7 @@ import { Text } from "@/components/core/Text";
 import { With } from "@/components/core/With";
 import clsx from "clsx";
 import { Column } from "@/components/core/Column";
+import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 
 const themes = {
   default: `
@@ -53,6 +54,8 @@ type Content =
 export type SimpleButtonProps = {
   theme?: keyof typeof themes;
   layout?: "default" | "tile" | "small";
+  disabled?: boolean;
+  loading?: boolean;
 } & Content &
   Action;
 
@@ -60,20 +63,48 @@ type LayoutProps = {
   action: Action;
   theme: string;
   content: Content;
+  disabled: boolean;
+  loading: boolean;
 };
 
 export function SimpleButton(props: SimpleButtonProps) {
   const action = extractAction(props);
   const theme = themes[props.theme ?? "default"];
   const layout = props.layout ?? "default";
+  const disabled = props.disabled ?? false;
+  const loading = props.loading ?? false;
 
   switch (layout) {
     case "tile":
-      return <TileLayout action={action} theme={theme} content={props} />;
+      return (
+        <TileLayout
+          action={action}
+          theme={theme}
+          content={props}
+          disabled={disabled}
+          loading={loading}
+        />
+      );
     case "small":
-      return <SmallLayout action={action} theme={theme} content={props} />;
+      return (
+        <SmallLayout
+          action={action}
+          theme={theme}
+          content={props}
+          disabled={disabled}
+          loading={loading}
+        />
+      );
     default:
-      return <DefaultLayout action={action} theme={theme} content={props} />;
+      return (
+        <DefaultLayout
+          action={action}
+          theme={theme}
+          content={props}
+          disabled={disabled}
+          loading={loading}
+        />
+      );
   }
 }
 
@@ -81,7 +112,11 @@ function DefaultLayout(props: LayoutProps) {
   const hasText = props.content.text != null;
 
   return (
-    <Button {...props.action} alt={props.content.alt}>
+    <Button
+      {...props.action}
+      alt={props.content.alt}
+      disabled={props.disabled || props.loading}
+    >
       <Row
         className={clsx(
           "h-8 gap-2 select-none",
@@ -92,11 +127,25 @@ function DefaultLayout(props: LayoutProps) {
         justify="center"
       >
         {props.content.icon != null && (
-          <With className={clsx("text-lg", { "-ml-0.5": hasText })}>
+          <With
+            className={clsx("text-lg", {
+              "-ml-0.5": hasText,
+              invisible: props.loading,
+            })}
+          >
             {props.content.icon}
           </With>
         )}
-        {props.content.text != null && <Text>{props.content.text}</Text>}
+        {props.content.text != null && (
+          <With className={clsx({ invisible: props.loading })}>
+            <Text>{props.content.text}</Text>
+          </With>
+        )}
+        {props.loading && (
+          <With className="absolute">
+            <LoadingSpinner />
+          </With>
+        )}
       </Row>
     </Button>
   );
@@ -104,15 +153,27 @@ function DefaultLayout(props: LayoutProps) {
 
 function TileLayout(props: LayoutProps) {
   return (
-    <Button {...props.action} alt={props.content.alt}>
+    <Button
+      {...props.action}
+      alt={props.content.alt}
+      disabled={props.disabled || props.loading}
+    >
       <Column
         className={clsx("gap-2 px-4 py-3 select-none", props.theme)}
         align="center"
       >
         {props.content.icon && (
-          <With className="-ml-0.5 text-2xl">{props.content.icon}</With>
+          <With
+            className={clsx("-ml-0.5 text-2xl", { invisible: props.loading })}
+          >
+            {props.content.icon}
+          </With>
         )}
-        {props.content.text && <Text align="center">{props.content.text}</Text>}
+        {props.content.text && (
+          <With className={clsx({ invisible: props.loading })}>
+            <Text align="center">{props.content.text}</Text>
+          </With>
+        )}
       </Column>
     </Button>
   );
@@ -122,7 +183,11 @@ function SmallLayout(props: LayoutProps) {
   const hasText = props.content.text != null;
 
   return (
-    <Button {...props.action} alt={props.content.alt}>
+    <Button
+      {...props.action}
+      alt={props.content.alt}
+      disabled={props.disabled || props.loading}
+    >
       <Row
         className={clsx(
           "h-7 gap-2 select-none",
@@ -133,12 +198,19 @@ function SmallLayout(props: LayoutProps) {
         justify="center"
       >
         {props.content.icon != null && (
-          <With className={clsx("text-sm", { "-ml-0.5": hasText })}>
+          <With
+            className={clsx("text-sm", {
+              "-ml-0.5": hasText,
+              invisible: props.loading,
+            })}
+          >
             {props.content.icon}
           </With>
         )}
         {props.content.text != null && (
-          <Text style="tiny">{props.content.text}</Text>
+          <With className={clsx({ invisible: props.loading })}>
+            <Text style="tiny">{props.content.text}</Text>
+          </With>
         )}
       </Row>
     </Button>

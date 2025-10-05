@@ -12,7 +12,6 @@ import { Input } from "@/components/core/Input";
 import { Select } from "@/components/common/Select";
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { Row } from "@/components/core/Row";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { PermissionLevel } from "@/shared/apis/users/create";
 import { useMutation } from "@/components/utils";
 import { USERS_CREATE } from "@/shared/apis";
@@ -137,10 +136,12 @@ function CreateUserForm({
         />
       </Column>
       {error != null && <Text style="small-red">{error}</Text>}
-      <Row align="center" className="gap-2">
-        <SimpleButton text="Create" theme="primary" onClick={handleCreate} />
-        {loading && <LoadingSpinner />}
-      </Row>
+      <SimpleButton
+        text="Create"
+        theme="primary"
+        onClick={handleCreate}
+        loading={loading}
+      />
     </Column>
   );
 }

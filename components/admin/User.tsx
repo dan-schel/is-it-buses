@@ -7,6 +7,8 @@ import { useUser } from "@/components/auth/use-user";
 import { useMutation } from "@/components/utils";
 import { USERS_DELETE } from "@/shared/apis";
 import { standardAuthErrorDisplayStrings } from "@/shared/apis/lib";
+import { Grid } from "@/components/core/Grid";
+import { With } from "@/components/core/With";
 
 export type UserProps = {
   user: {
@@ -49,18 +51,21 @@ export function UserRow(props: UserProps) {
   }
 
   return (
-    <>
+    <Grid columns="subgrid" className="col-span-3">
       <Text>
         <b>{props.user.username}</b>
         {isCurrentUser ? " (You)" : ""}
       </Text>
       <Text>{props.user.type}</Text>
-      <SimpleButton
-        onClick={handleDelete}
-        text={deleted ? "Deleted" : "Delete"}
-        icon={<MingcuteDelete2Line />}
-        disabled={deleted || isCurrentUser || props.user.isSuperadmin}
-      />
-    </>
+      <With className="justify-items-end">
+        <SimpleButton
+          onClick={handleDelete}
+          text={deleted ? "Deleted" : "Delete"}
+          icon={<MingcuteDelete2Line />}
+          disabled={deleted || isCurrentUser || props.user.isSuperadmin}
+          loading={loading}
+        />
+      </With>
+    </Grid>
   );
 }

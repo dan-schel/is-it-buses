@@ -4,7 +4,6 @@ import React from "react";
 export type Action =
   | {
       onClick: () => void;
-      disabled?: boolean;
 
       href?: undefined;
       submit?: undefined;
@@ -16,11 +15,9 @@ export type Action =
 
       onClick?: undefined;
       submit?: undefined;
-      disabled?: undefined;
     }
   | {
       submit: true;
-      disabled?: boolean;
 
       onClick?: undefined;
       href?: undefined;
@@ -29,7 +26,7 @@ export type Action =
 
 export function extractAction(props: Action): Action {
   if (props.onClick != null) {
-    return { onClick: props.onClick, disabled: props.disabled };
+    return { onClick: props.onClick };
   } else if (props.href != null) {
     return { href: props.href, target: props.target };
   } else if (props.submit === true) {
@@ -42,6 +39,7 @@ export function extractAction(props: Action): Action {
 export type ButtonProps = {
   children: React.ReactElement;
   alt?: string;
+  disabled?: boolean;
 } & Action;
 
 /**
@@ -72,7 +70,7 @@ export function Button(props: ButtonProps) {
     return (
       <a
         className="group grid"
-        href={props.href}
+        href={!props.disabled ? props.href : undefined}
         title={props.alt}
         target={props.target}
       >

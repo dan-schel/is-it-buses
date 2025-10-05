@@ -11,7 +11,6 @@ import { Row } from "@/components/core/Row";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { MingcuteAddLine } from "@/components/icons/MingcuteAddLine";
-import { MingcuteDelete2Line } from "@/components/icons/MingcuteDelete2Line";
 import { Grid } from "@/components/core/Grid";
 import { UserRow } from "@/components/admin/User";
 
@@ -21,7 +20,7 @@ export default function Page() {
   return (
     <UnwrapAuthProtectedData
       data={data}
-      content={(data, user) => (
+      content={(data) => (
         <PageCenterer>
           <PagePadding>
             <Column className="gap-8">

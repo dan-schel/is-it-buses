@@ -6,8 +6,6 @@ import { Text } from "@/components/core/Text";
 import { Input } from "@/components/core/Input";
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { Spacer } from "@/components/core/Spacer";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { Row } from "@/components/core/Row";
 import { Link } from "@/components/core/Link";
 
 export type LoginFormProps = {
@@ -63,10 +61,7 @@ export function LoginForm(props: LoginFormProps) {
           </>
         )}
         <Spacer h="8" />
-        <Row align="center" className="gap-2">
-          <SimpleButton text="Login" theme="primary" submit />
-          {loading && <LoadingSpinner />}
-        </Row>
+        <SimpleButton text="Login" theme="primary" loading={loading} submit />
         <Spacer h="8" />
         <Text style="tiny-weak">
           Admin dashboard access is for site admins only.{" "}
