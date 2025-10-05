@@ -100,7 +100,12 @@ const reactConfig = [
 
 export default tseslint.config(
   {
-    ignores: ["node_modules/*", "dist/*", "coverage/*", "components/icons/*"],
+    ignores: [
+      "node_modules/*",
+      "dist/*",
+      "coverage/*",
+      "frontend/components/icons/*",
+    ],
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,
