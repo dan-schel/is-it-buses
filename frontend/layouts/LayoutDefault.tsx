@@ -1,4 +1,4 @@
-import "@/layouts/tailwind.css";
+import "@/frontend/layouts/tailwind.css";
 
 import React from "react";
 
