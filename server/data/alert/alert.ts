@@ -1,7 +1,7 @@
 import { AlertData } from "@/server/data/alert/alert-data";
 import z from "zod";
 
-export const alertStates = [
+const alertStates = [
   // In the inbox awaiting processing (auto-parsing failed for this alert).
   "new",
 

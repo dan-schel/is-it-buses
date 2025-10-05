@@ -2,7 +2,7 @@ import { DisruptionPeriod } from "@/server/data/disruption/period/disruption-per
 import { DisruptionData } from "@/server/data/disruption/data/disruption-data";
 import z from "zod";
 
-export const curationTypes = ["manual", "automatic"] as const;
+const curationTypes = ["manual", "automatic"] as const;
 export type CurationType = (typeof curationTypes)[number];
 export const curationTypeJson = z.enum(curationTypes);
 

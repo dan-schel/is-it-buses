@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const userProfileTypes = ["superadmin", "admin", "standard"] as const;
+const userProfileTypes = ["superadmin", "admin", "standard"] as const;
 export type UserProfileType = (typeof userProfileTypes)[number];
 
 export class UserProfile {

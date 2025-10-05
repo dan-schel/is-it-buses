@@ -21,7 +21,7 @@ export type AuthProtectedData<T, E extends string = never> = Failable<
   E | StandardAuthError
 >;
 
-export const standardAuthErrors = [
+const standardAuthErrors = [
   "not-authenticated",
   "invalid-token",
   "insufficient-permissions",

@@ -20,12 +20,7 @@ export const lineStatusIndicatorPriorities = [
 export type LineStatusIndicatorPriority =
   (typeof lineStatusIndicatorPriorities)[number];
 
-export const summaryIconTypes = [
-  "line",
-  "cross",
-  "altered-route",
-  "traffic",
-] as const;
+const summaryIconTypes = ["line", "cross", "altered-route", "traffic"] as const;
 export type SummaryIconType = (typeof summaryIconTypes)[number];
 
 /**
