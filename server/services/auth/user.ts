@@ -13,6 +13,7 @@ export class User {
   static readonly SUPERADMIN_DEFAULT_USERNAME = "admin";
   static readonly SUPERADMIN_DEFAULT_PASSWORD = "admin";
 
+  static readonly ANYONE = (_user: User) => true;
   static readonly CAN_ACCESS_DASHBOARD = (user: User) => user.isStandard;
   static readonly CAN_MANAGE_USERS = (user: User) => user.canManageUsers;
   static readonly CAN_VIEW_ALERTS_AND_DISRUPTIONS = (user: User) =>

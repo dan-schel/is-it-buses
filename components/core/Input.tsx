@@ -19,7 +19,7 @@ export function Input(props: InputProps) {
       value={props.value}
       onChange={(e) => props.onChange(e.target.value)}
       // TODO: [DS] Temporary!
-      className="border-switch focus-within:border-accent w-full appearance-none rounded-sm border-2 outline-none"
+      className="border-switch focus-within:border-accent w-full appearance-none rounded-sm border-2 px-3 py-1 outline-none"
     />
   );
 }

@@ -23,7 +23,14 @@ export function createApiRouter(app: App) {
   setupLoginHandler(app, router);
   setupLogoutHandler(app, router);
 
+  setupHandler(
+    app,
+    router,
+    apis.USERS_CHANGE_PASSWORD,
+    handlers.USERS_CHANGE_PASSWORD,
+  );
   setupHandler(app, router, apis.USERS_CREATE, handlers.USERS_CREATE);
+  setupHandler(app, router, apis.USERS_DELETE, handlers.USERS_DELETE);
 
   router.use(/(.*)/, (_req, res) => {
     res.sendStatus(404);

@@ -12,7 +12,7 @@ const argsSchema = z.object({
 
 const resultSchema = buildAuthProtectedResultSchema(
   z.object({ password: z.string() }),
-  ["username-taken"],
+  ["username-taken", "invalid-username"],
 );
 
 export const api: Api<typeof argsSchema, typeof resultSchema> = {
