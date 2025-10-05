@@ -8,7 +8,7 @@ Very much still a work-in-progress!
 
 ## Getting started
 
-Requires [NodeJS](https://nodejs.org/en) and [MongoDB](https://www.mongodb.com/).
+Requires [NodeJS](https://nodejs.org/en), and [MongoDB](https://www.mongodb.com/) is recommended (but optional).
 
 1. Clone the repo:
 
@@ -22,7 +22,7 @@ Requires [NodeJS](https://nodejs.org/en) and [MongoDB](https://www.mongodb.com/)
    npm install
    ```
 
-3. Set environment variables by creating a `.env` file with:
+3. Set environment variables (optional) by creating a `.env` file with:
 
    ```dotenv
    # Change username, password, and 27017 (the port) as required to connect to your
@@ -32,6 +32,8 @@ Requires [NodeJS](https://nodejs.org/en) and [MongoDB](https://www.mongodb.com/)
    # Secret value.
    RELAY_KEY = "..."
    ```
+
+   **Note:** If you skip this step, the server will use an in-memory database and simulate (empty) responses from the PTV API relay.
 
 4. Start the server:
 
@@ -53,11 +55,11 @@ DATABASE_URL = ${trainquery-db.DATABASE_URL}
 # Secret value.
 RELAY_KEY = "..."
 
-# Counter-intuitive, but ensures DigitalOcean will also install
-# `devDependencies`, which is required (e.g. for `cross-env`).
+# A bit counterintuitive, but required to ensure DigitalOcean will also install
+# `devDependencies`, so `cross-env` for example will work.
 NPM_CONFIG_PRODUCTION = false
 
-# DigitalOcean automatically fills this value.
+# Use this template string to have DigitalOcean automatically fill this value.
 COMMIT_HASH = ${_self.COMMIT_HASH}
 
 # Secret superadmin credentials.
@@ -69,4 +71,4 @@ DISCORD_TOKEN = "..."
 DISCORD_CHANNEL = "..."
 ```
 
-Note that `NODE_ENV=production` and `TZ="Etc/UTC"` are set automatically when `npm run start` is run, so no need to set those.
+**Note:** `NODE_ENV=production` and `TZ="Etc/UTC"` are set automatically when `npm run start` is run, so no need to set those.
