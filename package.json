@@ -3,12 +3,11 @@
     "dev": "cross-env TZ=\"Etc/UTC\" tsx ./main.ts",
     "build": "vite build",
     "start": "cross-env NODE_ENV=production TZ=\"Etc/UTC\" tsx ./main.ts",
-    "lint": "eslint . --max-warnings 0 && tsc --noEmit -p tsconfig.json",
+    "lint": "tsc --noEmit -p tsconfig.json && eslint . --max-warnings 0 && knip",
     "test": "cross-env TZ=\"Etc/UTC\" vitest --run",
     "test-coverage": "cross-env TZ=\"Etc/UTC\" vitest --run --coverage",
     "format": "prettier --write .",
-    "format-check": "prettier --check .",
-    "deadcode": "knip"
+    "format-check": "prettier --check ."
   },
   "dependencies": {
     "@dan-schel/db": "0.1.4",
