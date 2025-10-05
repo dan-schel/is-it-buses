@@ -73,7 +73,6 @@ export function Button(props: ButtonProps) {
         href={!props.disabled ? props.href : undefined}
         title={props.alt}
         target={props.target}
-        // TODO: [DS] Update Tailwind's disabled: to work with data-disabled too.
         data-disabled={props.disabled}
       >
         {props.children}
