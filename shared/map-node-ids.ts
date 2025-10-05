@@ -45,6 +45,7 @@ export const DANDENONG = {
   CRANBOURNE: 38,
 } as const;
 
+/** @knipignore */
 export const FLEMINGTON_RACECOURSE = {
   NEWMARKET: 39, // Reserved - currently unused.
   FLEMINGTON_RACECOURSE: 40, // Reserved - currently unused.

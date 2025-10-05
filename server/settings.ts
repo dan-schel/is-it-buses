@@ -14,6 +14,7 @@ export function getSettings(req: Request): Settings {
  * Updates the user's settings cookie by attaching the "Set-Cookie" header to an
  * express response. Must be used before .json() or .send() in the response
  * chain.
+ * @knipignore
  */
 export function setSettings(
   res: Response,

@@ -11,6 +11,7 @@ const config: KnipConfig = {
     // packages: https://tailwindcss.com/docs/installation/using-vite.
     "tailwindcss",
   ],
+  tags: ["-knipignore"],
 };
 
 export default config;
