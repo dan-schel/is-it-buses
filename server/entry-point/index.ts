@@ -45,7 +45,7 @@ export async function run(root: string) {
   await startWebServer(app, root);
 }
 
-export async function startWebServer(app: App, root: string) {
+async function startWebServer(app: App, root: string) {
   const server = express();
   server.use(cookieParser());
 

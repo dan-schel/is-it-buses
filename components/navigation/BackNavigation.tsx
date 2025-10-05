@@ -5,7 +5,7 @@ import { Row } from "@/components/core/Row";
 import { With } from "@/components/core/With";
 import { MingcuteLeftLine } from "@/components/icons/MingcuteLeftLine";
 
-export type BackNavigationProps = {
+type BackNavigationProps = {
   name: string;
   href: string;
 };

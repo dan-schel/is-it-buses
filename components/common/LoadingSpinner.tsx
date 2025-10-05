@@ -6,7 +6,7 @@ const styles = {
   large: "text-4xl text-foreground",
 };
 
-export type LoadingSpinnerProps = {
+type LoadingSpinnerProps = {
   style?: keyof typeof styles;
 };
 

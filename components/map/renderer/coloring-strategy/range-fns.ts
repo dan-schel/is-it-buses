@@ -42,10 +42,7 @@ export function includes(range: RangeObj, value: number): boolean {
   return range.min <= value + fpff && value - fpff <= range.max;
 }
 
-export function subtract(
-  ranges: RangeObj[],
-  subtraction: RangeObj,
-): RangeObj[] {
+function subtract(ranges: RangeObj[], subtraction: RangeObj): RangeObj[] {
   const result: RangeObj[] = [];
 
   for (const range of ranges) {

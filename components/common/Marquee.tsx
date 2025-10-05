@@ -1,6 +1,6 @@
 import React from "react";
 
-export type MarqueeProps = {
+type MarqueeProps = {
   children: React.ReactNode;
 };
 

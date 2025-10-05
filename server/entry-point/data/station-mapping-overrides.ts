@@ -13,7 +13,7 @@ export const cityLoopOverride: StationMappingOverride = {
   ],
 } as const;
 
-export const metroTunnelOverride: StationMappingOverride = {
+const metroTunnelOverride: StationMappingOverride = {
   node: "the-city",
   stations: [
     station.ANZAC,

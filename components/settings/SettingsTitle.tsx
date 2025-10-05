@@ -6,7 +6,7 @@ import { With } from "@/components/core/With";
 
 const clicksRequired = 5;
 
-export type SettingsTitleProps = {
+type SettingsTitleProps = {
   onRepeatedClicks: () => void;
 };
 

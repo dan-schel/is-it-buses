@@ -8,7 +8,7 @@ import { SimpleButton } from "@/components/common/SimpleButton";
 import { Spacer } from "@/components/core/Spacer";
 import { Link } from "@/components/core/Link";
 
-export type LoginFormProps = {
+type LoginFormProps = {
   onLoginSuccess?: () => void;
 };
 

@@ -2,7 +2,7 @@ import { PtvAlert } from "@/server/services/alert-source/ptv-alert";
 
 export type Details = { details: string } | { error: DetailsError };
 
-export type DetailsError =
+type DetailsError =
   | "invalid-request"
   | "unknown-error"
   | "not-found"

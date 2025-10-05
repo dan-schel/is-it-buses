@@ -4,7 +4,7 @@ import { Favicon } from "@/components/icons/Favicon";
 import { With } from "@/components/core/With";
 import clsx from "clsx";
 
-export type HeroProps = {
+type HeroProps = {
   className?: string;
 };
 

@@ -4,7 +4,7 @@ import { Text } from "@/components/core/Text";
 import { With } from "@/components/core/With";
 import { Column } from "@/components/core/Column";
 
-export type TodayIndicatorProps = {
+type TodayIndicatorProps = {
   column: number;
 };
 

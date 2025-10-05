@@ -36,7 +36,7 @@ export function extractAction(props: Action): Action {
   }
 }
 
-export type ButtonProps = {
+type ButtonProps = {
   children: React.ReactElement;
   alt?: string;
   disabled?: boolean;

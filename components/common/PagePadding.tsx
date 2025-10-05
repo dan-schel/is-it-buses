@@ -2,7 +2,7 @@ import React from "react";
 import { With } from "@/components/core/With";
 import clsx from "clsx";
 
-export type PagePaddingProps = {
+type PagePaddingProps = {
   children: React.ReactElement;
   excludingTop?: boolean;
 };

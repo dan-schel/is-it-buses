@@ -19,14 +19,14 @@ declare global {
   }
 }
 
-export type CustomPageContext = {
+type CustomPageContext = {
   app: App;
   settings: Settings;
   token: string | null;
   user: User | null;
 };
 
-export type ClientPageContext = {
+type ClientPageContext = {
   isProduction: boolean;
   settings: z.input<typeof Settings.json>;
   user: z.input<typeof UserProfile.json> | null;

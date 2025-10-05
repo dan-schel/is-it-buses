@@ -7,7 +7,7 @@ import { MingcuteTimeLine } from "@/components/icons/MingcuteTimeLine";
 import { With } from "@/components/core/With";
 import { OpenSettingsButton } from "@/components/overview/OpenSettingsButton";
 
-export type OverviewControlsProps = {
+type OverviewControlsProps = {
   occuring: PeriodFilter;
 };
 

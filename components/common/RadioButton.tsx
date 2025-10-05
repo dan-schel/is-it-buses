@@ -6,7 +6,7 @@ import {
 } from "@/components/core/Radio";
 import { Grid } from "@/components/core/Grid";
 
-export type RadioButtonProps = {
+type RadioButtonProps = {
   children?: React.ReactElement;
   className?: string;
 } & RadioControl;

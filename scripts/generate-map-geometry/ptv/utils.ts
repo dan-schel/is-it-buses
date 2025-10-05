@@ -13,10 +13,12 @@ export const standardDiagonal = flexi(5, 15);
 export const east = 0;
 export const southEast = 45;
 export const south = 90;
+/** @knipignore */
 export const southWest = 135;
 export const west = 180;
 export const northWest = 225;
 export const north = 270;
+/** @knipignore */
 export const northEast = 315;
 
 export function measure45CurveLockedDiagonal(

@@ -5,7 +5,7 @@ import { usePageContext } from "vike-react/usePageContext";
 import Cookies from "js-cookie";
 import { SettingsContext } from "@/components/settings/common/use-settings";
 
-export type SettingsProviderProps = {
+type SettingsProviderProps = {
   children: React.ReactNode;
 };
 

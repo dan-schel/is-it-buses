@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-export type WithProps = {
+type WithProps = {
   children: React.ReactElement;
   className?: string;
   flexGrow?: string;

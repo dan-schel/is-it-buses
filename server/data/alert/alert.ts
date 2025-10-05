@@ -1,7 +1,7 @@
 import { AlertData } from "@/server/data/alert/alert-data";
 import z from "zod";
 
-export const alertStates = [
+const alertStates = [
   // In the inbox awaiting processing (auto-parsing failed for this alert).
   "new",
 
@@ -27,7 +27,7 @@ export const alertStates = [
   // Manually ignored, permanently (will never automatically return to the inbox).
   "ignored-permanently",
 ] as const;
-export type AlertState = (typeof alertStates)[number];
+type AlertState = (typeof alertStates)[number];
 export const alertStateJson = z.enum(alertStates);
 
 /**

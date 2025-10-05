@@ -2,7 +2,7 @@ import { UserProfile, UserProfileType } from "@/shared/user-profile";
 import { compare, hash } from "bcrypt";
 import z from "zod";
 
-export const roles = ["admin", "standard"] as const;
+const roles = ["admin", "standard"] as const;
 export type Role = (typeof roles)[number];
 export const roleJson = z.enum(roles);
 

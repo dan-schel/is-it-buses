@@ -11,7 +11,7 @@ import { MingcuteRouteFill } from "@/components/icons/MingcuteRouteFill";
 import { MingcuteCloseCircleFill } from "@/components/icons/MingcuteCloseCircleFill";
 import { PTVSignalMediumSpeedWarning } from "@/components/icons/PTVSignalMediumSpeedWarning";
 
-export type DisruptionButtonProps = {
+type DisruptionButtonProps = {
   data: DisruptionSummary;
   admin?: boolean;
 };

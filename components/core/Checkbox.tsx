@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-export type CheckboxProps = {
+type CheckboxProps = {
   className?: string;
   children?: React.ReactNode;
 } & CheckboxControl;

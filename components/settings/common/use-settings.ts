@@ -1,7 +1,7 @@
 import React from "react";
 import { Settings } from "@/shared/settings";
 
-export type SettingsContextContent = {
+type SettingsContextContent = {
   ready: boolean;
   settings: Settings;
   setSettings: React.Dispatch<React.SetStateAction<Settings>>;

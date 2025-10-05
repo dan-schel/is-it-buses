@@ -1,8 +1,9 @@
-import { LineColumn } from "@/components/overview/LineColumn";
-import { OverviewPageLineData } from "@/shared/types/overview-page";
 import React from "react";
 
-export type LinesProps = {
+import { LineColumn } from "@/components/overview/LineColumn";
+import { OverviewPageLineData } from "@/shared/types/overview-page";
+
+type LinesProps = {
   suburban: OverviewPageLineData[];
   regional: OverviewPageLineData[];
 };

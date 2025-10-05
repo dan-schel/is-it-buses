@@ -31,7 +31,7 @@ export function formatSections(app: App, sections: LineSection[]): string {
   return listifyAnd(individualSections);
 }
 
-export function formatLineGroupNode(
+function formatLineGroupNode(
   app: App,
   node: LineGroupNode,
   { capitalize = false } = {},

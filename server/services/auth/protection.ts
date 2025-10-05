@@ -3,7 +3,7 @@ import { User } from "@/server/services/auth/user";
 import { AuthErrorResult, Failable } from "@/shared/apis/lib";
 import { PageContext } from "vike/types";
 
-export type Context = ApiContext | PageContext;
+type Context = ApiContext | PageContext;
 
 export async function withUser<K extends Failable<A, B>, A, B extends string>(
   ctx: Context,

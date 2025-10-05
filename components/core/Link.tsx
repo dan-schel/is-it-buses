@@ -1,7 +1,7 @@
 import React from "react";
 import { Action } from "@/components/core/Button";
 
-export type LinkProps = {
+type LinkProps = {
   children: React.ReactNode;
 } & Action;
 

@@ -38,7 +38,7 @@ const scale = {
   "96": "24rem",
 };
 
-export type SpacerProps = {
+type SpacerProps = {
   w?: keyof typeof scale;
   h?: keyof typeof scale;
 };

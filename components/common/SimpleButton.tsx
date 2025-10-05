@@ -51,7 +51,7 @@ type Content =
   | { text: string; icon?: React.ReactElement; alt?: string }
   | { text?: undefined; icon: React.ReactElement; alt: string };
 
-export type SimpleButtonProps = {
+type SimpleButtonProps = {
   theme?: keyof typeof themes;
   layout?: "default" | "tile" | "small";
   disabled?: boolean;
