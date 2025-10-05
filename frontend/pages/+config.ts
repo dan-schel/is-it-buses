@@ -15,5 +15,9 @@ export default {
 
   extends: vikeReact,
 
+  // Allows us to have a /frontend folder, but still treat this folder as
+  // the root for filesystem-based routing.
+  filesystemRoutingRoot: "/",
+
   passToClient: ["client"],
 } satisfies Config;

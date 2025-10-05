@@ -90,4 +90,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./"),
     },
   },
+  publicDir: "frontend/public",
 });
