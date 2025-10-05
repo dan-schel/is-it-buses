@@ -24,6 +24,7 @@ export async function callApi<Args extends ZodType, Result extends ZodType>(
   return api.resultSchema.parse(json);
 }
 
+/** @knipignore */
 export function useQuery<Args extends ZodType, Result extends ZodType>(
   api: Api<Args, Result>,
   args: z.input<Args>,
