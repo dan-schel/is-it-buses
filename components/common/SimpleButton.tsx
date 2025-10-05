@@ -7,12 +7,43 @@ import clsx from "clsx";
 import { Column } from "@/components/core/Column";
 
 const themes = {
-  default: "bg-soft group-hover:bg-soft-hover group-active:bg-soft-active",
-  primary:
-    "bg-accent group-hover:bg-accent-hover group-active:bg-accent-active text-on-accent",
-  hover: "group-hover:bg-soft-hover group-active:bg-soft-active",
-  error:
-    "bg-error group-hover:bg-error-hover group-active:bg-error-active text-background",
+  default: `
+    border
+    not-group-disabled:bg-soft
+    not-group-disabled:group-hover:bg-soft-hover
+    not-group-disabled:group-active:bg-soft-active
+    not-group-disabled:border-transparent
+    group-disabled:border-soft-border
+    group-disabled:text-foreground/50
+  `,
+  primary: `
+    border
+    not-group-disabled:bg-accent
+    not-group-disabled:group-hover:bg-accent-hover
+    not-group-disabled:group-active:bg-accent-active
+    not-group-disabled:text-on-accent
+    not-group-disabled:border-transparent
+    group-disabled:border-soft-border
+    group-disabled:text-foreground/50
+  `,
+  hover: `
+    border
+    not-group-disabled:group-hover:bg-soft-hover
+    not-group-disabled:group-active:bg-soft-active
+    not-group-disabled:border-transparent
+    group-disabled:border-soft-border
+    group-disabled:text-foreground/50
+  `,
+  error: `
+    border
+    not-group-disabled:bg-error
+    not-group-disabled:group-hover:bg-error-hover
+    not-group-disabled:group-active:bg-error-active
+    not-group-disabled:text-background
+    not-group-disabled:border-transparent
+    group-disabled:border-soft-border
+    group-disabled:text-foreground/50
+  `,
 };
 
 type Content =
@@ -71,6 +102,22 @@ function DefaultLayout(props: LayoutProps) {
   );
 }
 
+function TileLayout(props: LayoutProps) {
+  return (
+    <Button {...props.action} alt={props.content.alt}>
+      <Column
+        className={clsx("gap-2 px-4 py-3 select-none", props.theme)}
+        align="center"
+      >
+        {props.content.icon && (
+          <With className="-ml-0.5 text-2xl">{props.content.icon}</With>
+        )}
+        {props.content.text && <Text align="center">{props.content.text}</Text>}
+      </Column>
+    </Button>
+  );
+}
+
 function SmallLayout(props: LayoutProps) {
   const hasText = props.content.text != null;
 
@@ -94,22 +141,6 @@ function SmallLayout(props: LayoutProps) {
           <Text style="tiny">{props.content.text}</Text>
         )}
       </Row>
-    </Button>
-  );
-}
-
-function TileLayout(props: LayoutProps) {
-  return (
-    <Button {...props.action} alt={props.content.alt}>
-      <Column
-        className={clsx("gap-2 px-4 py-3 select-none", props.theme)}
-        align="center"
-      >
-        {props.content.icon && (
-          <With className="-ml-0.5 text-2xl">{props.content.icon}</With>
-        )}
-        {props.content.text && <Text align="center">{props.content.text}</Text>}
-      </Column>
     </Button>
   );
 }

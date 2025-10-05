@@ -11,6 +11,9 @@ import { Row } from "@/components/core/Row";
 import { Breadcrumbs } from "@/components/admin/Breadcrumbs";
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { MingcuteAddLine } from "@/components/icons/MingcuteAddLine";
+import { MingcuteDelete2Line } from "@/components/icons/MingcuteDelete2Line";
+import { Grid } from "@/components/core/Grid";
+import { UserRow } from "@/components/admin/User";
 
 export default function Page() {
   const data = useData<Data>();
@@ -21,7 +24,7 @@ export default function Page() {
       content={(data, user) => (
         <PageCenterer>
           <PagePadding>
-            <Column className="gap-8" align="left">
+            <Column className="gap-8">
               <Breadcrumbs
                 paths={[
                   { name: "Admin dashboard", href: "/admin" },
@@ -29,23 +32,23 @@ export default function Page() {
                 ]}
               />
               <Text style="megatitle">Users</Text>
-              <SimpleButton
-                href="/admin/users/create"
-                text="Create new user"
-                icon={<MingcuteAddLine />}
-              />
-              <Column className="gap-4" align="left">
-                {data.users.map((u) => (
-                  <Row key={u.id} className="gap-4" align="center">
-                    <Text>
-                      <b>{u.username}</b>
-                      {u.id === user.id ? " (You)" : ""}
-                    </Text>
-                    <Text>{u.type}</Text>
-                  </Row>
-                ))}
-                {data.users.length === 0 && <Text>No users!</Text>}
-              </Column>
+              <Row align="center">
+                <SimpleButton
+                  href="/admin/users/create"
+                  text="Create new user"
+                  icon={<MingcuteAddLine />}
+                  theme="primary"
+                />
+              </Row>
+              {data.users.length !== 0 ? (
+                <Grid className="gap-4" columns="1fr 1fr auto" align="center">
+                  {data.users.map((u) => (
+                    <UserRow user={u} key={u.id} />
+                  ))}
+                </Grid>
+              ) : (
+                <Text>No users!</Text>
+              )}
             </Column>
           </PagePadding>
         </PageCenterer>

@@ -1,20 +1,35 @@
-import clsx from "clsx";
 import React from "react";
 
 // TODO: Codify routes rather than allowing any string.
 export type Action =
-  | { onClick: () => void; href?: undefined; submit?: undefined }
   | {
-      onClick?: undefined;
+      onClick: () => void;
+      disabled?: boolean;
+
+      href?: undefined;
+      submit?: undefined;
+      target?: undefined;
+    }
+  | {
       href: string;
       target?: React.HTMLAttributeAnchorTarget;
+
+      onClick?: undefined;
       submit?: undefined;
+      disabled?: undefined;
     }
-  | { onClick?: undefined; href?: undefined; submit: true };
+  | {
+      submit: true;
+      disabled?: boolean;
+
+      onClick?: undefined;
+      href?: undefined;
+      target?: undefined;
+    };
 
 export function extractAction(props: Action): Action {
   if (props.onClick != null) {
-    return { onClick: props.onClick };
+    return { onClick: props.onClick, disabled: props.disabled };
   } else if (props.href != null) {
     return { href: props.href, target: props.target };
   } else if (props.submit === true) {
@@ -27,7 +42,6 @@ export function extractAction(props: Action): Action {
 export type ButtonProps = {
   children: React.ReactElement;
   alt?: string;
-  hidden?: boolean;
 } & Action;
 
 /**
@@ -45,10 +59,11 @@ export function Button(props: ButtonProps) {
     const type = props.submit === true ? "submit" : "button";
     return (
       <button
-        className={clsx("group grid", { hidden: props.hidden })}
+        className="group grid"
         onClick={props.onClick}
         type={type}
         title={props.alt}
+        disabled={props.disabled}
       >
         {props.children}
       </button>
@@ -56,7 +71,7 @@ export function Button(props: ButtonProps) {
   } else {
     return (
       <a
-        className={clsx("group grid", { hidden: props.hidden })}
+        className="group grid"
         href={props.href}
         title={props.alt}
         target={props.target}

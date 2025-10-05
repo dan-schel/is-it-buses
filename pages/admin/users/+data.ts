@@ -5,7 +5,12 @@ import { User } from "@/server/services/auth/user";
 import { AuthProtectedData } from "@/shared/apis/lib";
 
 export type Data = AuthProtectedData<{
-  users: { id: string; username: string; type: string }[];
+  users: {
+    id: string;
+    username: string;
+    type: string;
+    isSuperadmin: boolean;
+  }[];
 }>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
@@ -20,6 +25,7 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
           id: x.id,
           username: x.username,
           type: x.profileType,
+          isSuperadmin: x.isSuperadmin,
         })),
       },
     };
