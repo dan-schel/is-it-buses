@@ -17,6 +17,7 @@ import { MingcuteInformationLine } from "@/components/icons/MingcuteInformationL
 import { MingcuteMailOpenLine } from "@/components/icons/MingcuteMailOpenLine";
 import { MingcuteAlertOctagonLine } from "@/components/icons/MingcuteAlertOctogonLine";
 import { Grid } from "@/components/core/Grid";
+import { Row } from "@/components/core/Row";
 
 export default function Page() {
   const data = useData<Data>();
@@ -31,7 +32,7 @@ export default function Page() {
   return (
     <UnwrapAuthProtectedData
       data={data}
-      content={(_data, user) => (
+      content={(data, user) => (
         <PageCenterer>
           <PagePadding>
             <Column className="gap-8">
@@ -44,12 +45,19 @@ export default function Page() {
                   You&apos;re logged in as <b>{user.username}</b> ({user.type}
                   ).
                 </Text>
-                <SimpleButton text="Logout" onClick={handleLogout} />
+                <Row align="center" className="gap-2">
+                  <SimpleButton
+                    text="Change password"
+                    href="/admin/change-password"
+                    disabled={!data.canChangePassword}
+                  />
+                  <SimpleButton text="Logout" onClick={handleLogout} />
+                </Row>
               </Column>
               <Divider />
               <Column className="gap-4">
                 <Text style="subtitle">Actions</Text>
-                <Grid className="gap-4" columns="1fr 1fr">
+                <Grid className="gap-2" columns="1fr 1fr">
                   <SimpleButton
                     href="/admin/status"
                     text="Status"

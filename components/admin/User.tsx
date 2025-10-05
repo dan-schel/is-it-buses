@@ -15,7 +15,7 @@ export type UserProps = {
     id: string;
     username: string;
     type: string;
-    isSuperadmin: boolean;
+    canBeDeleted: boolean;
   };
 };
 
@@ -62,7 +62,7 @@ export function UserRow(props: UserProps) {
           onClick={handleDelete}
           text={deleted ? "Deleted" : "Delete"}
           icon={<MingcuteDelete2Line />}
-          disabled={deleted || isCurrentUser || props.user.isSuperadmin}
+          disabled={deleted || !props.user.canBeDeleted}
           loading={loading}
         />
       </With>

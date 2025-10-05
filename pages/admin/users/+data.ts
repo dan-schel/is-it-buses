@@ -10,11 +10,12 @@ export type Data = AuthProtectedData<{
     username: string;
     type: string;
     isSuperadmin: boolean;
+    canBeDeleted: boolean;
   }[];
 }>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
-  return await withUser(ctx, User.CAN_MANAGE_USERS, async () => {
+  return await withUser(ctx, User.CAN_MANAGE_USERS, async (user) => {
     const { app } = ctx.custom;
 
     const users = await app.auth.getAllUsers();
@@ -26,6 +27,7 @@ export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
           username: x.username,
           type: x.profileType,
           isSuperadmin: x.isSuperadmin,
+          canBeDeleted: !x.isSuperadmin && x.id !== user.id,
         })),
       },
     };

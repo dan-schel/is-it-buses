@@ -4,16 +4,13 @@ import { withUser } from "@/server/services/auth/protection";
 import { User } from "@/server/services/auth/user";
 import { AuthProtectedData } from "@/shared/apis/lib";
 
-export type Data = AuthProtectedData<{
-  canChangePassword: boolean;
-}>;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type Data = AuthProtectedData<{}>;
 
 export async function data(ctx: PageContext): Promise<Data & JsonSerializable> {
-  return await withUser(ctx, User.CAN_ACCESS_DASHBOARD, async (user) => {
+  return await withUser(ctx, User.ANYONE, async () => {
     return {
-      data: {
-        canChangePassword: !user.isSuperadmin,
-      },
+      data: {},
     };
   });
 }
