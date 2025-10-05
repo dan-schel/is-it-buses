@@ -11,7 +11,7 @@ import { setupLogoutHandler } from "@/server/api/auth/logout";
 
 export type ApiContext = { readonly app: App; readonly token: string | null };
 
-export type ApiHandler<Args extends ZodType, Result extends ZodType> = (
+type ApiHandler<Args extends ZodType, Result extends ZodType> = (
   ctx: ApiContext,
   args: z.infer<Args>,
 ) => Promise<z.infer<Result>>;

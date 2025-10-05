@@ -9,7 +9,7 @@ import { Map } from "@/components/map/Map";
 import { DisruptionButton } from "@/components/disruptions/DisruptionButton";
 import { useSettings } from "@/components/settings/common/use-settings";
 
-export type MapSectionProps = {
+type MapSectionProps = {
   disruptions: DisruptionSummary[];
   mapHighlighting: SerializedMapHighlighting;
   occuring: PeriodFilter;

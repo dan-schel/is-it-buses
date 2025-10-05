@@ -40,7 +40,7 @@ type Style =
   | { style?: keyof typeof styles }
   | { style: "custom"; className: string };
 
-export type TextProps = {
+type TextProps = {
   children: React.ReactNode;
   as?: "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   align?: "left" | "center" | "right" | "justify";

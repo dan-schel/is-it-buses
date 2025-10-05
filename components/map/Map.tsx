@@ -9,9 +9,9 @@ import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { LinesColoringStrategy } from "@/components/map/renderer/coloring-strategy/lines-coloring-strategy";
 import { DisruptionsColoringStrategy } from "@/components/map/renderer/coloring-strategy/disruptions-coloring-strategy";
 
-export type MapMode = "show-disruptions" | "show-lines-running";
+type MapMode = "show-disruptions" | "show-lines-running";
 
-export type MapProps = {
+type MapProps = {
   highlighting?: SerializedMapHighlighting;
   mode?: MapMode;
 };

@@ -12,7 +12,7 @@ import { CalendarData } from "@/shared/types/calendar-data";
 import { groupBy } from "@dan-schel/js-utils";
 import { getColumn } from "@/components/calendar/utils";
 
-export type CalendarProps = {
+type CalendarProps = {
   data: CalendarData;
 };
 

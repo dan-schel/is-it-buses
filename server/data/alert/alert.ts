@@ -27,7 +27,7 @@ const alertStates = [
   // Manually ignored, permanently (will never automatically return to the inbox).
   "ignored-permanently",
 ] as const;
-export type AlertState = (typeof alertStates)[number];
+type AlertState = (typeof alertStates)[number];
 export const alertStateJson = z.enum(alertStates);
 
 /**

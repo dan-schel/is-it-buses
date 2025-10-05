@@ -9,7 +9,7 @@ import { Calendar } from "@/components/calendar/Calendar";
 import { CalendarData } from "@/shared/types/calendar-data";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
 
-export type DisruptionProps = {
+type DisruptionProps = {
   data: {
     title: string;
     bodyMarkdown: string;

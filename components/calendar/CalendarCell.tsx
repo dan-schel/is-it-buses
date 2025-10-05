@@ -7,7 +7,7 @@ import { Column } from "@/components/core/Column";
 import { dateBoxStyles, getColumn } from "@/components/calendar/utils";
 import clsx from "clsx";
 
-export type CalendarCellProps = {
+type CalendarCellProps = {
   data: CalendarCellData;
 };
 

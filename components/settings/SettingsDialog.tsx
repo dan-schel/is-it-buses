@@ -12,7 +12,7 @@ import { FixedDialogCloseButton } from "@/components/common/FixedDialogCloseButt
 import { PagePadding } from "@/components/common/PagePadding";
 import { Divider } from "@/components/common/Divider";
 
-export type SettingsDialogProps = {
+type SettingsDialogProps = {
   open: boolean;
   onClose: () => void;
 };

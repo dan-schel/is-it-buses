@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Text } from "@/components/core/Text";
 import { With } from "@/components/core/With";
 
-export type MonthTitleProps = {
+type MonthTitleProps = {
   year: number;
   month: number;
 };

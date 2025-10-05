@@ -4,7 +4,7 @@ import { RadioControl, extractRadioControl } from "@/components/core/Radio";
 import { Column } from "@/components/core/Column";
 import { Text } from "@/components/core/Text";
 
-export type SettingsRadioButtonProps = {
+type SettingsRadioButtonProps = {
   title: string;
   description?: string;
 } & RadioControl;

@@ -1,4 +1,4 @@
-export type RelativePosition =
+type RelativePosition =
   | "left-edge"
   | "left-inner"
   | "right-inner"

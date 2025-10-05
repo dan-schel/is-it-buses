@@ -1,14 +1,10 @@
 import React from "react";
 
-export type InputProps = {
+type InputProps = {
   value: string;
   onChange: (value: string) => void;
   password?: boolean;
 };
-
-// TODO: [DS] Consider renaming to TextInput. Consider renaming existing
-// TextInput to something else (TextField?) as it seems to have additional stuff
-// going on.
 
 // TODO: [DS] If this remains a core component, document it in the style of the
 // other core components.

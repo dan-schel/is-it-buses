@@ -4,7 +4,7 @@ import { usePageContext } from "vike-react/usePageContext";
 import { UserContext } from "@/components/auth/use-user";
 import { UserProfile } from "@/shared/user-profile";
 
-export type UserProviderProps = {
+type UserProviderProps = {
   children: React.ReactNode;
 };
 

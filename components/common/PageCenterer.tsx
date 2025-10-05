@@ -1,7 +1,7 @@
 import React from "react";
 import { With } from "@/components/core/With";
 
-export type PageCentererProps = {
+type PageCentererProps = {
   children: React.ReactElement;
 };
 

@@ -16,7 +16,7 @@ import { Row } from "@/components/core/Row";
 import { PageCenterer } from "@/components/common/PageCenterer";
 import { PagePadding } from "@/components/common/PagePadding";
 
-export type UnwrapAuthProtectedDataProps<T> = {
+type UnwrapAuthProtectedDataProps<T> = {
   data: AuthProtectedData<T>;
   content: (data: T, user: UserProfile) => React.ReactNode;
 };

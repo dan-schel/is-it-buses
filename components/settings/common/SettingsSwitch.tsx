@@ -7,7 +7,7 @@ import {
 import { Column } from "@/components/core/Column";
 import { Text } from "@/components/core/Text";
 
-export type SettingsSwitchProps = {
+type SettingsSwitchProps = {
   title: string;
   description?: string;
 } & CheckboxControl;

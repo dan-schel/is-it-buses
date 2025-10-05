@@ -1,6 +1,6 @@
 import React from "react";
 
-export type DialogProps = {
+type DialogProps = {
   children: React.ReactElement;
   open: boolean;
 };

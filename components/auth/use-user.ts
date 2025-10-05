@@ -3,7 +3,7 @@ import { callApi } from "@/components/utils";
 import { AUTH_LOGIN, AUTH_LOGOUT } from "@/shared/apis";
 import { UserProfile } from "@/shared/user-profile";
 
-export type UserContextContent = {
+type UserContextContent = {
   ready: boolean;
   user: UserProfile | null;
   setUser: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -14,9 +14,6 @@ export const UserContext = React.createContext<UserContextContent>({
   user: null,
   setUser() {},
 });
-
-export type LoginFunction = ReturnType<typeof useUser>["login"];
-export type LogoutFunction = ReturnType<typeof useUser>["logout"];
 
 export function useUser() {
   const { ready, user, setUser } = React.useContext(UserContext);

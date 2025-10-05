@@ -4,7 +4,7 @@ import { MingcuteCloseLine } from "@/components/icons/MingcuteCloseLine";
 import { SimpleButton } from "@/components/common/SimpleButton";
 import { With } from "@/components/core/With";
 
-export type FixedDialogCloseButtonProps = {
+type FixedDialogCloseButtonProps = {
   onClick: () => void;
 };
 

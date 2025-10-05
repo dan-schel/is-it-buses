@@ -7,7 +7,7 @@ import { Text } from "@/components/core/Text";
 import { Link } from "@/components/core/Link";
 import { MingcuteRightLine } from "@/components/icons/MingcuteRightLine";
 
-export type BreadcrumbsProps = {
+type BreadcrumbsProps = {
   paths: { name: string; href: string }[];
 };
 

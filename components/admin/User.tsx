@@ -10,7 +10,7 @@ import { standardAuthErrorDisplayStrings } from "@/shared/apis/lib";
 import { Grid } from "@/components/core/Grid";
 import { With } from "@/components/core/With";
 
-export type UserProps = {
+type UserProps = {
   user: {
     id: string;
     username: string;
