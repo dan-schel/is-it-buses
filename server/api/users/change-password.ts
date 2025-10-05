@@ -11,6 +11,7 @@ export async function handle(
   return await withUser(ctx, User.ANYONE, async (me) => {
     const { app } = ctx;
 
+    if (args.newPassword.length < 8) return { error: "invalid-new-password" };
     if (me.isSuperadmin) return { error: "is-superadmin" };
 
     const oldPasswordMatches = await me.isCorrectPassword(args.oldPassword);

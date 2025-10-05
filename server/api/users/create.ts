@@ -11,6 +11,8 @@ export async function handle(
   return await withUser(ctx, User.CAN_MANAGE_USERS, async () => {
     const { app } = ctx;
 
+    if (args.username.length === 0) return { error: "invalid-username" };
+
     const existingUser = await app.auth.getUserByUsername(args.username);
     if (existingUser != null) return { error: "username-taken" };
 

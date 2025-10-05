@@ -8,7 +8,7 @@ const argsSchema = z.object({
 
 const resultSchema = buildAuthProtectedResultSchema(
   z.object({ success: z.literal(true) }),
-  ["is-superadmin", "incorrect-old-password"],
+  ["is-superadmin", "incorrect-old-password", "invalid-new-password"],
 );
 
 export const api: Api<typeof argsSchema, typeof resultSchema> = {

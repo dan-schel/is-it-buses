@@ -47,6 +47,7 @@ export default function Page() {
         const message = {
           ...standardAuthErrorDisplayStrings,
           "username-taken": "That username is already taken.",
+          "invalid-username": "That isn't a valid username.",
         }[result.error];
 
         setError(message);
@@ -161,12 +162,7 @@ function UserCreatedView({ password }: { password: string }) {
         dismissed this page, so be sure to note it down now and pass it on to
         the new user so they can login!)
       </Text>
-      <SimpleButton
-        icon={<MingcuteCheckLine />}
-        text="Done"
-        theme="primary"
-        href="/admin/users"
-      />
+      <SimpleButton text="Done" theme="primary" href="/admin/users" />
     </Column>
   );
 }
