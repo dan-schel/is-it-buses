@@ -1,8 +1,8 @@
 import {
   flexi,
   FlexiLength,
-} from "@/components/map/renderer/dimensions/flexi-length";
-import { FlexiPoint } from "@/components/map/renderer/dimensions/flexi-point";
+} from "@/frontend/components/map/renderer/dimensions/flexi-length";
+import { FlexiPoint } from "@/frontend/components/map/renderer/dimensions/flexi-point";
 import {
   CurveSegmentInstruction,
   SegmentInstruction,

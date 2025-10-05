@@ -1,4 +1,4 @@
-import { flexi } from "@/components/map/renderer/dimensions/flexi-length";
+import { flexi } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { northMelbourneToFootscray } from "@/scripts/generate-map-geometry/ptv/segments/north-melbourne-to-footscray";
 import {
   northMelbourneJunctionRrl,

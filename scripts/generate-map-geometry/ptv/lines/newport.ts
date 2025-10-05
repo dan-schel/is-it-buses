@@ -1,4 +1,4 @@
-import { flexi } from "@/components/map/renderer/dimensions/flexi-length";
+import { flexi } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { LineBuilder } from "@/scripts/generate-map-geometry/lib/line-builder";
 import {
   curve,

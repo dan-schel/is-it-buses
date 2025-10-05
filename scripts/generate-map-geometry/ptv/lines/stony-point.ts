@@ -1,4 +1,4 @@
-import { flexi } from "@/components/map/renderer/dimensions/flexi-length";
+import { flexi } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { STONY_POINT as node } from "@/shared/map-node-ids";
 import { frankstonStationPos } from "@/scripts/generate-map-geometry/ptv/lines/frankston";
 import { LineBuilder } from "@/scripts/generate-map-geometry/lib/line-builder";

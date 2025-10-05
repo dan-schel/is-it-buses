@@ -1,7 +1,7 @@
-import { lineWidth } from "@/components/map/renderer/utils";
-import { flexi } from "@/components/map/renderer/dimensions/flexi-length";
+import { lineWidth } from "@/frontend/components/map/renderer/utils";
+import { flexi } from "@/frontend/components/map/renderer/dimensions/flexi-length";
 import { SegmentInstruction } from "@/scripts/generate-map-geometry/lib/segment-instructions";
-import { FlexiPoint } from "@/components/map/renderer/dimensions/flexi-point";
+import { FlexiPoint } from "@/frontend/components/map/renderer/dimensions/flexi-point";
 import { LineBuilder } from "@/scripts/generate-map-geometry/lib/line-builder";
 import { SegmentBuilder } from "@/scripts/generate-map-geometry/lib/segment-builder";
 
