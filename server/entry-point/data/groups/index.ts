@@ -12,3 +12,4 @@ export { group as NORTHERN } from "@/server/entry-point/data/groups/northern";
 export { group as SANDRINGHAM } from "@/server/entry-point/data/groups/sandringham";
 export { group as SEYMOUR } from "@/server/entry-point/data/groups/seymour";
 export { group as STONY_POINT } from "@/server/entry-point/data/groups/stony-point";
+export { group as SUNBURY } from "@/server/entry-point/data/groups/sunbury";

@@ -39,6 +39,10 @@ export class LineGroupBuilder {
     return this;
   }
 
+  do(func: (builder: LineGroupBuilder) => LineGroupBuilder) {
+    return func(this);
+  }
+
   build(stationMappingOverrides: StationMappingOverride[]) {
     if (this._workingIndex > 0) {
       throw new Error("Cannot build - some branches have not terminated yet.");

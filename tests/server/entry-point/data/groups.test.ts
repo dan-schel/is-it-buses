@@ -8,8 +8,9 @@ import {
   formatLines,
   formatNode,
 } from "@/tests/server/entry-point/data/utils";
+import { nonNull } from "@dan-schel/js-utils";
 
-const groups = Object.values(group);
+const groups = Object.values(group).filter(nonNull);
 
 describe("Melbourne line groups", () => {
   it("matches the snapshot", () => {
