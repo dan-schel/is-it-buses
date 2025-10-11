@@ -50,7 +50,7 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
     return this.section.isValid(group);
   }
 
-  applicableCategory(_app: App): FilterableDisruptionCategory | null {
+  getApplicableCategory(_app: App): FilterableDisruptionCategory | null {
     return null;
   }
 }
