@@ -28,7 +28,7 @@ is-it-buses/
 │   ├── services/               # Business logic services
 │   ├── task/                   # Background tasks
 │   └── entry-point/            # Application initialization
-├── shared/                     # Shared code between frontend and backend
+├── shared/                     # Shared code (mostly types) between frontend and backend
 ├── scripts/                    # Build and utility scripts
 │   └── generate-map-geometry/  # Map generation scripts
 └── tests/                      # Test files organized by path
@@ -68,6 +68,7 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
   - It creates an `App` instance which is the heart of the backend application. All other backend code can retrieve the values established at the entry point via this `App` instance. This includes the lists of stations, lines, groups, database connection, alert source (PTV API relay client), discord client, logger, and more.
   - `App` is made available in all `+data.ts` files, API handlers, and background tasks (check surrounding code for examples, as it's passed in differently depending on the context).
 - Prefer performing formatting on the backend (in the `+data.ts` files) over sending large chunks of raw data to the frontend and formatting there.
+  - For example, the frontend shouldn't need to know the full list of stations and lines on the network. Convert IDs to names on the backend and send it on to the frontend already formatted.
   - Note: While the server runs in the UTC timezone at all times, all dates can be formatted in `Australia/Melbourne` timezone for display to users, allowing even date formatting to be done on the backend.
 
 ## Core concepts
@@ -75,7 +76,7 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 - Stations & lines - Train stations and lines and associated metadata (e.g. mapping to the PTV API IDs). These are statically defined in the entry point, rather than stored in the database.
 - Line groups - Groups of lines, e.g. the Pakenham and Cranbourne line, which are both members of the "Dandenong group" as they have a significant shared section of track, and therefore essentially act as one. All lines fall within a group, and the `LineGroup` classes for each group define a tree structure to represent this. Nodes in the tree typically represent a single station, except in the case of the city loop, which is collapsed into a single node for simplicity.
 - Alerts - A raw disruption message from the PTV API. We do not display these directly to users, but rather use them as input to generate `Disruptions`, either via automatic parsing rules, or manual curation via the admin interface.
-- Disruptions - Disruption messages shown on the site. Made up of "data" and a "period". The "data" is highly structured into different types, e.g. `BusReplacementsDisruptionData` vs `StationClosureDisruptionData`.
+- Disruptions - Disruption messages shown on the site. Made up of "data" and a "period" (time frame). The "data" is highly structured into different types, e.g. `BusReplacementsDisruptionData` vs `StationClosureDisruptionData`.
 - PTV API relay - A custom relay server (lives in another repo: https://github.com/dan-schel/vic-transport-api-relay) which fetches data (in our case, alerts) from the PTV API and caches them.
 - Map & map highlighting - The centerpiece of the landing page is a map of the train network with disrupted line segments highlighted. Each edge in the line group tree defines the area of the map to highlight when that edge is disrupted. Map geometry is generated via a script found in `scripts/generate-map-geometry/`, and saved as a static file in the frontend in `frontend/components/map/geometry/`.
 
@@ -94,7 +95,7 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 ### Class guidelines
 
 - Prefer immutable classes with readonly properties.
-- For classes which need serialization, either to the database or over an API, use Zod:
+- For classes which need serialization, either to the database or over an API, use Zod.
 - Example:
 
   ```ts
@@ -140,7 +141,7 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 
 ### React guidelines
 
-- Prefer one component per file, unless very small helper components.
+- Prefer one component per file, unless they're very small helper components.
 - Prefer self-closing components when no children.
 - Follow the style:
 
@@ -159,8 +160,8 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 ### Test guidelines
 
 - Place tests in `tests/` directory, mirroring source structure, e.g. `server/app.ts` would be tested at `tests/server/app.test.ts`.
-- Use descriptive test names (happy path first, then edge cases)
-- Keep tests minimal - write as few tests as needed to cover functionality
+- Use descriptive test names (happy path first, then edge cases).
+- Keep tests minimal - prefer shorter test files with 80% coverage, over long test files with >90% coverage.
 - Follow the structure:
 
   ```ts
@@ -192,13 +193,13 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 
 Reading/writing to the database is achieved via `app.database`. (Although note that some collections (such as alerts, disruptions, and users) have custom repository classes (`app.alerts`, `app.disruptions`, `app.auth` respectively) which encapsulate common queries and operations.
 
-The database is a custom library `@dan-schel/db` which allows us to work with our classes directly, instead of dealing with raw BSON documents, for example:
+The database interface is a custom library `@dan-schel/db` which allows us to work with our classes directly, instead of dealing with raw BSON documents, for example:
 
 ```ts
+import { Session } from "@/server/services/auth/session";
+
 // Model class which knows how to serialize/deserialize `Session` objects.
 import { SESSIONS } from "@/server/database/models";
-
-import { Session } from "@/server/services/auth/session";
 
 export async function someFunction(app: App) {
   const myToken = "asdasdasd";
