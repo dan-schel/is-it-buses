@@ -8,7 +8,7 @@ describe("EndsApproximately", () => {
     new Date("2025-04-01T00:00:00+11:00"),
   );
 
-  describe("getDisplayString", () => {
+  describe("#getDisplayString", () => {
     it("works", () => {
       const options = {
         now: new Date("2025-03-07T10:24:14.000+11:00"),
