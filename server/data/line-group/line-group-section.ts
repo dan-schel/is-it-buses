@@ -19,12 +19,14 @@ export class LineGroupSection {
     // - All end nodes are further down the tree than the start node
     // - No end nodes can be upstream on the same branch as another end node
 
+    // TODO: [DS] Implement it.
     return null;
   }
 
   toLineGroupEdges(group: LineGroup): LineGroupEdge[] {
     if (!this.isValid(group)) throw new Error("Invalid section");
 
+    // TODO: [DS] Implement it.
     return [];
   }
 
@@ -39,6 +41,7 @@ export class LineGroupSection {
     group: LineGroup,
     _nodes: LineGroupNode[],
   ): LineGroupSection {
+    // TODO: [DS] Implement it.
     return new LineGroupSection(group.id, 1, []);
   }
 }
