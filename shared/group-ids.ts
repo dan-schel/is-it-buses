@@ -1,0 +1,15 @@
+export const BALLARAT = 1;
+export const BENDIGO = 2;
+export const BURNLEY = 3;
+export const CLIFTON_HILL = 4;
+export const DANDENONG = 5;
+export const FLEMINGTON_RACECOURSE = 6;
+export const FRANKSTON = 7;
+export const GEELONG = 8;
+export const GIPPSLAND = 9;
+export const NEWPORT = 10;
+export const NORTHERN = 11;
+export const SANDRINGHAM = 12;
+export const SEYMOUR = 13;
+export const STONY_POINT = 14;
+export const SUNBURY = 15;

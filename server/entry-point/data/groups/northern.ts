@@ -1,3 +1,4 @@
+import * as groupId from "@/shared/group-ids";
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
@@ -7,7 +8,7 @@ import {
   sunburyIsSeparateGroup,
 } from "@/server/entry-point/data/groups/sunbury";
 
-export const group = new LineGroupBuilder()
+export const group = new LineGroupBuilder(groupId.NORTHERN)
   .add("the-city")
   .add(station.NORTH_MELBOURNE)
 

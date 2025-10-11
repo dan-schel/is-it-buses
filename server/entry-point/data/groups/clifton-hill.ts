@@ -1,9 +1,10 @@
+import * as groupId from "@/shared/group-ids";
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 import { cityLoopOverride } from "@/server/entry-point/data/station-mapping-overrides";
 
-export const group = new LineGroupBuilder()
+export const group = new LineGroupBuilder(groupId.CLIFTON_HILL)
   .add("the-city")
   .add(station.JOLIMONT)
   .add(station.WEST_RICHMOND)

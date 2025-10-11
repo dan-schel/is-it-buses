@@ -16,7 +16,7 @@ describe("MappingDataBuilder", () => {
     STATION_3: 30,
   } as const;
 
-  const lineGroup = new LineGroup([[1, 2, 3]], [100], new Map());
+  const lineGroup = new LineGroup(400, [[1, 2, 3]], [100], new Map());
 
   describe("#auto", () => {
     it("works", () => {

@@ -1,3 +1,4 @@
+import * as groupId from "@/shared/group-ids";
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
@@ -10,7 +11,7 @@ import { config } from "@/server/entry-point/config";
 export const sunburyIsSeparateGroup = config.METRO_TUNNEL_STATE !== "not-open";
 
 const hybrid = sunburyIsSeparateGroup
-  ? new LineGroupBuilder()
+  ? new LineGroupBuilder(groupId.SUNBURY)
       .add("the-city")
       .do(addFootscrayToSunbury)
       .build([
@@ -26,7 +27,7 @@ const hybrid = sunburyIsSeparateGroup
   : null;
 
 const withoutCityLoop = sunburyIsSeparateGroup
-  ? new LineGroupBuilder()
+  ? new LineGroupBuilder(groupId.SUNBURY)
       .add(station.TOWN_HALL)
       .add(station.STATE_LIBRARY)
       .add(station.PARKVILLE)

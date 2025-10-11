@@ -1,3 +1,4 @@
+import * as groupId from "@/shared/group-ids";
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
@@ -7,14 +8,14 @@ import {
 } from "@/server/entry-point/data/station-mapping-overrides";
 import { config } from "@/server/entry-point/config";
 
-const withoutMetroTunnel = new LineGroupBuilder()
+const withoutMetroTunnel = new LineGroupBuilder(groupId.DANDENONG)
   .add("the-city")
   .add(station.RICHMOND)
   .add(station.SOUTH_YARRA)
   .do(addCaulfieldToPakenhamAndCranbourne)
   .build([cityLoopOverride]);
 
-const hybrid = new LineGroupBuilder()
+const hybrid = new LineGroupBuilder(groupId.DANDENONG)
   .add("the-city")
   .do(addCaulfieldToPakenhamAndCranbourne)
   .build([
@@ -29,7 +30,7 @@ const hybrid = new LineGroupBuilder()
     },
   ]);
 
-const withoutCityLoop = new LineGroupBuilder()
+const withoutCityLoop = new LineGroupBuilder(groupId.DANDENONG)
   .add(station.TOWN_HALL)
   .add(station.ANZAC)
   .do(addCaulfieldToPakenhamAndCranbourne)

@@ -7,6 +7,7 @@ type Overrides = Map<LineGroupNode, readonly number[]>;
 
 export class LineGroup {
   constructor(
+    readonly id: number,
     private readonly _branches: Branches,
     private readonly _lineIds: readonly number[],
     private readonly _stationMappingOverrides: Overrides,
