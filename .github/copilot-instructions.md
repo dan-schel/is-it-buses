@@ -17,7 +17,7 @@ is-it-buses/
 │   ├── pages/         # Vike filesystem-based routing pages
 │   └── public/        # Static assets
 ├── server/            # Backend Express server
-│   ├── api/           # RPC-style API endpoints (added ad-hoc as needed)
+│   ├── api/           # RPC-style API endpoints
 │   ├── data/          # Data models and repositories
 │   ├── services/      # Business logic services
 │   ├── task/          # Background tasks
@@ -51,7 +51,7 @@ is-it-buses/
 - **Import Alias**: Always use `@/` prefix for imports (e.g., `@/server/app`, `@/frontend/components/Button`)
 - **No Relative Imports**: Enforced by custom ESLint rule `custom/enforce-import-alias`
 - **Server/Frontend Separation**: Frontend files cannot import from `@/server` (except `+data.ts` files)
-- **Entry Point Protection**: Only `main.ts` can import from `@/server/entry-point`. This ensures hard-coded constants defined in entry point code are not accidentally imported elsewhere - instead, retrieve them through the app instance created at the entry point.
+- **Entry Point Protection**: Only `main.ts` can import from `@/server/entry-point`. This ensures hard-coded constants defined in entry point code are not accidentally imported elsewhere - things like stations, lines, etc. should be retrieved via the `App` instance instead.
 
 ## Code Style and Conventions
 
@@ -61,6 +61,7 @@ is-it-buses/
 - **Target**: ES2022
 - **Module System**: ESNext with bundler resolution
 - **Naming**: Use PascalCase for classes/types, camelCase for variables/functions
+- Prefer `function` syntax over arrow function syntax for named functions (i.e. still use arrow functions for lambdas!)
 
 ### Formatting
 
@@ -87,7 +88,6 @@ is-it-buses/
 - Import React: `import React from "react";` (explicit imports)
 - JSX in `.tsx` files only
 - Props types are always defined explicitly above the component function
-- Prefer `function` syntax over arrow function syntax for component definitions
 
 ## Testing
 
@@ -200,7 +200,7 @@ npm run test-coverage    # Run tests with coverage
 
 ### API Structure
 
-- REST API at `/api` prefix
+- RPC-style API endpoints at `/api` prefix
 - Routes defined in `server/api/`
 - Authentication protected by middleware
 - CORS configuration for external access
