@@ -1,14 +1,20 @@
-# Copilot Instructions for Is it buses?
+# Is it buses? - Copilot Instructions
 
-## Project Overview
+## Overview
 
-**Is it buses?** is a web application that displays train disruption information for Melbourne and Victoria's public transport network. It provides a visual, user-friendly interface to check if trains are running or if bus replacements are in effect.
+"Is it buses?" is a web application that displays train disruption information for Melbourne and Victoria's public transport network. The primary focus is bus replacement disruptions, although the long-term goal is to cover all types of disruptions.
 
-- **Tech Stack**: TypeScript, React 19, Vike (SSR), Express, MongoDB, Tailwind CSS 4, Vitest
-- **Architecture**: Full-stack TypeScript application with server-side rendering (SSR)
-- **Purpose**: Hub for train disruption information with interactive map visualization
+Tech Stack:
 
-## Project Structure
+- TypeScript
+- React
+- Vike (SSR)
+- Express
+- MongoDB
+- Tailwind CSS 4
+- Vitest
+
+### File structure
 
 ```
 is-it-buses/
@@ -28,7 +34,14 @@ is-it-buses/
 └── tests/             # Test files organized by path
 ```
 
-## Key Architecture Decisions
+### Key commands
+
+- `npm i`: Install dependencies
+- `npm run lint`: Run TypeScript + ESLint + Knip (deadcode detection)
+- `npm run format`: Format code with Prettier
+- `npm run test`: Run tests
+
+## Architecture
 
 ### Frontend
 
@@ -41,240 +54,175 @@ is-it-buses/
 ### Backend
 
 - **Server**: Express 5 with TypeScript
-- **Database**: MongoDB (with in-memory fallback for development)
-- **Time Management**: Uses UTC timezone exclusively (`TZ="Etc/UTC"`)
+- **Database**: MongoDB (with optional in-memory fallback for development and tests)
 - **Authentication**: Cookie-based sessions with bcrypt password hashing
-- **External Services**: Discord bot integration, PTV API relay
+- **External Services**: PTV API (via custom relay server), Discord bot integration
 
-### Important Patterns
+### Separation of concerns
 
-- **Import Alias**: Always use `@/` prefix for imports (e.g., `@/server/app`, `@/frontend/components/Button`)
-- **No Relative Imports**: Enforced by custom ESLint rule `custom/enforce-import-alias`
-- **Server/Frontend Separation**: Frontend files cannot import from `@/server` (except `+data.ts` files)
-- **Entry Point Protection**: Only `main.ts` can import from `@/server/entry-point`. This ensures hard-coded constants defined in entry point code are not accidentally imported elsewhere - things like stations, lines, etc. should be retrieved via the `App` instance instead.
+- Code in the `frontend/` folder cannot import from `@/server` (except `+data.ts` files, which are SSR hooks which run on the server, and therefore considered "backend" code).
+- Only `main.ts` may import from `@/server/entry-point`. It creates an `App` instance which is the heart of the backend application. All other backend code can retrieve the values established at the entry point via this `App` instance. This includes the lists of stations, lines, groups, database connection, alert source (PTV API relay client), discord client, logger, and more. `App` is made available in all `+data.ts` files, API handlers, and background tasks (check surrounding code for examples, as it's passed in differently depending on the context).
+- Prefer performing formatting on the backend (in the `+data.ts` files) over sending large chunks of raw data to the frontend and formatting there. (Note: While the server runs in the UTC timezone at all times, all dates can be formatted in `Australia/Melbourne` timezone for display to users, allowing formatting to be done on the backend.)
+
+### Core concepts
+
+- **Stations & Lines**: Train stations and lines and associated metadata (e.g. mapping to the PTV API IDs). These are statically defined in the entry point, rather than stored in the database.
+- **Line groups**: Groups of lines, e.g. the Pakenham and Cranbourne line, which are both members of the "Dandenong group" as they have a significant shared section of track, and therefore essentially act as one. All lines fall within a group, and the `LineGroup` classes for each group define a tree structure to represent this. Nodes in the tree typically represent a single station, except in the case of the city loop, which is collapsed into a single node for simplicity.
+- **Alerts**: A raw disruption message from the PTV API. We do not display these directly to users, but rather use them as input to generate `Disruptions`, either via automatic parsing rules, or manual curation via the admin interface.
+- **Disruptions**: Disruption messages shown on the site. Made up of "data" and a "period". The "data" is highly structured into different types, e.g. `BusReplacementsDisruptionData` vs `StationClosureDisruptionData`.
+- **PTV API relay**: A custom relay server (lives in another repo: https://github.com/dan-schel/vic-transport-api-relay) which fetches data (in our case, alerts) from the PTV API and caches them.
+- **Map & Map highlighting**: The centerpiece of the landing page is a map of the train network with disrupted line segments highlighted. Each edge in the line group tree defines the area of the map to highlight when that edge is disrupted. Map geometry is generated via a script found in `scripts/generate-map-geometry/`, and saved as a static file in the frontend in `frontend/components/map/geometry/`.
 
 ## Code Style and Conventions
 
-### TypeScript
+### Overall TypeScript guidelines
 
-- **Strict Mode**: Always enabled
-- **Target**: ES2022
-- **Module System**: ESNext with bundler resolution
-- **Naming**: Use PascalCase for classes/types, camelCase for variables/functions
-- Prefer `function` syntax over arrow function syntax for named functions (i.e. still use arrow functions for lambdas!)
+- TS Config: strict mode, es2022 target, esnext modules with bundler resolution.
+- Formatted with Prettier (run `npm run format`).
+- Linted with ESLint (run `npm run lint`).
+- Always use absolute imports with `@/` alias for the root folder (e.g. `@/server/app`, `@/frontend/components/Button`).
+- Never use `console.log`. Backend code should use `app.log.info` or `app.log.warn`. Frontend code can use `console.warn` to log handled errors, but should otherwise not log anything.
+- Prefer `function` syntax over arrow function syntax for named functions (still use arrow functions for lambdas).
+- Prefer `==` when comparing to `null` (to also catch `undefined`), otherwise always use `===`.
 
-### Formatting
+### Class guidelines
 
-- **Tool**: Prettier with Tailwind CSS plugin
-- **Line Length**: Default (80 characters)
-- **Quotes**: Double quotes (Prettier default)
-- **Trailing Commas**: ES5 (Prettier default)
+- Prefer immutable classes with readonly properties.
+- For classes which need serialization, either to the database or over an API, use Zod:
+- Example:
 
-### Linting Philosophy
+  ```ts
+  import { z } from "zod";
 
-> Reserve errors for situations where the code will not run or compile. Everything else is a warning. Warnings will still cause CI to fail, but let the dev get away with trying something temporarily without the editor putting red squigglies all over the place.
+  export class MyClass {
+    constructor(
+      readonly prop1: MyOtherClass,
+      readonly prop2: readonly string[],
+    ) {}
 
-### ESLint Rules (Key)
+    // Named `bson` if for serialization to the DB, `json` if for over an API.
+    // For JSON, dates must be serialized to strings, but BSON allows Date types.
+    static readonly json = z
+      .object({
+        prop1: MyOtherClass.json,
 
-- Unused variables starting with `_` are allowed
-- Use `===` and `!==` (except when comparing to `null`)
-- No `console.log` outside of server code and `+data.ts` files (use `console.warn` if needed)
-- React: prefer self-closing components when no children
+        // Prefer z.string().array() over z.array(z.string()).
+        prop2: z.string().array().readonly(),
+      })
+      .transform((obj) => new MyClass(obj.someData));
 
-### React Patterns
+    // Or `toBson()` if appropriate.
+    toJSON(): z.input<typeof MyClass.json> {
+      return {
+        prop1: this.prop1.toJSON(),
+        prop2: this.prop2,
+      };
+    }
 
-- Use functional components with hooks
-- No class components
-- Import React: `import React from "react";` (explicit imports)
-- JSX in `.tsx` files only
-- Props types are always defined explicitly above the component function
+    // Add if needed.
+    with({
+      prop1 = this.prop1,
+      prop2 = this.prop2,
+    }: {
+      prop1?: MyOtherClass;
+      prop2?: readonly string[];
+    }): MyClass {
+      return new MyClass(prop1, prop2);
+    })
+  }
+  ```
 
-## Testing
+### React guidelines
 
-### Framework
+- Prefer one component per file, unless very small helper components.
+- Prefer self-closing components when no children.
+- Follow the style:
 
-- **Tool**: Vitest 3
-- **Coverage**: Tracked with `@vitest/coverage-v8` and Codecov
-- **Run Commands**:
-  - `npm run test` - Run all tests
-  - `npm run test-coverage` - Run with coverage report
+  ```tsx
+  import React from "react";
 
-### Test Structure
+  type MyComponentProps = {
+    // props here
+  };
 
-```typescript
-import { describe, expect, it } from "vitest";
-import { ClassName } from "@/server/some-class";
+  export function MyComponent(props: MyComponentProps) {
+    // component code
+  }
+  ```
 
-describe("ClassName", () => {
-  describe("#methodName", () => {
-    it("does something specific", () => {
-      // Test implementation
-    });
-  });
-});
-```
+### Test guidelines
 
-### Testing Guidelines
-
-- Place tests in `tests/` directory, mirroring source structure
-- Test file naming: `{filename}.test.ts`
+- Place tests in `tests/` directory, mirroring source structure, e.g. `server/app.ts` would be tested at `tests/server/app.test.ts`.
 - Use descriptive test names (happy path first, then edge cases)
 - Keep tests minimal - write as few tests as needed to cover functionality
-- Static methods use `.` prefix (e.g., `.fromExtremities`)
-- Instance methods use `#` prefix (e.g., `#isValid`)
+- Follow the structure:
 
-## Build and Development
+  ```ts
+  import { describe, expect, it } from "vitest";
+  import { ClassName } from "@/server/some-class";
 
-### Commands
+  describe("ClassName", () => {
+    describe("#constructor", () => {
+      it("does something specific", () => {
+        // Test implementation
+      });
+    });
 
-```bash
-npm install              # Install dependencies
-npm run dev              # Start development server (http://localhost:3000)
-npm run build            # Production build
-npm run start            # Start production server
-npm run lint             # Run TypeScript + ESLint + Knip
-npm run format           # Format code with Prettier
-npm run format-check     # Check formatting without modifying
-npm run test             # Run tests
-npm run test-coverage    # Run tests with coverage
+    describe("#methodName", () => {
+      it("does something specific", () => {
+        // Test implementation
+      });
+    });
+
+    describe(".staticMethodName", () => {
+      it("does something specific", () => {
+        // Test implementation
+      });
+    });
+  });
+  ```
+
+### Database guidelines
+
+Reading/writing to the database is achieved via `app.database`. (Although note that some collections (such as alerts, disruptions, and users) have custom repository classes (`app.alerts`, `app.disruptions`, `app.auth` respectively) which encapsulate common queries and operations.
+
+The database is a custom library `@dan-schel/db` which allows us to work with our classes directly, instead of dealing with raw BSON documents, for example:
+
+```ts
+// Model class which knows how to serialize/deserialize `Session` objects.
+import { SESSIONS } from "@/server/database/models";
+
+import { Session } from "@/server/services/auth/session";
+
+export async function someFunction(app: App) {
+  const myToken = "asdasdasd";
+  const session1: Session = app.database.of(SESSIONS).first({
+    where: { token: myToken },
+  });
+
+  // Update `lastUsed` (`id` kept as-is, so we're updating session1 in the DB).
+  const updateSession1 = session1.with({ lastUsed: new Date() });
+  await app.database.of(SESSIONS).update(updateSession1);
+}
 ```
 
-### Development Setup
+Operations include:
 
-1. Node.js 22.20.0 (or compatible)
-2. Optional: MongoDB for local database (falls back to in-memory if not configured)
-3. Environment variables in `.env` (optional):
-   - `DATABASE_URL` - MongoDB connection string
-   - `RELAY_KEY` - PTV API relay key
-   - `DISCORD_TOKEN`, `DISCORD_CHANNEL` - Discord integration
-
-### Production Environment Variables
-
-- `NODE_ENV=production` (auto-set by start script)
-- `TZ="Etc/UTC"` (auto-set by start script)
-- `COMMIT_HASH` - Git commit hash for deployment tracking
-- `SUPERADMIN_USERNAME`, `SUPERADMIN_PASSWORD` - Admin credentials
-- `NPM_CONFIG_PRODUCTION=false` - Required for DigitalOcean deployment
-
-### Build Process
-
-1. TypeScript compilation check (`tsc --noEmit`)
-2. Linting (ESLint)
-3. Dead code detection (Knip)
-4. Vite build for frontend
-5. Unit tests (Vitest)
-
-## Key Technical Details
-
-### Timezone
-
-- **Always UTC**: All server operations use `Etc/UTC` timezone
-- Set via `TZ` environment variable in npm scripts
-- Critical for consistent time handling across deployments
-
-### Path Aliases
-
-- `@/` maps to project root
-- Example: `@/server/app.ts` → `/home/project/server/app.ts`
-- Configured in `vite.config.ts` and `tsconfig.json`
-
-### SSR with Vike
-
-- Pages in `frontend/pages/` use filesystem routing
-- `+Page.tsx` - React component
-- `+data.ts` - Server-side data loading
-- `+config.ts` - Page configuration
-- Vike handles SSR, routing, and hydration
-
-### Map Generation
-
-- Custom geometry generation in `scripts/generate-map-geometry/`
-- Uses FlexiPoint/FlexiLength for responsive map rendering
-- Line geometry defined programmatically (not from external data)
-
-### Database
-
-- MongoDB with `@dan-schel/db` wrapper
-- Migration system in `server/database/migrations`
-- In-memory fallback for development without MongoDB
-
-### API Structure
-
-- RPC-style API endpoints at `/api` prefix
-- Routes defined in `server/api/`
-- Authentication protected by middleware
-- CORS configuration for external access
-
-## Common Gotchas
-
-1. **Import Paths**: Always use `@/` prefix, never relative imports like `../`
-2. **Console Logging**: Avoid `console.log` - it's disallowed in most files
-3. **Time Handling**: Always assume UTC timezone
-4. **Frontend/Server Separation**: Frontend components cannot import server code (except via `+data.ts`)
-5. **Entry Point**: Only `main.ts` should import from `@/server/entry-point`
-6. **React Imports**: Always explicitly import React in TSX files
-7. **Unused Variables**: Prefix with `_` if intentionally unused (e.g., `_unusedParam`)
-
-## CI/CD
-
-### GitHub Actions Workflow
-
-Runs on every push with 4 jobs:
-
-1. **Format Check**: `npm run format-check`
-2. **Lint**: `npm run lint` (TypeScript + ESLint + Knip)
-3. **Test**: `npm run test-coverage` (with Codecov upload)
-4. **Build**: `npm run build`
-
-All jobs must pass for PR to merge.
-
-### Deployment
-
-- Platform: DigitalOcean App Platform
-- Auto-deployment on push to main branch
-- Discord notifications for successful deployments
-- Beta environment: https://beta.isitbuses.com
-
-## Dependencies (Key)
-
-### Core Dependencies
-
-- `express` - Web server
-- `react`, `react-dom` - UI framework
-- `vike`, `vike-react` - SSR framework
-- `mongodb` - Database client
-- `discord.js` - Discord integration
-- `zod` - Runtime type validation
-- `date-fns` - Date utilities
-
-### Dev Dependencies
-
-- `typescript` - Language
-- `vitest` - Testing
-- `eslint`, `prettier` - Code quality
-- `knip` - Dead code detection
-- `vite` - Build tool
-
-## Special Files
-
-- `knip.config.ts` - Configures dead code detection
-- `eslint.config.js` - Custom ESLint rules and configuration
-- `vite.config.ts` - Vite and Vitest configuration, PWA setup
-- `.github/prompts/` - Custom prompts for code generation
+- `get(id)`: Get a document by its ID or null
+- `require(id)`: Get a document by its ID, or throw if not found
+- `create(obj)`: Add a new document
+- `update(obj)`: Update an existing document (must have the same ID as an existing document)
+- `delete(id)`: Delete an existing document, given its ID
+- `find({ where: { ... }})`: Return all matching documents
+- `first({ where: { ... }})`: Return first matching document or null
+- `requireFirst({ where: { ... }})`: Return first matching document, or throw if not found
+- `requireSingle({ where: { ... }})`: Return only matching document, or throw if none or multiple found
+- `count({ where: { ... }})`: Return the number of matching documents
 
 ## When Making Changes
 
 1. **Read the context**: Understand existing patterns before modifying
 2. **Follow conventions**: Match the style of surrounding code
-3. **Use proper imports**: Always `@/` prefix, never relative
-4. **Update tests**: Add/modify tests for changed functionality
-5. **Run checks**: `npm run lint && npm run test` before committing
-6. **Format code**: Run `npm run format` before final commit
-7. **Check build**: Run `npm run build` to ensure production build works
-
-## Getting Help
-
-- Check existing code for patterns
-- Review ESLint rules in `eslint.config.js`
-- Look at test examples in `tests/` directory
-- Reference `.github/prompts/` for test generation patterns
+3. **Update tests**: Add/modify tests for changed functionality
+4. **Run checks**: `npm run lint && npm run test` before committing
+5. **Format code**: Run `npm run format` before committing
