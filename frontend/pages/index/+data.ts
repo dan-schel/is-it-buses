@@ -158,7 +158,7 @@ function matchesFilters(
   disruption: Disruption,
   filters: readonly FilterableDisruptionCategory[],
 ): boolean {
-  const category = disruption.data.applicableCategory(app);
+  const category = disruption.data.getApplicableCategory(app);
   if (category == null) return true;
   return filters.includes(category);
 }

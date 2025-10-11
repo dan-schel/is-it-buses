@@ -79,7 +79,7 @@ export class CustomDisruptionData extends DisruptionDataBase {
     return this.impactedLines.every((x) => app.lines.has(x));
   }
 
-  applicableCategory(_app: App): FilterableDisruptionCategory | null {
+  getApplicableCategory(_app: App): FilterableDisruptionCategory | null {
     return this.category;
   }
 

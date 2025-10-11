@@ -1,5 +1,4 @@
 import { assert, describe, expect, it } from "vitest";
-import * as group from "@/server/entry-point/data/groups";
 import * as station from "@/shared/station-ids";
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { stations } from "@/server/entry-point/data/stations";
@@ -8,9 +7,9 @@ import {
   formatLines,
   formatNode,
 } from "@/tests/server/entry-point/data/utils";
-import { nonNull } from "@dan-schel/js-utils";
+import { lineGroups } from "@/server/entry-point/data/line-groups";
 
-const groups = Object.values(group).filter(nonNull);
+const groups = lineGroups.all();
 
 describe("Melbourne line groups", () => {
   it("matches the snapshot", () => {

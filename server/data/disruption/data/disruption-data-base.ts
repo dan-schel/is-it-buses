@@ -10,5 +10,5 @@ export abstract class DisruptionDataBase {
   abstract getWriteupAuthor(): DisruptionWriteupAuthor;
   abstract getMapHighlighter(): MapHighlighter;
   abstract isValid(app: App): boolean;
-  abstract applicableCategory(app: App): FilterableDisruptionCategory | null;
+  abstract getApplicableCategory(app: App): FilterableDisruptionCategory | null;
 }

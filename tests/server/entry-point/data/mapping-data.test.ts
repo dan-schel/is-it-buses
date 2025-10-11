@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import * as group from "@/server/entry-point/data/groups";
-import * as map from "@/server/entry-point/data/map";
 import * as mapIds from "@/shared/map-node-ids";
 import { MappingData } from "@/server/data/map/mapping-data";
 import { MapSegment } from "@/server/data/map/map-segment";
@@ -11,21 +9,19 @@ import {
 } from "@/tests/server/entry-point/data/utils";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { LineGroup } from "@/server/data/line-group/line-group";
-import { nonNull } from "@dan-schel/js-utils";
-
-const maps = Object.values(map);
-const groups = Object.values(group).filter(nonNull);
+import { lineGroups } from "@/server/entry-point/data/line-groups";
+import { mappingData } from "@/server/entry-point/data/mapping-data";
 
 describe("Melbourne mapping data", () => {
   it("matches the snapshot", () => {
-    const formattedGroups = maps.map(formatGroup);
+    const formattedGroups = mappingData.all().map(formatGroup);
     const output = `\n\n${formattedGroups.join("\n\n")}\n\n`;
     expect(output).toMatchSnapshot();
   });
 });
 
 function formatGroup(data: MappingData) {
-  const group = groups.find((g) => g.id === data.groupId);
+  const group = lineGroups.all().find((g) => g.id === data.groupId);
   if (group == null) throw new Error(`Unknown group ID "${data.groupId}"`);
 
   const groupName = formatLines(group.lines);

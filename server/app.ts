@@ -16,6 +16,8 @@ import { Tasks } from "@/server/task/lib/tasks";
 import { Logger } from "@/server/services/logger/logger";
 import { AuthController } from "@/server/services/auth/auth-controller";
 import { User } from "@/server/services/auth/user";
+import { LineGroupCollection } from "@/server/data/line-group/line-group-collection";
+import { MappingDataCollection } from "@/server/data/map/mapping-data-collection";
 
 export class App {
   readonly auth: AuthController;
@@ -26,7 +28,13 @@ export class App {
   private readonly _tasks: Tasks;
 
   constructor(
+    readonly lineGroups: LineGroupCollection,
+    readonly mappingData: MappingDataCollection,
+
+    // TODO: [DS] Compute lines from line groups and a mapping containing names
+    // and ptv IDs. I think?
     readonly lines: LineCollection,
+
     readonly stations: StationCollection,
     readonly database: Database,
     readonly alertSource: AlertSource,

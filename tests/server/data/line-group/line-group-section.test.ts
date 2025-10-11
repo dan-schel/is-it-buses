@@ -207,6 +207,19 @@ describe("LineGroupSection", () => {
     }
   });
 
+  describe("#getImpactedLines", () => {
+    it("works", () => {
+      const section1 = new LineGroupSection(group.id, 2, [4]);
+      expect(section1.getImpactedLines(group)).toEqual([97]);
+
+      const section2 = new LineGroupSection(group.id, 2, [5]);
+      expect(section2.getImpactedLines(group)).toEqual([98, 99]);
+
+      const section3 = new LineGroupSection(group.id, 1, [10]);
+      expect(section3.getImpactedLines(group)).toEqual([97, 98, 99]);
+    });
+  });
+
   describe(".fromExtremities", () => {
     it("works in the simple case", () => {
       const section1 = LineGroupSection.fromExtremities(group, [2, 4]);

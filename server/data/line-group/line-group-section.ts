@@ -99,6 +99,11 @@ export class LineGroupSection {
     return unique(totalEdges, (a, b) => a.isSameEdge(b));
   }
 
+  getImpactedLines(_group: LineGroup): readonly number[] {
+    // TODO: [DS] Implement properly.
+    return [];
+  }
+
   /**
    * Takes a list of extremities, e.g. "Westall, Pakenham and Cranbourne", and
    * converts it to a valid line group section. More lenient than the

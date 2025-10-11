@@ -7,16 +7,20 @@ import {
 } from "@/shared/types/map-data";
 import { z } from "zod";
 
+const highlightedSegmentStyles = ["standard"] as const;
+export type HighlightedSegmentStyle = (typeof highlightedSegmentStyles)[number];
+const highlightedSegmentStylesJson = z.enum(highlightedSegmentStyles);
+
 export class HighlightedSegment {
   constructor(
     readonly segment: MapSegment,
-    readonly style: "standard",
+    readonly style: HighlightedSegmentStyle,
   ) {}
 
   static readonly bson = z
     .object({
       segment: MapSegment.bson,
-      style: z.literal("standard"),
+      style: highlightedSegmentStylesJson,
     })
     .transform((x) => new HighlightedSegment(x.segment, x.style));
 
