@@ -1,6 +1,9 @@
 import { App } from "@/server/app";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
-import { MapHighlighting } from "@/server/data/disruption/map-highlighting/map-highlighting";
+import {
+  HighlightedSegment,
+  MapHighlighting,
+} from "@/server/data/disruption/map-highlighting/map-highlighting";
 import { LineGroupSection } from "@/server/data/line-group/line-group-section";
 import { MapSegment } from "@/server/data/map/map-segment";
 
@@ -19,8 +22,10 @@ export class SectionMapHighlighter extends MapHighlighter {
       .toLineGroupEdges(group)
       .flatMap((x) => mappingData.getMapSegmentsForEdge(x));
 
+    const condensed = MapSegment.condense(segments);
+
     return new MapHighlighting(
-      MapSegment.condense(segments).map((x) => x.toHighlighted("standard")),
+      condensed.map((x) => new HighlightedSegment(x, "standard")),
       [],
     );
   }
