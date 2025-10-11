@@ -33,7 +33,7 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
   }
 
   getImpactedLines(app: App): readonly number[] {
-    const group = app.groups.require(this.section.groupId);
+    const group = app.lineGroups.require(this.section.groupId);
     return this.section.getImpactedLines(group);
   }
 
@@ -46,7 +46,7 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
   }
 
   isValid(app: App): boolean {
-    const group = app.groups.require(this.section.groupId);
+    const group = app.lineGroups.require(this.section.groupId);
     return this.section.isValid(group);
   }
 

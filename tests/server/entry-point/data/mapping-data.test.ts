@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import * as group from "@/server/entry-point/data/groups";
 import * as map from "@/server/entry-point/data/map";
 import * as mapIds from "@/shared/map-node-ids";
 import { MappingData } from "@/server/data/map/mapping-data";
@@ -11,10 +10,10 @@ import {
 } from "@/tests/server/entry-point/data/utils";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { LineGroup } from "@/server/data/line-group/line-group";
-import { nonNull } from "@dan-schel/js-utils";
+import { lineGroups } from "@/server/entry-point/data/line-groups";
 
 const maps = Object.values(map);
-const groups = Object.values(group).filter(nonNull);
+const groups = lineGroups.all();
 
 describe("Melbourne mapping data", () => {
   it("matches the snapshot", () => {
