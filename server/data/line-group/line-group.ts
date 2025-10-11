@@ -63,6 +63,7 @@ export class LineGroup {
 
   get branches() {
     return this._branches.map((b, i) => ({
+      branchIndex: i,
       lineId: this._lineIds[i],
       nodes: b,
     }));
@@ -81,6 +82,10 @@ export class LineGroup {
     const result = this.branches.find((b) => b.lineId === lineId);
     if (!result) throw new Error("Line not part of this group.");
     return result;
+  }
+
+  getBranchesForNode(node: LineGroupNode) {
+    return this.branches.filter((b) => b.nodes.includes(node));
   }
 
   getEdgesBetween(a: LineGroupNode, b: LineGroupNode): LineGroupEdge[] {
@@ -120,5 +125,33 @@ export class LineGroup {
     }
 
     throw new Error(`No station mapping for node '${node}'`);
+  }
+
+  hasNode(node: LineGroupNode) {
+    return this._branches.some((b) => b.includes(node));
+  }
+
+  /**
+   * The index where this node appears on any branches. (It's impossible for a
+   * node to exist at different indices on different branches.)
+   */
+  getIndexOfNode(node: LineGroupNode) {
+    return this._branches.find((b) => b.includes(node))?.indexOf(node) ?? null;
+  }
+
+  /**
+   * The index where this node appears on any branches. (It's impossible for a
+   * node to exist at different indices on different branches.)
+   */
+  requireIndexOfNode(node: LineGroupNode) {
+    const index = this.getIndexOfNode(node);
+    if (index == null) throw new Error(`Node "${node}" not in this group.`);
+    return index;
+  }
+
+  isOnSameBranch(a: LineGroupNode, b: LineGroupNode) {
+    const aBranches = this.getBranchesForNode(a).map((x) => x.branchIndex);
+    const bBranches = this.getBranchesForNode(b).map((x) => x.branchIndex);
+    return !new Set(aBranches).isDisjointFrom(new Set(bBranches));
   }
 }

@@ -98,7 +98,7 @@ describe("MappingDataBuilder", () => {
       builder.auto("STATION_1", "STATION_2");
 
       const result = builder.build();
-      expect(result.lineGroup).toBe(lineGroup);
+      expect(result.groupId).toBe(lineGroup.id);
     });
   });
 });
