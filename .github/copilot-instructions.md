@@ -17,7 +17,7 @@ is-it-buses/
 │   ├── pages/         # Vike filesystem-based routing pages
 │   └── public/        # Static assets
 ├── server/            # Backend Express server
-│   ├── api/           # REST API endpoints
+│   ├── api/           # RPC-style API endpoints (added ad-hoc as needed)
 │   ├── data/          # Data models and repositories
 │   ├── services/      # Business logic services
 │   ├── task/          # Background tasks
@@ -51,7 +51,7 @@ is-it-buses/
 - **Import Alias**: Always use `@/` prefix for imports (e.g., `@/server/app`, `@/frontend/components/Button`)
 - **No Relative Imports**: Enforced by custom ESLint rule `custom/enforce-import-alias`
 - **Server/Frontend Separation**: Frontend files cannot import from `@/server` (except `+data.ts` files)
-- **Entry Point Protection**: Only `main.ts` can import from `@/server/entry-point`
+- **Entry Point Protection**: Only `main.ts` can import from `@/server/entry-point`. This ensures hard-coded constants defined in entry point code are not accidentally imported elsewhere - instead, retrieve them through the app instance created at the entry point.
 
 ## Code Style and Conventions
 
@@ -86,6 +86,8 @@ is-it-buses/
 - No class components
 - Import React: `import React from "react";` (explicit imports)
 - JSX in `.tsx` files only
+- Props types are always defined explicitly above the component function
+- Prefer `function` syntax over arrow function syntax for component definitions
 
 ## Testing
 
@@ -237,21 +239,21 @@ All jobs must pass for PR to merge.
 
 ### Core Dependencies
 
-- `express@5.1.0` - Web server
-- `react@19.2.0`, `react-dom@19.2.0` - UI framework
-- `vike@0.4.242`, `vike-react@0.6.9` - SSR framework
-- `mongodb@6.20.0` - Database client
-- `discord.js@14.23.2` - Discord integration
-- `zod@4.1.12` - Runtime type validation
-- `date-fns@4.1.0` - Date utilities
+- `express` - Web server
+- `react`, `react-dom` - UI framework
+- `vike`, `vike-react` - SSR framework
+- `mongodb` - Database client
+- `discord.js` - Discord integration
+- `zod` - Runtime type validation
+- `date-fns` - Date utilities
 
 ### Dev Dependencies
 
-- `typescript@5.9.3` - Language
-- `vitest@3.2.4` - Testing
-- `eslint@9.37.0`, `prettier@3.6.2` - Code quality
-- `knip@5.64.3` - Dead code detection
-- `vite@7.1.9` - Build tool
+- `typescript` - Language
+- `vitest` - Testing
+- `eslint`, `prettier` - Code quality
+- `knip` - Dead code detection
+- `vite` - Build tool
 
 ## Special Files
 
