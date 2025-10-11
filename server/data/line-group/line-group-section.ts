@@ -21,13 +21,17 @@ export class LineGroupSection {
     }
   }
 
-  static readonly json = z.object({
-    groupId: z.number(),
-    startNodeId: lineGroupNodeJson,
-    endNodeIds: lineGroupNodeJson.array(),
-  });
+  static readonly bson = z
+    .object({
+      groupId: z.number(),
+      startNodeId: lineGroupNodeJson,
+      endNodeIds: lineGroupNodeJson.array(),
+    })
+    .transform(
+      (x) => new LineGroupSection(x.groupId, x.startNodeId, x.endNodeIds),
+    );
 
-  toJson(): z.input<typeof LineGroupSection.json> {
+  toBson(): z.input<typeof LineGroupSection.bson> {
     return {
       groupId: this.groupId,
       startNodeId: this.startNodeId,
