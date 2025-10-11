@@ -3,7 +3,7 @@ import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { describe, expect, it } from "vitest";
 
 describe("LineGroup", () => {
-  describe("constructor", () => {
+  describe("#constructor", () => {
     const id = 400;
     const overrides = new Map([["the-city", [100]]] as const);
 
