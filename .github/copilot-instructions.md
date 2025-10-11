@@ -4,7 +4,7 @@
 
 "Is it buses?" is a web application that displays train disruption information for Melbourne and Victoria's public transport network. The primary focus is bus replacement disruptions, although the long-term goal is to cover all types of disruptions.
 
-Tech Stack:
+Tech stack:
 
 - TypeScript
 - React
@@ -18,20 +18,20 @@ Tech Stack:
 
 ```
 is-it-buses/
-├── frontend/          # Frontend React components and pages
-│   ├── components/    # Reusable React components
-│   ├── pages/         # Vike filesystem-based routing pages
-│   └── public/        # Static assets
-├── server/            # Backend Express server
-│   ├── api/           # RPC-style API endpoints
-│   ├── data/          # Data models and repositories
-│   ├── services/      # Business logic services
-│   ├── task/          # Background tasks
-│   └── entry-point/   # Application initialization
-├── shared/            # Shared code between frontend and backend
-├── scripts/           # Build and utility scripts
+├── frontend/                   # Frontend React components and pages
+│   ├── components/             # Reusable React components
+│   ├── pages/                  # Vike filesystem-based routing pages
+│   └── public/                 # Static assets
+├── server/                     # Backend Express server
+│   ├── api/                    # RPC-style API endpoints
+│   ├── data/                   # Data models and repositories
+│   ├── services/               # Business logic services
+│   ├── task/                   # Background tasks
+│   └── entry-point/            # Application initialization
+├── shared/                     # Shared code between frontend and backend
+├── scripts/                    # Build and utility scripts
 │   └── generate-map-geometry/  # Map generation scripts
-└── tests/             # Test files organized by path
+└── tests/                      # Test files organized by path
 ```
 
 ### Key commands
@@ -41,37 +41,43 @@ is-it-buses/
 - `npm run format`: Format code with Prettier
 - `npm run test`: Run tests
 
+Note that all PRs must pass linting, formatting, and tests in order to merge.
+
 ## Architecture
 
 ### Frontend
 
-- **Framework**: Vike (SSR framework) with React 19
-- **Styling**: Tailwind CSS 4 (using `@tailwindcss/vite` plugin)
-- **Routing**: Filesystem-based routing via Vike (pages in `frontend/pages/`)
-- **State Management**: React hooks, no external state library
-- **Data Fetching**: Vike's `+data.ts` files for SSR data loading
+- Vike (SSR framework) with React 19
+- Styled with Tailwind CSS 4
+- Filesystem-based routing via Vike (follows `frontend/pages/` directory)
+- Uses React hooks for state (no external state library)
+- Data fetching via Vike's `+data.ts` hooks for SSR, or via API calls to `@/server/api/` endpoints for client-side interactions (see examples of `callApi`, `useQuery`, and `useMutation`)
 
 ### Backend
 
-- **Server**: Express 5 with TypeScript
-- **Database**: MongoDB (with optional in-memory fallback for development and tests)
-- **Authentication**: Cookie-based sessions with bcrypt password hashing
-- **External Services**: PTV API (via custom relay server), Discord bot integration
+- Server powered by Express 5 with TypeScript
+- MongoDB database (with optional in-memory fallback for development and tests)
+- Auth via cookie-based sessions with bcrypt password hashing
+- Data fetched fro PTV API (via custom relay server)
+- Discord bot integration for monitoring and alerts
 
 ### Separation of concerns
 
 - Code in the `frontend/` folder cannot import from `@/server` (except `+data.ts` files, which are SSR hooks which run on the server, and therefore considered "backend" code).
-- Only `main.ts` may import from `@/server/entry-point`. It creates an `App` instance which is the heart of the backend application. All other backend code can retrieve the values established at the entry point via this `App` instance. This includes the lists of stations, lines, groups, database connection, alert source (PTV API relay client), discord client, logger, and more. `App` is made available in all `+data.ts` files, API handlers, and background tasks (check surrounding code for examples, as it's passed in differently depending on the context).
-- Prefer performing formatting on the backend (in the `+data.ts` files) over sending large chunks of raw data to the frontend and formatting there. (Note: While the server runs in the UTC timezone at all times, all dates can be formatted in `Australia/Melbourne` timezone for display to users, allowing formatting to be done on the backend.)
+- Only `main.ts` may import from `@/server/entry-point`.
+  - It creates an `App` instance which is the heart of the backend application. All other backend code can retrieve the values established at the entry point via this `App` instance. This includes the lists of stations, lines, groups, database connection, alert source (PTV API relay client), discord client, logger, and more.
+  - `App` is made available in all `+data.ts` files, API handlers, and background tasks (check surrounding code for examples, as it's passed in differently depending on the context).
+- Prefer performing formatting on the backend (in the `+data.ts` files) over sending large chunks of raw data to the frontend and formatting there.
+  - Note: While the server runs in the UTC timezone at all times, all dates can be formatted in `Australia/Melbourne` timezone for display to users, allowing even date formatting to be done on the backend.
 
-### Core concepts
+## Core concepts
 
-- **Stations & Lines**: Train stations and lines and associated metadata (e.g. mapping to the PTV API IDs). These are statically defined in the entry point, rather than stored in the database.
-- **Line groups**: Groups of lines, e.g. the Pakenham and Cranbourne line, which are both members of the "Dandenong group" as they have a significant shared section of track, and therefore essentially act as one. All lines fall within a group, and the `LineGroup` classes for each group define a tree structure to represent this. Nodes in the tree typically represent a single station, except in the case of the city loop, which is collapsed into a single node for simplicity.
-- **Alerts**: A raw disruption message from the PTV API. We do not display these directly to users, but rather use them as input to generate `Disruptions`, either via automatic parsing rules, or manual curation via the admin interface.
-- **Disruptions**: Disruption messages shown on the site. Made up of "data" and a "period". The "data" is highly structured into different types, e.g. `BusReplacementsDisruptionData` vs `StationClosureDisruptionData`.
-- **PTV API relay**: A custom relay server (lives in another repo: https://github.com/dan-schel/vic-transport-api-relay) which fetches data (in our case, alerts) from the PTV API and caches them.
-- **Map & Map highlighting**: The centerpiece of the landing page is a map of the train network with disrupted line segments highlighted. Each edge in the line group tree defines the area of the map to highlight when that edge is disrupted. Map geometry is generated via a script found in `scripts/generate-map-geometry/`, and saved as a static file in the frontend in `frontend/components/map/geometry/`.
+- Stations & lines - Train stations and lines and associated metadata (e.g. mapping to the PTV API IDs). These are statically defined in the entry point, rather than stored in the database.
+- Line groups - Groups of lines, e.g. the Pakenham and Cranbourne line, which are both members of the "Dandenong group" as they have a significant shared section of track, and therefore essentially act as one. All lines fall within a group, and the `LineGroup` classes for each group define a tree structure to represent this. Nodes in the tree typically represent a single station, except in the case of the city loop, which is collapsed into a single node for simplicity.
+- Alerts - A raw disruption message from the PTV API. We do not display these directly to users, but rather use them as input to generate `Disruptions`, either via automatic parsing rules, or manual curation via the admin interface.
+- Disruptions - Disruption messages shown on the site. Made up of "data" and a "period". The "data" is highly structured into different types, e.g. `BusReplacementsDisruptionData` vs `StationClosureDisruptionData`.
+- PTV API relay - A custom relay server (lives in another repo: https://github.com/dan-schel/vic-transport-api-relay) which fetches data (in our case, alerts) from the PTV API and caches them.
+- Map & map highlighting - The centerpiece of the landing page is a map of the train network with disrupted line segments highlighted. Each edge in the line group tree defines the area of the map to highlight when that edge is disrupted. Map geometry is generated via a script found in `scripts/generate-map-geometry/`, and saved as a static file in the frontend in `frontend/components/map/geometry/`.
 
 ## Code Style and Conventions
 
