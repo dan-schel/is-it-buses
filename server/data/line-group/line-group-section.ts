@@ -48,6 +48,8 @@ export class LineGroupSection {
   }
 
   getReasonIsInvalid(group: LineGroup): string | null {
+    if (group.id !== this.groupId) throw new Error(`Wrong group given.`);
+
     // All nodes must exist in the group.
     for (const node of [this.startNodeId, ...this.endNodeIds]) {
       if (!group.hasNode(node)) {

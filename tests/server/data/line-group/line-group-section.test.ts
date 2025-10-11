@@ -159,6 +159,11 @@ describe("LineGroupSection", () => {
         'Node "10" cannot be an end node as upstream node "9" already is.',
       );
     });
+
+    it("throws if given the wrong group as context", () => {
+      const section = new LineGroupSection(group.id + 1, 2, [4]);
+      expect(() => section.isValid(group)).toThrow();
+    });
   });
 
   describe("#toLineGroupEdges", () => {
