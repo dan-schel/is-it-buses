@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Range } from "@/server/data/range";
 
 describe("Range", () => {
-  describe("constructor", () => {
+  describe("#constructor", () => {
     it("should create a Range instance with valid min and max", () => {
       const range = new Range(1, 5);
       expect(range.min).toBe(1);

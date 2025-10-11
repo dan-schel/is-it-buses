@@ -3,7 +3,7 @@ import { EndsAfterLastService } from "@/server/data/disruption/period/ends/ends-
 import { JustDate } from "@/server/data/disruption/period/utils/just-date";
 
 describe("EndsAfterLastService", () => {
-  describe("getDisplayString", () => {
+  describe("#getDisplayString", () => {
     it("works", () => {
       const options = {
         now: new Date("2025-03-07T10:24:14.000+11:00"),
@@ -18,7 +18,7 @@ describe("EndsAfterLastService", () => {
     });
   });
 
-  describe("latestInterpretableDate", () => {
+  describe("#latestInterpretableDate", () => {
     it("works", () => {
       expect(withDate(2025, 3, 7).getLatestInterpretableDate()).toEqual(
         new Date("2025-03-08T03:00:00.000+11:00"),
