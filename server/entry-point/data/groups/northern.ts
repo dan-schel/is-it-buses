@@ -1,9 +1,14 @@
+import * as groupId from "@/shared/group-ids";
 import * as station from "@/shared/station-ids";
 import * as line from "@/shared/line-ids";
 import { LineGroupBuilder } from "@/server/data/line-group/line-group-builder";
 import { cityLoopOverride } from "@/server/entry-point/data/station-mapping-overrides";
+import {
+  addFootscrayToSunbury,
+  sunburyIsSeparateGroup,
+} from "@/server/entry-point/data/groups/sunbury";
 
-export const group = new LineGroupBuilder()
+export const group = new LineGroupBuilder(groupId.NORTHERN)
   .add("the-city")
   .add(station.NORTH_MELBOURNE)
 
@@ -25,7 +30,7 @@ export const group = new LineGroupBuilder()
   .terminate(line.UPFIELD)
 
   // Craigieburn line
-  .split()
+  .do(splitIfSunburyLineIncluded)
   .add(station.KENSINGTON)
   .add(station.NEWMARKET)
   .add(station.ASCOT_VALE)
@@ -44,20 +49,14 @@ export const group = new LineGroupBuilder()
   .terminate(line.CRAIGIEBURN)
 
   // Sunbury line
-  .add(station.FOOTSCRAY)
-  .add(station.MIDDLE_FOOTSCRAY)
-  .add(station.WEST_FOOTSCRAY)
-  .add(station.TOTTENHAM)
-  .add(station.SUNSHINE)
-  .add(station.ALBION)
-  .add(station.GINIFER)
-  .add(station.ST_ALBANS)
-  .add(station.KEILOR_PLAINS)
-  .add(station.WATERGARDENS)
-  .add(station.DIGGERS_REST)
-  .add(station.SUNBURY)
-  .terminate(line.SUNBURY)
+  .do(addFootscrayToSunburyIfIncluded)
 
-  // TODO: Sunbury line becomes grouped with the Dandenong lines when the Metro
-  // Tunnel opens (or, splits from the Northern Group at least).
   .build([cityLoopOverride]);
+
+function splitIfSunburyLineIncluded(builder: LineGroupBuilder) {
+  return !sunburyIsSeparateGroup ? builder.split() : builder;
+}
+
+function addFootscrayToSunburyIfIncluded(builder: LineGroupBuilder) {
+  return !sunburyIsSeparateGroup ? addFootscrayToSunbury(builder) : builder;
+}

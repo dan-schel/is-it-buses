@@ -51,7 +51,7 @@ export const lines = new LineCollection([
     ptvIds: [4],
     lineType: "suburban",
     group: group.DANDENONG,
-    mappingData: map.DANDENONG,
+    mappingData: map.DANDENONG, // TODO: [DS] Need Metro Tunnel mapping data.
   }),
   new Line({
     id: id.FLEMINGTON_RACECOURSE,
@@ -123,7 +123,7 @@ export const lines = new LineCollection([
     ptvIds: [11],
     lineType: "suburban",
     group: group.DANDENONG,
-    mappingData: map.DANDENONG,
+    mappingData: map.DANDENONG, // TODO: [DS] Need Metro Tunnel mapping data.
   }),
   new Line({
     id: id.SANDRINGHAM,
@@ -154,8 +154,8 @@ export const lines = new LineCollection([
     name: "Sunbury",
     ptvIds: [14],
     lineType: "suburban",
-    group: group.NORTHERN,
-    mappingData: map.NORTHERN,
+    group: group.SUNBURY ?? group.NORTHERN,
+    mappingData: map.NORTHERN, // TODO: [DS] Need Metro Tunnel mapping data.
   }),
   new Line({
     id: id.UPFIELD,

@@ -1,9 +1,46 @@
 import { MapPoint } from "@/server/data/map/map-point";
 import { Station } from "@/server/data/station/station";
 import { StationCollection } from "@/server/data/station/station-collection";
+import { config } from "@/server/entry-point/config";
 import * as corridor from "@/server/entry-point/data/corridors";
 import * as node from "@/shared/map-node-ids";
 import * as station from "@/shared/station-ids";
+
+const metroTunnelStationsIfIncluded =
+  config.METRO_TUNNEL_STATE !== "not-open"
+    ? [
+        new Station({
+          id: station.ANZAC,
+          name: "Anzac",
+          ptvIds: [], // TODO: [DS] Find the PTV ID.
+          mapLocation: null, // TODO: [DS] Add metro tunnel to the map.
+        }),
+        new Station({
+          id: station.TOWN_HALL,
+          name: "Town Hall",
+          ptvIds: [], // TODO: [DS] Find the PTV ID.
+          mapLocation: null, // TODO: [DS] Add metro tunnel to the map.
+        }),
+        new Station({
+          id: station.STATE_LIBRARY,
+          name: "State Library",
+          ptvIds: [], // TODO: [DS] Find the PTV ID.
+          mapLocation: null, // TODO: [DS] Add metro tunnel to the map.
+        }),
+        new Station({
+          id: station.PARKVILLE,
+          name: "Parkville",
+          ptvIds: [], // TODO: [DS] Find the PTV ID.
+          mapLocation: null, // TODO: [DS] Add metro tunnel to the map.
+        }),
+        new Station({
+          id: station.ARDEN,
+          name: "Arden",
+          ptvIds: [], // TODO: [DS] Find the PTV ID.
+          mapLocation: null, // TODO: [DS] Add metro tunnel to the map.
+        }),
+      ]
+    : [];
 
 export const stations = new StationCollection([
   new Station({
@@ -1964,4 +2001,5 @@ export const stations = new StationCollection([
       node.GIPPSLAND.EAST_PAKENHAM,
     ),
   }),
+  ...metroTunnelStationsIfIncluded,
 ]);

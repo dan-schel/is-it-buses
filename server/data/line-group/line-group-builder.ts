@@ -7,8 +7,13 @@ export type StationMappingOverride = {
 };
 
 export class LineGroupBuilder {
-  private _branches: LineGroupNode[][] = [[]];
-  private _lineIds: number[] = [];
+  private _branches: LineGroupNode[][];
+  private _lineIds: number[];
+
+  constructor(readonly groupId: number) {
+    this._branches = [[]];
+    this._lineIds = [];
+  }
 
   private get _workingIndex() {
     return this._branches.length - this._lineIds.length - 1;
@@ -39,12 +44,17 @@ export class LineGroupBuilder {
     return this;
   }
 
+  do(func: (builder: LineGroupBuilder) => LineGroupBuilder) {
+    return func(this);
+  }
+
   build(stationMappingOverrides: StationMappingOverride[]) {
     if (this._workingIndex > 0) {
       throw new Error("Cannot build - some branches have not terminated yet.");
     }
 
     return new LineGroup(
+      this.groupId,
       this._branches,
       this._lineIds,
       new Map(stationMappingOverrides.map((x) => [x.node, x.stations])),

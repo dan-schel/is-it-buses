@@ -1,5 +1,4 @@
 import { StationMappingOverride } from "@/server/data/line-group/line-group-builder";
-import { config } from "@/server/entry-point/config";
 import * as station from "@/shared/station-ids";
 
 export const cityLoopOverride: StationMappingOverride = {
@@ -11,22 +10,15 @@ export const cityLoopOverride: StationMappingOverride = {
     station.MELBOURNE_CENTRAL,
     station.PARLIAMENT,
   ],
-} as const;
+};
 
-const metroTunnelOverride: StationMappingOverride = {
-  node: "the-city",
-  stations: [
-    station.ANZAC,
-    station.TOWN_HALL,
-    station.STATE_LIBRARY,
-    station.PARKVILLE,
-    station.ARDEN,
-  ],
-} as const;
-
-export const metroTunnelOrCityLoopOverride = config.METRO_TUNNEL_OPEN
-  ? metroTunnelOverride
-  : cityLoopOverride;
+export const metroTunnelStations = [
+  station.ANZAC,
+  station.TOWN_HALL,
+  station.STATE_LIBRARY,
+  station.PARKVILLE,
+  station.ARDEN,
+];
 
 // TODO: [DS] This suggests that station overrides should be defined for an EDGE
 // not a NODE, since Laverton - Werribee shouldn't include these stations.
@@ -38,4 +30,4 @@ export const altonaLoopOverride: StationMappingOverride = {
     station.WESTONA,
     station.LAVERTON,
   ],
-} as const;
+};
