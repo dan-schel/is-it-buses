@@ -35,6 +35,22 @@ describe("LineGroupSection", () => {
     });
   });
 
+  describe("#equals", () => {
+    it("works, regardless of end node id order", () => {
+      const me = new LineGroupSection(401, 1, [2, 3]);
+      const equivalent = new LineGroupSection(401, 1, [3, 2]);
+      expect(me.equals(me)).toBe(true);
+      expect(me.equals(equivalent)).toBe(true);
+
+      const differentA = new LineGroupSection(401, 4, [2, 3]);
+      const differentB = new LineGroupSection(402, 1, [2, 3]);
+      const differentC = new LineGroupSection(401, 1, [2, 3, 4]);
+      expect(me.equals(differentA)).toBe(false);
+      expect(me.equals(differentB)).toBe(false);
+      expect(me.equals(differentC)).toBe(false);
+    });
+  });
+
   describe("#isValid and #getReasonIsInvalid", () => {
     it("allows a single branch section", () => {
       const section = new LineGroupSection(group.id, 6, [8]);

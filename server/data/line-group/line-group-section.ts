@@ -4,7 +4,7 @@ import {
   LineGroupNode,
   lineGroupNodeJson,
 } from "@/server/data/line-group/line-group-node";
-import { areUnique, unique } from "@dan-schel/js-utils";
+import { areUnique, arraysMatch, unique } from "@dan-schel/js-utils";
 import z from "zod";
 
 export class LineGroupSection {
@@ -33,6 +33,14 @@ export class LineGroupSection {
       startNodeId: this.startNodeId,
       endNodeIds: this.endNodeIds,
     };
+  }
+
+  equals(other: LineGroupSection) {
+    return (
+      this.groupId === other.groupId &&
+      this.startNodeId === other.startNodeId &&
+      arraysMatch(this.endNodeIds, other.endNodeIds)
+    );
   }
 
   isValid(group: LineGroup): boolean {
