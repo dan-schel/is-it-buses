@@ -58,7 +58,7 @@ export class MappingDataBuilder<S extends IdConstants, M extends IdConstants> {
   }
 
   build() {
-    return new MappingData(this.lineGroup, this._data);
+    return new MappingData(this.lineGroup.id, this._data);
   }
 
   private _assignSegmentsToEdge(edge: LineGroupEdge, segments: MapSegment[]) {

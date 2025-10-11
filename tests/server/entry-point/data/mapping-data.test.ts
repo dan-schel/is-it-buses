@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as group from "@/server/entry-point/data/groups";
 import * as map from "@/server/entry-point/data/map";
 import * as mapIds from "@/shared/map-node-ids";
 import { MappingData } from "@/server/data/map/mapping-data";
@@ -9,8 +10,11 @@ import {
   formatNode,
 } from "@/tests/server/entry-point/data/utils";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
+import { LineGroup } from "@/server/data/line-group/line-group";
+import { nonNull } from "@dan-schel/js-utils";
 
 const maps = Object.values(map);
+const groups = Object.values(group).filter(nonNull);
 
 describe("Melbourne mapping data", () => {
   it("matches the snapshot", () => {
@@ -21,18 +25,20 @@ describe("Melbourne mapping data", () => {
 });
 
 function formatGroup(data: MappingData) {
-  const group = data.lineGroup;
+  const group = groups.find((g) => g.id === data.groupId);
+  if (group == null) throw new Error(`Unknown group ID "${data.groupId}"`);
+
   const groupName = formatLines(group.lines);
   const branches = group.branches.map((x) => {
     const line = formatLine(x.lineId);
-    const branch = formatBranch(data, x.lineId);
+    const branch = formatBranch(data, group, x.lineId);
     return `[${line}]\n${branch}`;
   });
   return `${groupName}\n${branches.map((x) => x).join("\n\n")}`;
 }
 
-function formatBranch(data: MappingData, lineId: number) {
-  const edges = data.lineGroup.getEdgesOnLine(lineId);
+function formatBranch(data: MappingData, group: LineGroup, lineId: number) {
+  const edges = group.getEdgesOnLine(lineId);
   return edges
     .map((x) => {
       const edge = formatEdge(x);
