@@ -10,7 +10,7 @@ export class LineGroupEdge {
     }
   }
 
-  sameEdge(other: LineGroupEdge) {
+  isSameEdge(other: LineGroupEdge) {
     return (
       (this.a === other.a && this.b === other.b) ||
       (this.a === other.b && this.b === other.a)

@@ -78,8 +78,11 @@ export class LineGroupSection {
   toLineGroupEdges(group: LineGroup): LineGroupEdge[] {
     if (!this.isValid(group)) throw new Error("Invalid section");
 
-    // TODO: [DS] Implement it.
-    return [];
+    const totalEdges = this.endNodeIds.flatMap((x) =>
+      group.getEdgesBetween(this.startNodeId, x),
+    );
+
+    return unique(totalEdges, (a, b) => a.isSameEdge(b));
   }
 
   /**

@@ -11,7 +11,7 @@ export class MappingData {
   ) {}
 
   getMapSegmentsForEdge(edge: LineGroupEdge): readonly MapSegment[] {
-    const entry = this.data.find((x) => x.edge.sameEdge(edge));
+    const entry = this.data.find((x) => x.edge.isSameEdge(edge));
     if (entry == null) throw new Error(`No such edge.`);
     return entry.segments;
   }

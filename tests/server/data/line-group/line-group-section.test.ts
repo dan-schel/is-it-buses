@@ -180,7 +180,7 @@ describe("LineGroupSection", () => {
         edges,
         expectedPairs.map((x) => new LineGroupEdge(x[0], x[1])),
         "Edges do not match",
-        (a, b) => a.sameEdge(b),
+        (a, b) => a.isSameEdge(b),
         (x) => `${x.a} -> ${x.b}`,
       );
     }

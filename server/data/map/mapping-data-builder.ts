@@ -86,7 +86,7 @@ export class MappingDataBuilder<S extends IdConstants, M extends IdConstants> {
   }
 
   private _pushData(edge: LineGroupEdge, segments: MapSegment[]) {
-    const existing = this._data.find((d) => d.edge.sameEdge(edge));
+    const existing = this._data.find((d) => d.edge.isSameEdge(edge));
 
     if (existing) {
       const isReversed = existing.edge.a === edge.b;
