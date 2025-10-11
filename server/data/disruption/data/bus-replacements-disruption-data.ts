@@ -1,35 +1,30 @@
 import { z } from "zod";
-import { LineSection } from "@/server/data/line-section";
 import { DisruptionWriteupAuthor } from "@/server/data/disruption/writeup/disruption-writeup-author";
 import { DisruptionDataBase } from "@/server/data/disruption/data/disruption-data-base";
-import { unique } from "@dan-schel/js-utils";
 import { BusReplacementsDisruptionWriteupAuthor } from "@/server/data/disruption/writeup/bus-replacements-disruption-writeup-author";
 import { App } from "@/server/app";
 import { MapHighlighter } from "@/server/data/disruption/map-highlighting/map-highlighter";
 import { SectionMapHighlighter } from "@/server/data/disruption/map-highlighting/section-map-highlighter";
 import { FilterableDisruptionCategory } from "@/shared/settings";
+import { LineGroupSection } from "@/server/data/line-group/line-group-section";
 
 /** All or part of one or more train lines are replaced by buses. */
 export class BusReplacementsDisruptionData extends DisruptionDataBase {
-  constructor(readonly sections: LineSection[]) {
+  constructor(readonly section: LineGroupSection) {
     super();
-
-    if (sections.length === 0) {
-      throw new Error("Must have at least one section.");
-    }
   }
 
   static readonly bson = z
     .object({
       type: z.literal("bus-replacements"),
-      sections: LineSection.bson.array(),
+      section: LineGroupSection.bson,
     })
-    .transform((x) => new BusReplacementsDisruptionData(x.sections));
+    .transform((x) => new BusReplacementsDisruptionData(x.section));
 
   toBson(): z.input<typeof BusReplacementsDisruptionData.bson> {
     return {
       type: "bus-replacements",
-      sections: this.sections.map((x) => x.toBson()),
+      section: this.section.toBson(),
     };
   }
 
@@ -37,8 +32,9 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
     return JSON.stringify(this.toBson(), undefined, 2);
   }
 
-  getImpactedLines(_app: App): readonly number[] {
-    return unique(this.sections.map((x) => x.line));
+  getImpactedLines(app: App): readonly number[] {
+    const group = app.groups.require(this.section.groupId);
+    return this.section.getImpactedLines(group);
   }
 
   getWriteupAuthor(): DisruptionWriteupAuthor {
@@ -46,15 +42,12 @@ export class BusReplacementsDisruptionData extends DisruptionDataBase {
   }
 
   getMapHighlighter(): MapHighlighter {
-    return new SectionMapHighlighter(this.sections);
+    return new SectionMapHighlighter(this.section);
   }
 
   isValid(app: App): boolean {
-    return this.sections.every((section) => {
-      const line = app.lines.get(section.line);
-      if (line == null) return false;
-      return line.isValidSection(section);
-    });
+    const group = app.groups.require(this.section.groupId);
+    return this.section.isValid(group);
   }
 
   applicableCategory(_app: App): FilterableDisruptionCategory | null {

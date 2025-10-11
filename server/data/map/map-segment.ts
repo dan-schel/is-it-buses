@@ -1,3 +1,7 @@
+import {
+  HighlightedSegment,
+  HighlightedSegmentStyle,
+} from "@/server/data/disruption/map-highlighting/map-highlighting";
 import { Range } from "@/server/data/range";
 import { groupBy } from "@dan-schel/js-utils";
 import { z } from "zod";
@@ -34,6 +38,10 @@ export class MapSegment {
       mapNodeB: this.mapNodeB,
       percentage: this.percentage.toBson(),
     };
+  }
+
+  toHighlighted(style: HighlightedSegmentStyle) {
+    return new HighlightedSegment(this, style);
   }
 
   reverse(): MapSegment {
