@@ -9,6 +9,10 @@ export class MappingDataCollection {
     );
   }
 
+  all() {
+    return Array.from(this._mappingDataByGroupId.values());
+  }
+
   getForGroup(groupId: number) {
     return this._mappingDataByGroupId.get(groupId) ?? null;
   }
