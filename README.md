@@ -33,7 +33,7 @@ Requires [NodeJS](https://nodejs.org/en), and [MongoDB](https://www.mongodb.com/
    RELAY_KEY = "..."
    ```
 
-   **Note:** If you skip this step, the server will use an in-memory database and simulate (empty) responses from the PTV API relay.
+   **Note:** If you skip this step, the server will use an in-memory database and simulate (empty) responses from the [PTV API relay](https://github.com/dan-schel/vic-transport-api-relay).
 
 4. Start the server:
 
