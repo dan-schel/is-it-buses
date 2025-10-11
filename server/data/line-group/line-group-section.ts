@@ -1,7 +1,11 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
-import { LineGroupNode } from "@/server/data/line-group/line-group-node";
+import {
+  LineGroupNode,
+  lineGroupNodeJson,
+} from "@/server/data/line-group/line-group-node";
 import { areUnique, unique } from "@dan-schel/js-utils";
+import z from "zod";
 
 export class LineGroupSection {
   constructor(
@@ -15,6 +19,20 @@ export class LineGroupSection {
     if (endNodeIds.includes(startNodeId)) {
       throw new Error(`Cannot have the same start and end node.`);
     }
+  }
+
+  static readonly json = z.object({
+    groupId: z.number(),
+    startNodeId: lineGroupNodeJson,
+    endNodeIds: lineGroupNodeJson.array(),
+  });
+
+  toJson(): z.input<typeof LineGroupSection.json> {
+    return {
+      groupId: this.groupId,
+      startNodeId: this.startNodeId,
+      endNodeIds: this.endNodeIds,
+    };
   }
 
   isValid(group: LineGroup): boolean {
@@ -42,16 +60,14 @@ export class LineGroupSection {
       for (let j = 0; j < this.endNodeIds.length; j++) {
         if (i === j) continue;
 
-        const nodeA = endNode;
-        const nodeAIndex = endNodeIndex;
-        const nodeB = this.endNodeIds[j];
-        const nodeBIndex = group.requireIndexOfNode(nodeB);
+        const otherNode = this.endNodeIds[j];
+        const otherNodeIndex = group.requireIndexOfNode(otherNode);
 
         // End nodes cannot be on the same branch as each other.
-        if (group.isOnSameBranch(nodeA, nodeB)) {
-          const upstreamNode = nodeAIndex < nodeBIndex ? nodeA : nodeB;
-          const downstreamNode = nodeAIndex < nodeBIndex ? nodeB : nodeA;
-          return `Node "${downstreamNode}" cannot be an end node as upstream node "${upstreamNode}" already is.`;
+        if (group.isOnSameBranch(endNode, otherNode)) {
+          const first = endNodeIndex < otherNodeIndex ? endNode : otherNode;
+          const second = endNodeIndex < otherNodeIndex ? otherNode : endNode;
+          return `Node "${second}" cannot be an end node as upstream node "${first}" already is.`;
         }
       }
     }

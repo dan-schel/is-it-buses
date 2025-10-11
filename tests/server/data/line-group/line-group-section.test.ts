@@ -167,7 +167,7 @@ describe("LineGroupSection", () => {
     });
 
     it("throws if the section is invalid", () => {
-      const section = new LineGroupSection(group.id, 1, [1]);
+      const section = new LineGroupSection(group.id, 1, [49]);
       expect(section.isValid(group)).toBe(false);
       expect(() => section.toLineGroupEdges(group)).toThrow();
     });
