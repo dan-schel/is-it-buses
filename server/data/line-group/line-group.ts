@@ -63,6 +63,7 @@ export class LineGroup {
 
   get branches() {
     return this._branches.map((b, i) => ({
+      branchIndex: i,
       lineId: this._lineIds[i],
       nodes: b,
     }));
@@ -81,6 +82,10 @@ export class LineGroup {
     const result = this.branches.find((b) => b.lineId === lineId);
     if (!result) throw new Error("Line not part of this group.");
     return result;
+  }
+
+  getBranchesForNode(node: LineGroupNode) {
+    return this.branches.filter((b) => b.nodes.includes(node));
   }
 
   getEdgesBetween(a: LineGroupNode, b: LineGroupNode): LineGroupEdge[] {
@@ -144,13 +149,9 @@ export class LineGroup {
     return index;
   }
 
-  getBranchIndicesWithNode(node: LineGroupNode) {
-    const indices: number[] = [];
-    for (let i = 0; i < this._branches.length; i++) {
-      if (this._branches[i].includes(node)) {
-        indices.push(i);
-      }
-    }
-    return indices;
+  isOnSameBranch(a: LineGroupNode, b: LineGroupNode) {
+    const aBranches = this.getBranchesForNode(a).map((x) => x.branchIndex);
+    const bBranches = this.getBranchesForNode(b).map((x) => x.branchIndex);
+    return !new Set(aBranches).isDisjointFrom(new Set(bBranches));
   }
 }

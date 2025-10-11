@@ -1,13 +1,21 @@
 import { LineGroup } from "@/server/data/line-group/line-group";
 import { LineGroupEdge } from "@/server/data/line-group/line-group-edge";
 import { LineGroupNode } from "@/server/data/line-group/line-group-node";
+import { areUnique, unique } from "@dan-schel/js-utils";
 
 export class LineGroupSection {
   constructor(
     readonly groupId: number,
     readonly startNodeId: LineGroupNode,
     readonly endNodeIds: LineGroupNode[],
-  ) {}
+  ) {
+    if (endNodeIds.length === 0) throw new Error(`Cannot have zero end nodes.`);
+    if (!areUnique(endNodeIds)) throw new Error(`End nodes must be unique.`);
+
+    if (endNodeIds.includes(startNodeId)) {
+      throw new Error(`Cannot have the same start and end node.`);
+    }
+  }
 
   isValid(group: LineGroup): boolean {
     return this.getReasonIsInvalid(group) == null;
@@ -26,10 +34,7 @@ export class LineGroupSection {
       const endNode = this.endNodeIds[i];
       const endNodeIndex = group.requireIndexOfNode(endNode);
 
-      // All end nodes must occurs after the start node, and cannot equal it.
-      if (endNode === this.startNodeId) {
-        return `Start node "${endNode}" cannot also be an end node.`;
-      }
+      // All end nodes must occurs after the start node.
       if (endNodeIndex < startNodeIndex) {
         return `Invalid end node "${endNode}" as it occurs before start node "${this.startNodeId}".`;
       }
@@ -39,17 +44,11 @@ export class LineGroupSection {
 
         const nodeA = endNode;
         const nodeAIndex = endNodeIndex;
-        const nodeABranches = new Set(group.getBranchIndicesWithNode(nodeA));
-
         const nodeB = this.endNodeIds[j];
         const nodeBIndex = group.requireIndexOfNode(nodeB);
-        const nodeBBranches = new Set(group.getBranchIndicesWithNode(nodeB));
 
-        // End nodes cannot be on the same branch as each other, or duplicated.
-        if (nodeA === nodeB) {
-          return `End node "${endNode}" given twice.`;
-        }
-        if (!nodeABranches.isDisjointFrom(nodeBBranches)) {
+        // End nodes cannot be on the same branch as each other.
+        if (group.isOnSameBranch(nodeA, nodeB)) {
           const upstreamNode = nodeAIndex < nodeBIndex ? nodeA : nodeB;
           const downstreamNode = nodeAIndex < nodeBIndex ? nodeB : nodeA;
           return `Node "${downstreamNode}" cannot be an end node as upstream node "${upstreamNode}" already is.`;
@@ -69,16 +68,41 @@ export class LineGroupSection {
 
   /**
    * Takes a list of extremities, e.g. "Westall, Pakenham and Cranbourne", and
-   * converts it to a valid line group section. Throws if fewer than two nodes
-   * are given, or if any nodes are invalid for the given group. More lenient
-   * than the constructor in that intermediate nodes are ignored (e.g. if given
-   * "Caulfield, Westall, and Dandenong", Westall will be ignored).
+   * converts it to a valid line group section. More lenient than the
+   * constructor in that intermediate nodes (e.g. Westall, if given "Caulfield,
+   * Westall, and Dandenong") and duplicated nodes are ignored. Throws if fewer
+   * than two nodes are given, or if any nodes are invalid for the given group.
    */
   static fromExtremities(
     group: LineGroup,
-    _nodes: LineGroupNode[],
+    nodes: LineGroupNode[],
   ): LineGroupSection {
-    // TODO: [DS] Implement it.
-    return new LineGroupSection(group.id, 1, []);
+    const uniqueNodes = unique(nodes);
+    for (const node of uniqueNodes) {
+      if (!group.hasNode(node)) throw new Error(`Unknown node "${node}".`);
+    }
+
+    const startNode = uniqueNodes.reduce((acc, x) => {
+      if (acc == null) return x;
+      const xIndex = group.requireIndexOfNode(x);
+      const accIndex = group.requireIndexOfNode(acc);
+      return xIndex < accIndex ? x : acc;
+    });
+
+    const remainingNodes = uniqueNodes.filter((x) => x !== startNode);
+    if (remainingNodes.length === 0) throw new Error(``);
+
+    const endNodes = remainingNodes.filter((a, i) => {
+      return remainingNodes.every((b, j) => {
+        if (i === j) return true;
+        if (!group.isOnSameBranch(a, b)) return true;
+
+        // If we've found two end nodes on the same branch, only keep the one
+        // which appears further down the tree.
+        return group.requireIndexOfNode(a) > group.requireIndexOfNode(b);
+      });
+    });
+
+    return new LineGroupSection(group.id, startNode, endNodes);
   }
 }

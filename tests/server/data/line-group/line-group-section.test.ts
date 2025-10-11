@@ -21,6 +21,20 @@ describe("LineGroupSection", () => {
   const lines = [97, 98, 99];
   const group = new LineGroup(400, branches, lines, new Map());
 
+  describe("#constructor", () => {
+    it("throws if the start node equals one of the end nodes", () => {
+      expect(() => new LineGroupSection(group.id, 1, [1, 2])).toThrow();
+    });
+
+    it("throws if any end nodes are duplicated", () => {
+      expect(() => new LineGroupSection(group.id, 1, [7, 6, 6])).toThrow();
+    });
+
+    it("throws if no end nodes are provided", () => {
+      expect(() => new LineGroupSection(group.id, 1, [])).toThrow();
+    });
+  });
+
   describe("#isValid and #getReasonIsInvalid", () => {
     it("allows a single branch section", () => {
       const section = new LineGroupSection(group.id, 6, [8]);
@@ -87,20 +101,6 @@ describe("LineGroupSection", () => {
       );
     });
 
-    it("returns false for single node sections", () => {
-      const section1 = new LineGroupSection(group.id, 1, [1]);
-      expect(section1.isValid(group)).toBe(false);
-      expect(section1.getReasonIsInvalid(group)).toBe(
-        'Start node "1" cannot also be an end node.',
-      );
-
-      const section2 = new LineGroupSection(group.id, 6, [6]);
-      expect(section2.isValid(group)).toBe(false);
-      expect(section2.getReasonIsInvalid(group)).toBe(
-        'Start node "6" cannot also be an end node.',
-      );
-    });
-
     it("returns false if any nodes don't exist", () => {
       const section1 = new LineGroupSection(group.id, 49, [6]);
       expect(section1.isValid(group)).toBe(false);
@@ -112,14 +112,6 @@ describe("LineGroupSection", () => {
       expect(section2.isValid(group)).toBe(false);
       expect(section2.getReasonIsInvalid(group)).toBe(
         'Node "49" not valid for the given group.',
-      );
-    });
-
-    it("returns false if any end nodes are listed twice", () => {
-      const section = new LineGroupSection(group.id, 1, [6, 6]);
-      expect(section.isValid(group)).toBe(false);
-      expect(section.getReasonIsInvalid(group)).toBe(
-        'End node "6" given twice.',
       );
     });
 
@@ -210,7 +202,13 @@ describe("LineGroupSection", () => {
     it("handles complex cases", () => {
       const section = LineGroupSection.fromExtremities(group, [9, 8, 2]);
       expect(section.startNodeId).toBe(2);
-      expect(section.endNodeIds).toEqual([8, 9]);
+      expect(section.endNodeIds).toEqual([9, 8]);
+    });
+
+    it("ignores duplicate nodes", () => {
+      const section = LineGroupSection.fromExtremities(group, [2, 2, 4, 4]);
+      expect(section.startNodeId).toBe(2);
+      expect(section.endNodeIds).toEqual([4]);
     });
 
     it("still returns a valid line group section if redundant nodes are given", () => {
@@ -219,9 +217,13 @@ describe("LineGroupSection", () => {
       expect(section.endNodeIds).toEqual([10]);
     });
 
-    it("throws if fewer than two nodes are given", () => {
+    it("throws if fewer than two unique nodes are given", () => {
       expect(() => {
         LineGroupSection.fromExtremities(group, [1]);
+      }).toThrow();
+
+      expect(() => {
+        LineGroupSection.fromExtremities(group, [1, 1]);
       }).toThrow();
     });
 

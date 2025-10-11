@@ -19,9 +19,9 @@ describe("LineGroupBuilder", () => {
       .build([]);
     expect(group.id).toBe(400);
     expect(group.branches).toEqual([
-      { lineId: 99, nodes: [1, 2, 4, 7] },
-      { lineId: 98, nodes: [1, 2, 4, 5, 6] },
-      { lineId: 97, nodes: [1, 2, 3] },
+      { branchIndex: 0, lineId: 99, nodes: [1, 2, 4, 7] },
+      { branchIndex: 1, lineId: 98, nodes: [1, 2, 4, 5, 6] },
+      { branchIndex: 2, lineId: 97, nodes: [1, 2, 3] },
     ]);
   });
 
