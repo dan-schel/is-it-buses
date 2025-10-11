@@ -13,13 +13,50 @@ export class LineGroupSection {
     return this.getReasonIsInvalid(group) == null;
   }
 
-  getReasonIsInvalid(_group: LineGroup): string | null {
-    // Valid if:
-    // - All nodes are valid for the group
-    // - All end nodes are further down the tree than the start node
-    // - No end nodes can be upstream on the same branch as another end node
+  getReasonIsInvalid(group: LineGroup): string | null {
+    // All nodes must exist in the group.
+    for (const node of [this.startNodeId, ...this.endNodeIds]) {
+      if (!group.hasNode(node)) {
+        return `Node "${node}" not valid for the given group.`;
+      }
+    }
 
-    // TODO: [DS] Implement it.
+    const startNodeIndex = group.requireIndexOfNode(this.startNodeId);
+    for (let i = 0; i < this.endNodeIds.length; i++) {
+      const endNode = this.endNodeIds[i];
+      const endNodeIndex = group.requireIndexOfNode(endNode);
+
+      // All end nodes must occurs after the start node, and cannot equal it.
+      if (endNode === this.startNodeId) {
+        return `Start node "${endNode}" cannot also be an end node.`;
+      }
+      if (endNodeIndex < startNodeIndex) {
+        return `Invalid end node "${endNode}" as it occurs before start node "${this.startNodeId}".`;
+      }
+
+      for (let j = 0; j < this.endNodeIds.length; j++) {
+        if (i === j) continue;
+
+        const nodeA = endNode;
+        const nodeAIndex = endNodeIndex;
+        const nodeABranches = new Set(group.getBranchIndicesWithNode(nodeA));
+
+        const nodeB = this.endNodeIds[j];
+        const nodeBIndex = group.requireIndexOfNode(nodeB);
+        const nodeBBranches = new Set(group.getBranchIndicesWithNode(nodeB));
+
+        // End nodes cannot be on the same branch as each other, or duplicated.
+        if (nodeA === nodeB) {
+          return `End node "${endNode}" given twice.`;
+        }
+        if (!nodeABranches.isDisjointFrom(nodeBBranches)) {
+          const upstreamNode = nodeAIndex < nodeBIndex ? nodeA : nodeB;
+          const downstreamNode = nodeAIndex < nodeBIndex ? nodeB : nodeA;
+          return `Node "${downstreamNode}" cannot be an end node as upstream node "${upstreamNode}" already is.`;
+        }
+      }
+    }
+
     return null;
   }
 

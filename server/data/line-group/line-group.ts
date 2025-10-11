@@ -121,4 +121,36 @@ export class LineGroup {
 
     throw new Error(`No station mapping for node '${node}'`);
   }
+
+  hasNode(node: LineGroupNode) {
+    return this._branches.some((b) => b.includes(node));
+  }
+
+  /**
+   * The index where this node appears on any branches. (It's impossible for a
+   * node to exist at different indices on different branches.)
+   */
+  getIndexOfNode(node: LineGroupNode) {
+    return this._branches.find((b) => b.includes(node))?.indexOf(node) ?? null;
+  }
+
+  /**
+   * The index where this node appears on any branches. (It's impossible for a
+   * node to exist at different indices on different branches.)
+   */
+  requireIndexOfNode(node: LineGroupNode) {
+    const index = this.getIndexOfNode(node);
+    if (index == null) throw new Error(`Node "${node}" not in this group.`);
+    return index;
+  }
+
+  getBranchIndicesWithNode(node: LineGroupNode) {
+    const indices: number[] = [];
+    for (let i = 0; i < this._branches.length; i++) {
+      if (this._branches[i].includes(node)) {
+        indices.push(i);
+      }
+    }
+    return indices;
+  }
 }

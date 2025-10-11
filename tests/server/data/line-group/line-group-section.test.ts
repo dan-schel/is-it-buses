@@ -59,7 +59,7 @@ describe("LineGroupSection", () => {
       const section = new LineGroupSection(group.id, 8, [6]);
       expect(section.isValid(group)).toBe(false);
       expect(section.getReasonIsInvalid(group)).toBe(
-        'Invalid end node "6" as it occurs before "8".',
+        'Invalid end node "6" as it occurs before start node "8".',
       );
     });
 
@@ -91,13 +91,13 @@ describe("LineGroupSection", () => {
       const section1 = new LineGroupSection(group.id, 1, [1]);
       expect(section1.isValid(group)).toBe(false);
       expect(section1.getReasonIsInvalid(group)).toBe(
-        "Sections must span multiple nodes.",
+        'Start node "1" cannot also be an end node.',
       );
 
       const section2 = new LineGroupSection(group.id, 6, [6]);
       expect(section2.isValid(group)).toBe(false);
       expect(section2.getReasonIsInvalid(group)).toBe(
-        "Sections must span multiple nodes.",
+        'Start node "6" cannot also be an end node.',
       );
     });
 
@@ -112,6 +112,43 @@ describe("LineGroupSection", () => {
       expect(section2.isValid(group)).toBe(false);
       expect(section2.getReasonIsInvalid(group)).toBe(
         'Node "49" not valid for the given group.',
+      );
+    });
+
+    it("returns false if any end nodes are listed twice", () => {
+      const section = new LineGroupSection(group.id, 1, [6, 6]);
+      expect(section.isValid(group)).toBe(false);
+      expect(section.getReasonIsInvalid(group)).toBe(
+        'End node "6" given twice.',
+      );
+    });
+
+    it("behaves identically even if multiple branches in the group are for the same line", () => {
+      const lines = [95, 95, 95];
+      const sameLineGroup = new LineGroup(400, branches, lines, new Map());
+
+      // Allows multi-branch sections
+      const section1 = new LineGroupSection(sameLineGroup.id, 1, [4, 8, 10]);
+      expect(section1.isValid(sameLineGroup)).toBe(true);
+      expect(section1.getReasonIsInvalid(sameLineGroup)).toBeNull();
+
+      // Allows sections where a branch is bypassed
+      const section2 = new LineGroupSection(sameLineGroup.id, 1, [7, 10]);
+      expect(section2.isValid(sameLineGroup)).toBe(true);
+      expect(section2.getReasonIsInvalid(sameLineGroup)).toBeNull();
+
+      // Returns false if end nodes are given for intermediate branches
+      const section3 = new LineGroupSection(sameLineGroup.id, 1, [2, 6]);
+      expect(section3.isValid(sameLineGroup)).toBe(false);
+      expect(section3.getReasonIsInvalid(sameLineGroup)).toBe(
+        'Node "6" cannot be an end node as upstream node "2" already is.',
+      );
+
+      // Returns false if multiple end nodes are given for the same branch
+      const section4 = new LineGroupSection(sameLineGroup.id, 1, [10, 9]);
+      expect(section4.isValid(sameLineGroup)).toBe(false);
+      expect(section4.getReasonIsInvalid(sameLineGroup)).toBe(
+        'Node "10" cannot be an end node as upstream node "9" already is.',
       );
     });
   });
