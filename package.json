@@ -39,8 +39,8 @@
     "@types/express": "5.0.3",
     "@types/js-cookie": "3.0.6",
     "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.1",
-    "@typescript-eslint/utils": "8.46.0",
+    "@types/react-dom": "19.2.2",
+    "@typescript-eslint/utils": "8.46.1",
     "@vitest/coverage-v8": "3.2.4",
     "cross-env": "10.1.0",
     "eslint": "9.37.0",
@@ -49,16 +49,16 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.0",
     "globals": "16.4.0",
-    "knip": "5.64.3",
+    "knip": "5.65.0",
     "prettier": "3.6.2",
     "prettier-plugin-tailwindcss": "0.6.14",
     "tailwindcss": "4.1.14",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.46.0",
+    "typescript-eslint": "8.46.1",
     "vike": "0.4.242",
-    "vite": "7.1.9",
-    "vite-plugin-pwa": "1.0.3"
+    "vite": "7.1.10",
+    "vite-plugin-pwa": "1.1.0"
   },
   "type": "module"
 }
