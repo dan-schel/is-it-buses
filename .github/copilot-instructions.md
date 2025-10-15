@@ -91,6 +91,7 @@ Note that all PRs must pass linting, formatting, and tests in order to merge.
 - Never use `console.log`. Backend code should use `app.log.info` or `app.log.warn`. Frontend code can use `console.warn` to log handled errors, but should otherwise not log anything.
 - Prefer `function` syntax over arrow function syntax for named functions (still use arrow functions for lambdas).
 - Prefer `==` when comparing to `null` (to also catch `undefined`), otherwise always use `===`.
+- Prefer `null` over `undefined` for optional/unset values. This reserves `undefined` for uninitialized variables.
 
 ### Class guidelines
 

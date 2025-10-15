@@ -7,6 +7,8 @@ import { FakeAlertSource } from "@/server/services/alert-source/fake-alert-sourc
 import { FakeLogger } from "@/server/services/logger/fake-logger";
 import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { User } from "@/server/services/auth/user";
+import { lineGroups } from "@/server/entry-point/data/line-groups";
+import { mappingData } from "@/server/entry-point/data/mapping-data";
 
 export const defaultMockedNow = new Date("2025-01-01T00:00:00Z");
 
@@ -19,6 +21,8 @@ export function createTestApp({
   const log = new FakeLogger();
 
   const app = new App(
+    lineGroups,
+    mappingData,
     lines,
     stations,
     db,

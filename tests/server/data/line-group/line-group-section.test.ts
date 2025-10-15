@@ -207,6 +207,75 @@ describe("LineGroupSection", () => {
     }
   });
 
+  describe("#getImpactedLines", () => {
+    it("works", () => {
+      const section1 = new LineGroupSection(group.id, 2, [4]);
+      expect(section1.getImpactedLines(group)).toEqual([97]);
+
+      const section2 = new LineGroupSection(group.id, 2, [5]);
+      expect(section2.getImpactedLines(group)).toEqual([98, 99]);
+
+      const section3 = new LineGroupSection(group.id, 1, [10]);
+      expect(section3.getImpactedLines(group)).toEqual([97, 98, 99]);
+
+      const section4 = new LineGroupSection(group.id, 9, [10]);
+      expect(section4.getImpactedLines(group)).toEqual([99]);
+    });
+
+    it("doesn't duplicate line IDs if two branches are on the same line", () => {
+      const branches = [
+        [1, 2, 3, 4],
+        [1, 2, 5, 6],
+      ];
+      const lines = [99, 99];
+      const group = new LineGroup(400, branches, lines, new Map());
+      const section = new LineGroupSection(group.id, 1, [2]);
+
+      expect(section.getImpactedLines(group)).toEqual([99]);
+    });
+
+    it("throws if the section is invalid", () => {
+      const section = new LineGroupSection(group.id, 1, [49]);
+      expect(section.isValid(group)).toBe(false);
+      expect(() => section.getImpactedLines(group)).toThrow();
+    });
+  });
+
+  describe("#getIndirectEndNodes", () => {
+    it("works", () => {
+      const section1 = new LineGroupSection(group.id, 2, [4]);
+      expect(section1.getIndirectEndNodes(group)).toEqual([]);
+
+      const section2 = new LineGroupSection(group.id, 2, [5]);
+      expect(section2.getIndirectEndNodes(group)).toEqual([]);
+
+      const section3 = new LineGroupSection(group.id, 1, [10]);
+      expect(section3.getIndirectEndNodes(group)).toEqual([2, 6]);
+
+      const section4 = new LineGroupSection(group.id, 1, [6]);
+      expect(section4.getIndirectEndNodes(group)).toEqual([2]);
+    });
+
+    it("doesn't duplicate indirect end nodes if it's the junction of many lines", () => {
+      const branches = [
+        [1, 2, 3, 4],
+        [1, 2, 5, 6],
+        [1, 2, 7, 8],
+      ];
+      const lines = [97, 98, 99];
+      const group = new LineGroup(400, branches, lines, new Map());
+      const section = new LineGroupSection(group.id, 1, [4]);
+
+      expect(section.getIndirectEndNodes(group)).toEqual([2]);
+    });
+
+    it("throws if the section is invalid", () => {
+      const section = new LineGroupSection(group.id, 1, [49]);
+      expect(section.isValid(group)).toBe(false);
+      expect(() => section.getIndirectEndNodes(group)).toThrow();
+    });
+  });
+
   describe(".fromExtremities", () => {
     it("works in the simple case", () => {
       const section1 = LineGroupSection.fromExtremities(group, [2, 4]);

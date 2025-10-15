@@ -13,6 +13,8 @@ import { RealTimeProvider } from "@/server/services/time-provider/real-time-prov
 import { ConsoleLogger } from "@/server/services/logger/console-logger";
 import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-parsing-pipeline";
 import { createApiRouter } from "@/server/api";
+import { lineGroups } from "@/server/entry-point/data/line-groups";
+import { mappingData } from "@/server/entry-point/data/mapping-data";
 
 export async function run(root: string) {
   const database = await initDatabase();
@@ -26,6 +28,8 @@ export async function run(root: string) {
   ];
 
   const app = new App(
+    lineGroups,
+    mappingData,
     lines,
     stations,
     database,

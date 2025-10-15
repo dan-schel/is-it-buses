@@ -61,10 +61,10 @@ export class LineGroupSection {
       }
     }
 
-    const startNodeIndex = group.requireIndexOfNode(this.startNodeId);
+    const startNodeIndex = group.getIndexOfNode(this.startNodeId);
     for (let i = 0; i < this.endNodeIds.length; i++) {
       const endNode = this.endNodeIds[i];
-      const endNodeIndex = group.requireIndexOfNode(endNode);
+      const endNodeIndex = group.getIndexOfNode(endNode);
 
       // All end nodes must occurs after the start node.
       if (endNodeIndex < startNodeIndex) {
@@ -75,7 +75,7 @@ export class LineGroupSection {
         if (i === j) continue;
 
         const otherNode = this.endNodeIds[j];
-        const otherNodeIndex = group.requireIndexOfNode(otherNode);
+        const otherNodeIndex = group.getIndexOfNode(otherNode);
 
         // End nodes cannot be on the same branch as each other.
         if (group.isOnSameBranch(endNode, otherNode)) {
@@ -99,6 +99,58 @@ export class LineGroupSection {
     return unique(totalEdges, (a, b) => a.isSameEdge(b));
   }
 
+  getImpactedLines(group: LineGroup): readonly number[] {
+    if (!this.isValid(group)) throw new Error("Invalid section");
+
+    const startNodeIndex = group.getIndexOfNode(this.startNodeId);
+
+    // Look for branches which have both the start and one of the end nodes, and
+    // take note of the node which directly follows the start node. Any branch
+    // which contains one of these nodes will be impacted.
+    const impactedAncestorNodes = group
+      .getBranchesWithNode(this.startNodeId)
+      .filter((b) => this.endNodeIds.some((n) => b.nodes.includes(n)))
+      .map((b) => b.nodes[startNodeIndex + 1]);
+
+    const impactedBranches = group.branches.filter((b) =>
+      impactedAncestorNodes.some((n) => b.nodes.includes(n)),
+    );
+
+    return unique(impactedBranches.map((b) => b.lineId));
+  }
+
+  /**
+   * Node which are the final node impacted by this section in branches which do
+   * not contain an end node, e.g. if the section is "Caulfield to East
+   * Pakenham", Dandenong is an indirect end node (because it's the junction for
+   * the Cranbourne line).
+   */
+  getIndirectEndNodes(group: LineGroup): LineGroupNode[] {
+    if (!this.isValid(group)) throw new Error("Invalid section");
+
+    const impactedBranches = group.getBranchesWithNode(this.startNodeId);
+    const directlyImpactedBranches = impactedBranches.filter((b) =>
+      this.endNodeIds.some((n) => b.nodes.includes(n)),
+    );
+    const indirectlyImpactedBranches = impactedBranches.filter((b) =>
+      this.endNodeIds.every((n) => !b.nodes.includes(n)),
+    );
+
+    const result: LineGroupNode[] = [];
+
+    for (const branch of indirectlyImpactedBranches) {
+      const lastCommonNode = branch.nodes.findLast((n) =>
+        directlyImpactedBranches.some((b) => b.nodes.includes(n)),
+      );
+
+      if (lastCommonNode != null && lastCommonNode !== this.startNodeId) {
+        result.push(lastCommonNode);
+      }
+    }
+
+    return unique(result);
+  }
+
   /**
    * Takes a list of extremities, e.g. "Westall, Pakenham and Cranbourne", and
    * converts it to a valid line group section. More lenient than the
@@ -117,8 +169,8 @@ export class LineGroupSection {
 
     const startNode = uniqueNodes.reduce((acc, x) => {
       if (acc == null) return x;
-      const xIndex = group.requireIndexOfNode(x);
-      const accIndex = group.requireIndexOfNode(acc);
+      const xIndex = group.getIndexOfNode(x);
+      const accIndex = group.getIndexOfNode(acc);
       return xIndex < accIndex ? x : acc;
     });
 
@@ -132,7 +184,7 @@ export class LineGroupSection {
 
         // If we've found two end nodes on the same branch, only keep the one
         // which appears further down the tree.
-        return group.requireIndexOfNode(a) > group.requireIndexOfNode(b);
+        return group.getIndexOfNode(a) > group.getIndexOfNode(b);
       });
     });
 
