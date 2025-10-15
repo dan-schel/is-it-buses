@@ -1,78 +1,53 @@
-import { formatSections } from "@/server/data/disruption/writeup/utils";
-import { LineSection } from "@/server/data/line-section";
+import { formatSection } from "@/server/data/disruption/writeup/utils";
+import { LineGroupNode } from "@/server/data/line-group/line-group-node";
+import { LineGroupSection } from "@/server/data/line-group/line-group-section";
+import { BURNLEY as BURNLEY_GROUP } from "@/shared/group-ids";
 import {
-  CRANBOURNE as CRANBOURNE_LINE,
-  PAKENHAM as PAKENHAM_LINE,
-  FRANKSTON as FRANKSTON_LINE,
-} from "@/shared/line-ids";
-import {
-  CAULFIELD,
-  CRANBOURNE,
-  DANDENONG,
-  EAST_PAKENHAM,
-  SOUTH_YARRA,
-  WESTALL,
+  ALAMEIN,
+  BELGRAVE,
+  BOX_HILL,
+  BURNLEY,
+  CAMBERWELL,
+  GLEN_WAVERLEY,
+  LILYDALE,
+  RINGWOOD,
 } from "@/shared/station-ids";
 import { createTestApp } from "@/tests/server/utils";
 import { describe, expect, it } from "vitest";
 
-describe("#formatSections", () => {
-  it("handles cases with one section", () => {
-    const { app } = createTestApp();
-    const sections = [new LineSection(PAKENHAM_LINE, "the-city", CAULFIELD)];
-    const output = formatSections(app, sections);
-    expect(output).toBe("from the city to Caulfield");
-  });
-
-  it("handles cases with identical sections", () => {
-    const { app } = createTestApp();
-    const sections = [
-      new LineSection(PAKENHAM_LINE, SOUTH_YARRA, CAULFIELD),
-      new LineSection(CRANBOURNE_LINE, CAULFIELD, SOUTH_YARRA),
-      new LineSection(FRANKSTON_LINE, SOUTH_YARRA, CAULFIELD),
-    ];
-    const output = formatSections(app, sections);
-    expect(output).toBe("from South Yarra to Caulfield");
-  });
-
-  it("handles cases with a common node", () => {
-    const { app } = createTestApp();
-
-    const sections1 = [
-      new LineSection(PAKENHAM_LINE, WESTALL, EAST_PAKENHAM),
-      new LineSection(CRANBOURNE_LINE, WESTALL, CRANBOURNE),
-    ];
-    const output1 = formatSections(app, sections1);
-    expect(output1).toBe("from Westall to East Pakenham and Cranbourne");
-
-    const sections2 = [
-      new LineSection(PAKENHAM_LINE, EAST_PAKENHAM, WESTALL),
-      new LineSection(CRANBOURNE_LINE, WESTALL, CRANBOURNE),
-    ];
-    const output2 = formatSections(app, sections2);
-    expect(output2).toBe("from Westall to East Pakenham and Cranbourne");
-  });
-
-  it("handles complex cases", () => {
-    const { app } = createTestApp();
-
-    const sections1 = [
-      new LineSection(PAKENHAM_LINE, WESTALL, EAST_PAKENHAM),
-      new LineSection(FRANKSTON_LINE, CAULFIELD, SOUTH_YARRA),
-    ];
-    const output1 = formatSections(app, sections1);
-    expect(output1).toBe(
-      "from Westall to East Pakenham and from Caulfield to South Yarra",
+describe("#formatSection", () => {
+  it("works", () => {
+    expect(formatBurnleyGroup("the-city", [BURNLEY])).toBe(
+      "from the city to Burnley",
     );
 
-    const sections2 = [
-      new LineSection(PAKENHAM_LINE, WESTALL, EAST_PAKENHAM),
-      new LineSection(FRANKSTON_LINE, CAULFIELD, SOUTH_YARRA),
-      new LineSection(CRANBOURNE_LINE, DANDENONG, CRANBOURNE),
-    ];
-    const output2 = formatSections(app, sections2);
-    expect(output2).toBe(
-      "from Westall to East Pakenham, from Caulfield to South Yarra, and from Dandenong to Cranbourne",
+    expect(formatBurnleyGroup("the-city", [CAMBERWELL])).toBe(
+      "from the city to Burnley and Camberwell",
+    );
+
+    expect(formatBurnleyGroup(BOX_HILL, [BELGRAVE, LILYDALE])).toBe(
+      "from Box Hill to Lilydale and Belgrave",
+    );
+
+    expect(formatBurnleyGroup("the-city", [BELGRAVE])).toBe(
+      "from the city to Burnley, Camberwell, Ringwood, and Belgrave",
+    );
+
+    expect(formatBurnleyGroup(RINGWOOD, [LILYDALE])).toBe(
+      "from Ringwood to Lilydale",
+    );
+
+    expect(formatBurnleyGroup("the-city", [GLEN_WAVERLEY, ALAMEIN])).toBe(
+      "from the city to Camberwell, Alamein, and Glen Waverley",
     );
   });
+
+  function formatBurnleyGroup(
+    startNode: LineGroupNode,
+    endNodes: LineGroupNode[],
+  ) {
+    const { app } = createTestApp();
+    const section = new LineGroupSection(BURNLEY_GROUP, startNode, endNodes);
+    return formatSection(app, section);
+  }
 });

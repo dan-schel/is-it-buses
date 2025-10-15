@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 
 const highlightedSegmentStyles = ["standard"] as const;
-export type HighlightedSegmentStyle = (typeof highlightedSegmentStyles)[number];
+type HighlightedSegmentStyle = (typeof highlightedSegmentStyles)[number];
 const highlightedSegmentStylesJson = z.enum(highlightedSegmentStyles);
 
 export class HighlightedSegment {

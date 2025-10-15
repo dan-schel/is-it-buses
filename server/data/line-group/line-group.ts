@@ -73,10 +73,11 @@ export class LineGroup {
     return this._branches[0][0];
   }
 
-  // TODO: Return all unique edges.
-  // get edges() {}
-
-  // getChildNodes(node: LineGroupNode): LineGroupNode[] {}
+  getChildNodes(node: LineGroupNode): LineGroupNode[] {
+    const index = this.getIndexOfNode(node);
+    const branches = this.getBranchesWithNode(node);
+    return unique(branches.map((b) => b.nodes[index + 1]).filter(nonNull));
+  }
 
   getBranchesForLine(lineId: number) {
     const result = this.branches.find((b) => b.lineId === lineId);
@@ -84,7 +85,7 @@ export class LineGroup {
     return result;
   }
 
-  getBranchesForNode(node: LineGroupNode) {
+  getBranchesWithNode(node: LineGroupNode) {
     return this.branches.filter((b) => b.nodes.includes(node));
   }
 
@@ -136,22 +137,14 @@ export class LineGroup {
    * node to exist at different indices on different branches.)
    */
   getIndexOfNode(node: LineGroupNode) {
-    return this._branches.find((b) => b.includes(node))?.indexOf(node) ?? null;
-  }
-
-  /**
-   * The index where this node appears on any branches. (It's impossible for a
-   * node to exist at different indices on different branches.)
-   */
-  requireIndexOfNode(node: LineGroupNode) {
-    const index = this.getIndexOfNode(node);
+    const index = this._branches.find((b) => b.includes(node))?.indexOf(node);
     if (index == null) throw new Error(`Node "${node}" not in this group.`);
     return index;
   }
 
   isOnSameBranch(a: LineGroupNode, b: LineGroupNode) {
-    const aBranches = this.getBranchesForNode(a).map((x) => x.branchIndex);
-    const bBranches = this.getBranchesForNode(b).map((x) => x.branchIndex);
+    const aBranches = this.getBranchesWithNode(a).map((x) => x.branchIndex);
+    const bBranches = this.getBranchesWithNode(b).map((x) => x.branchIndex);
     return !new Set(aBranches).isDisjointFrom(new Set(bBranches));
   }
 }
