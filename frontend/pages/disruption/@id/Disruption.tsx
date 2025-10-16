@@ -8,8 +8,7 @@ import { Column } from "@/frontend/components/core/Column";
 import { Calendar } from "@/frontend/components/calendar/Calendar";
 import { CalendarData } from "@/shared/types/calendar-data";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
-import { Geometry } from "@/frontend/components/map/renderer/geometry";
-import { z } from "zod";
+import { SerializedGeometry } from "@/shared/types/map-geometry";
 
 type DisruptionProps = {
   data: {
@@ -19,7 +18,7 @@ type DisruptionProps = {
     calendar: CalendarData | null;
     highlighting: SerializedMapHighlighting;
   };
-  mapGeometry: z.input<typeof Geometry.json>;
+  mapGeometry: SerializedGeometry;
 };
 
 export function Disruption(props: DisruptionProps) {

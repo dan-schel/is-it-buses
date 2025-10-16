@@ -8,8 +8,7 @@ import { Line } from "@/server/data/line/line";
 import { parseIntNull } from "@dan-schel/js-utils";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { MapHighlighting } from "@/server/data/disruption/map-highlighting/map-highlighting";
-import { Geometry } from "@/frontend/components/map/renderer/geometry";
-import { z } from "zod";
+import { SerializedGeometry } from "@/shared/types/map-geometry";
 
 export type Data = {
   disruption: {
@@ -23,7 +22,7 @@ export type Data = {
     name: string;
     href: string;
   };
-  mapGeometry: z.input<typeof Geometry.json>;
+  mapGeometry: SerializedGeometry;
 };
 
 export async function data(
@@ -37,7 +36,11 @@ export async function data(
 
   const disruption = await app.disruptions.get(id);
   if (disruption == null) {
-    return { disruption: null, back, mapGeometry: app.mapGeometry.toJSON() };
+    return {
+      disruption: null,
+      back,
+      mapGeometry: app.mapGeometry.toJSON() as SerializedGeometry,
+    };
   }
 
   const period = disruption.period.toBson();
@@ -60,7 +63,7 @@ export async function data(
       ]),
     },
     back,
-    mapGeometry: app.mapGeometry.toJSON(),
+    mapGeometry: app.mapGeometry.toJSON() as SerializedGeometry,
   };
 }
 

@@ -4,12 +4,12 @@ import { Geometry } from "@/frontend/components/map/renderer/geometry";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { LinesColoringStrategy } from "@/frontend/components/map/renderer/coloring-strategy/lines-coloring-strategy";
 import { DisruptionsColoringStrategy } from "@/frontend/components/map/renderer/coloring-strategy/disruptions-coloring-strategy";
-import { z } from "zod";
+import { SerializedGeometry } from "@/shared/types/map-geometry";
 
 type MapMode = "show-disruptions" | "show-lines-running";
 
 type MapProps = {
-  geometry: z.input<typeof Geometry.json>;
+  geometry: SerializedGeometry;
   highlighting?: SerializedMapHighlighting;
   mode?: MapMode;
 };

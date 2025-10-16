@@ -1,16 +1,16 @@
 import { Geometry } from "@/frontend/components/map/renderer/geometry";
-import { GeometryBuilder } from "@/scripts/generate-map-geometry/lib/geometry-builder";
-import { burnley } from "@/scripts/generate-map-geometry/ptv/lines/burnley";
-import { cliftonHill } from "@/scripts/generate-map-geometry/ptv/lines/clifton-hill";
-import { dandenong } from "@/scripts/generate-map-geometry/ptv/lines/dandenong";
-import { frankston } from "@/scripts/generate-map-geometry/ptv/lines/frankston";
-import { gippsland } from "@/scripts/generate-map-geometry/ptv/lines/gippsland";
-import { newport } from "@/scripts/generate-map-geometry/ptv/lines/newport";
-import { northern } from "@/scripts/generate-map-geometry/ptv/lines/northern";
-import { regionalWestern } from "@/scripts/generate-map-geometry/ptv/lines/regional-western";
-import { sandringham } from "@/scripts/generate-map-geometry/ptv/lines/sandringham";
-import { stonyPoint } from "@/scripts/generate-map-geometry/ptv/lines/stony-point";
-import * as interchange from "@/scripts/generate-map-geometry/ptv/interchanges";
+import { GeometryBuilder } from "@/server/services/map-geometry/geometry-builder";
+import { burnley } from "@/server/entry-point/data/map-geometry/lines/burnley";
+import { cliftonHill } from "@/server/entry-point/data/map-geometry/lines/clifton-hill";
+import { dandenong } from "@/server/entry-point/data/map-geometry/lines/dandenong";
+import { frankston } from "@/server/entry-point/data/map-geometry/lines/frankston";
+import { gippsland } from "@/server/entry-point/data/map-geometry/lines/gippsland";
+import { newport } from "@/server/entry-point/data/map-geometry/lines/newport";
+import { northern } from "@/server/entry-point/data/map-geometry/lines/northern";
+import { regionalWestern } from "@/server/entry-point/data/map-geometry/lines/regional-western";
+import { sandringham } from "@/server/entry-point/data/map-geometry/lines/sandringham";
+import { stonyPoint } from "@/server/entry-point/data/map-geometry/lines/stony-point";
+import * as interchange from "@/server/entry-point/data/map-geometry/interchanges";
 import {
   BURNLEY,
   CLIFTON_HILL,

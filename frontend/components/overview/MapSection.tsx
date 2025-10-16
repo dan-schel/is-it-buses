@@ -8,13 +8,12 @@ import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { Map } from "@/frontend/components/map/Map";
 import { DisruptionButton } from "@/frontend/components/disruptions/DisruptionButton";
 import { useSettings } from "@/frontend/components/settings/common/use-settings";
-import { Geometry } from "@/frontend/components/map/renderer/geometry";
-import { z } from "zod";
+import { SerializedGeometry } from "@/shared/types/map-geometry";
 
 type MapSectionProps = {
   disruptions: DisruptionSummary[];
   mapHighlighting: SerializedMapHighlighting;
-  mapGeometry: z.input<typeof Geometry.json>;
+  mapGeometry: SerializedGeometry;
   occuring: PeriodFilter;
 };
 
