@@ -8,10 +8,13 @@ import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { Map } from "@/frontend/components/map/Map";
 import { DisruptionButton } from "@/frontend/components/disruptions/DisruptionButton";
 import { useSettings } from "@/frontend/components/settings/common/use-settings";
+import { Geometry } from "@/frontend/components/map/renderer/geometry";
+import { z } from "zod";
 
 type MapSectionProps = {
   disruptions: DisruptionSummary[];
   mapHighlighting: SerializedMapHighlighting;
+  mapGeometry: z.input<typeof Geometry.json>;
   occuring: PeriodFilter;
 };
 
@@ -23,6 +26,7 @@ export function MapSection(props: MapSectionProps) {
       <Map
         mode="show-disruptions"
         highlighting={props.mapHighlighting}
+        geometry={props.mapGeometry}
         // Recreate the map when the theme changes, so that the colors are
         // correct.
         key={settings.theme}

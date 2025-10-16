@@ -20,6 +20,8 @@ import { addWeeks, endOfDay } from "date-fns";
 import { localToUtcTime } from "@/server/data/disruption/period/utils/utils";
 import { unique } from "@dan-schel/js-utils";
 import { App } from "@/server/app";
+import { Geometry } from "@/frontend/components/map/renderer/geometry";
+import { z } from "zod";
 
 const statusColorMapping: Record<
   LineStatusIndicatorPriority,
@@ -39,6 +41,7 @@ export type Data = {
   suburban: OverviewPageLineData[];
   regional: OverviewPageLineData[];
   mapHighlighting: SerializedMapHighlighting;
+  mapGeometry: z.input<typeof Geometry.json>;
   occuring: PeriodFilter;
 };
 
@@ -79,6 +82,7 @@ export async function data(
     mapHighlighting: MapHighlighting.serializeGroup(
       preprocessedDisruptions.map((x) => x.map),
     ),
+    mapGeometry: app.mapGeometry.toJSON(),
   };
 }
 

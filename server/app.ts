@@ -18,6 +18,7 @@ import { AuthController } from "@/server/services/auth/auth-controller";
 import { User } from "@/server/services/auth/user";
 import { LineGroupCollection } from "@/server/data/line-group/line-group-collection";
 import { MappingDataCollection } from "@/server/data/map/mapping-data-collection";
+import { Geometry } from "@/frontend/components/map/renderer/geometry";
 
 export class App {
   readonly auth: AuthController;
@@ -36,6 +37,7 @@ export class App {
     readonly lines: LineCollection,
 
     readonly stations: StationCollection,
+    readonly mapGeometry: Geometry,
     readonly database: Database,
     readonly alertSource: AlertSource,
     readonly discordBot: DiscordBot | null,

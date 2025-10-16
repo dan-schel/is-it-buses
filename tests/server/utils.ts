@@ -9,6 +9,7 @@ import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-
 import { User } from "@/server/services/auth/user";
 import { lineGroups } from "@/server/entry-point/data/line-groups";
 import { mappingData } from "@/server/entry-point/data/mapping-data";
+import { generatePtvGeometry } from "@/server/entry-point/data/geometry";
 
 export const defaultMockedNow = new Date("2025-01-01T00:00:00Z");
 
@@ -19,12 +20,14 @@ export function createTestApp({
   const alertSource = new FakeAlertSource();
   const time = new FakeTimeProvider(defaultMockedNow);
   const log = new FakeLogger();
+  const mapGeometry = generatePtvGeometry();
 
   const app = new App(
     lineGroups,
     mappingData,
     lines,
     stations,
+    mapGeometry,
     db,
     alertSource,
     null,

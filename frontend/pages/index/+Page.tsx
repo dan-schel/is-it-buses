@@ -13,8 +13,14 @@ import { FinePrint } from "@/frontend/components/overview/FinePrint";
 import { OverviewControls } from "@/frontend/components/overview/OverviewControls";
 
 export default function Page() {
-  const { disruptions, suburban, regional, mapHighlighting, occuring } =
-    useData<Data>();
+  const {
+    disruptions,
+    suburban,
+    regional,
+    mapHighlighting,
+    mapGeometry,
+    occuring,
+  } = useData<Data>();
 
   return (
     <PageCenterer>
@@ -25,6 +31,7 @@ export default function Page() {
           <MapSection
             disruptions={disruptions}
             mapHighlighting={mapHighlighting}
+            mapGeometry={mapGeometry}
             occuring={occuring}
           />
           <Divider />
