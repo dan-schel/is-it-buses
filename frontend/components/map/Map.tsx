@@ -1,17 +1,15 @@
 import React from "react";
 import { Renderer } from "@/frontend/components/map/renderer/renderer";
 import { Geometry } from "@/frontend/components/map/renderer/geometry";
-
-// To debug geometry without needing to re-run the generator:
-// import geometry from "@/scripts/generate-map-geometry/ptv";
-import geometryJson from "@/frontend/components/map/geometry/ptv.json";
 import { SerializedMapHighlighting } from "@/shared/types/map-data";
 import { LinesColoringStrategy } from "@/frontend/components/map/renderer/coloring-strategy/lines-coloring-strategy";
 import { DisruptionsColoringStrategy } from "@/frontend/components/map/renderer/coloring-strategy/disruptions-coloring-strategy";
+import { SerializedGeometry } from "@/shared/types/map-geometry";
 
 type MapMode = "show-disruptions" | "show-lines-running";
 
 type MapProps = {
+  geometry: SerializedGeometry;
   highlighting?: SerializedMapHighlighting;
   mode?: MapMode;
 };
@@ -20,7 +18,10 @@ export function Map(props: MapProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-  const geometry = React.useMemo(() => Geometry.json.parse(geometryJson), []);
+  const geometry = React.useMemo(
+    () => Geometry.json.parse(props.geometry),
+    [props.geometry],
+  );
 
   React.useEffect(() => {
     if (containerRef.current == null || canvasRef.current == null) {

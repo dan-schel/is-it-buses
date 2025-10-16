@@ -15,6 +15,7 @@ import { AlertParsingRulesBuilder } from "@/server/data/alert/parsing/lib/alert-
 import { createApiRouter } from "@/server/api";
 import { lineGroups } from "@/server/entry-point/data/line-groups";
 import { mappingData } from "@/server/entry-point/data/mapping-data";
+import { generatePtvGeometry } from "@/server/entry-point/data/geometry";
 
 export async function run(root: string) {
   const database = await initDatabase();
@@ -27,11 +28,14 @@ export async function run(root: string) {
     // new BusReplacementsParsingRule(app),
   ];
 
+  const mapGeometry = generatePtvGeometry();
+
   const app = new App(
     lineGroups,
     mappingData,
     lines,
     stations,
+    mapGeometry,
     database,
     alertSource,
     discordBot,

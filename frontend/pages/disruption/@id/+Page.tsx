@@ -11,7 +11,7 @@ import { PageCenterer } from "@/frontend/components/common/PageCenterer";
 import { BackNavigation } from "@/frontend/components/navigation/BackNavigation";
 
 export default function Page() {
-  const { disruption, back } = useData<Data>();
+  const { disruption, back, mapGeometry } = useData<Data>();
 
   return (
     <Column>
@@ -20,7 +20,7 @@ export default function Page() {
         <PageCenterer>
           <PagePadding>
             {disruption != null ? (
-              <Disruption data={disruption} />
+              <Disruption data={disruption} mapGeometry={mapGeometry} />
             ) : (
               <NotFound />
             )}
